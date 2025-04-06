@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Lecture 8 Sample, Population, Random Variable and Probability | Untitled</title>
+  <meta name="description" content="These lecture notes adopt the template of ‘a minimal example of using the bookdown package to write a book’ by Yihui Xie. The output format for this example is bookdown::gitbook." />
+  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Lecture 8 Sample, Population, Random Variable and Probability | Untitled" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="These lecture notes adopt the template of ‘a minimal example of using the bookdown package to write a book’ by Yihui Xie. The output format for this example is bookdown::gitbook." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Lecture 8 Sample, Population, Random Variable and Probability | Untitled" />
+  
+  <meta name="twitter:description" content="These lecture notes adopt the template of ‘a minimal example of using the bookdown package to write a book’ by Yihui Xie. The output format for this example is bookdown::gitbook." />
+  
+
+<meta name="author" content="Pu Chen" />
+
+
+<meta name="date" content="2024-09-02" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="lecture-7-introduction-to-statistics.html"/>
+<link rel="next" href="lecture-9-simple-random-sample-and-paramter-estimation.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script async defer src="https://hypothes.is/embed.js"></script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-88838732-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Proface</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html"><i class="fa fa-check"></i>Lecture 7 Introduction to Statistics</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#sources-of-data"><i class="fa fa-check"></i>7.1.1 Sources of data</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#components-of-a-data-set"><i class="fa fa-check"></i>7.1.2 Components of a data set</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#variable-types-and-scales-of-measurement"><i class="fa fa-check"></i>7.1.3 Variable types and scales of measurement</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#statistical-way-of-study"><i class="fa fa-check"></i>7.1.4 Statistical Way of Study</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#characteristics-of-a-statiatical-variable"><i class="fa fa-check"></i>7.1.5 Characteristics of a statiatical variable</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#descriptive-statistics"><i class="fa fa-check"></i>7.2 Descriptive Statistics</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#frequency-tables"><i class="fa fa-check"></i>7.2.1 Frequency tables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#diagrams"><i class="fa fa-check"></i>7.2.2 Diagrams</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#column-charts-bar-charts-and-pie-charts"><i class="fa fa-check"></i>7.2.2.1 Column charts, bar charts, and pie charts</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#histogram"><i class="fa fa-check"></i>7.2.2.2 Histogram</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#numerical-measures"><i class="fa fa-check"></i>7.2.3 Numerical measures</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#measures-of-central-location"><i class="fa fa-check"></i>7.2.3.1 Measures of central location</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#measures-of-variation-dispersion"><i class="fa fa-check"></i>7.2.3.2 Measures of variation (dispersion):</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#rules-of-68-95-and-99.7"><i class="fa fa-check"></i>7.2.4 Rules of 68, 95, and 99.7</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#descriptive-statistis-for-two-statistical-variables"><i class="fa fa-check"></i>7.2.5 Descriptive statistis for two statistical variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-categotical-variables"><i class="fa fa-check"></i>7.2.5.1 Two categotical variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-way-tables-for-two-categorical-variables"><i class="fa fa-check"></i>Two way tables for two categorical variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#clustered-column-charts"><i class="fa fa-check"></i>Clustered column charts</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#one-categorical-variable-one-numerical-variable"><i class="fa fa-check"></i>7.2.5.2 One categorical variable one numerical variable</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-way-table-for-categorical-and-numerical-variables"><i class="fa fa-check"></i>Two-way table for categorical and numerical variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#comparative-box-plots"><i class="fa fa-check"></i>Comparative box plots</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-numerical-variables"><i class="fa fa-check"></i>7.5.2.3 Two numerical variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-way-frequency-table"><i class="fa fa-check"></i>Two-way frequency table</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#covariance-and-correlation-coefficient"><i class="fa fa-check"></i>Covariance and correlation coefficient</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#scatter-plot"><i class="fa fa-check"></i>Scatter plot</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#correlation-coefficient-and-scatter-plot"><i class="fa fa-check"></i>Correlation coefficient and scatter plot</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#overview-of-types-of-variables-and-the-used-descriptive-tools"><i class="fa fa-check"></i>Overview of types of variables and the used descriptive tools</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#examples-of-applications"><i class="fa fa-check"></i>7.2.6 Examples of applications:</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#summary"><i class="fa fa-check"></i>Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#review-questions"><i class="fa fa-check"></i>Review questions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html"><i class="fa fa-check"></i>Lecture 8 Sample, Population, Random Variable and Probability</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#principle-of-simple-random-sample"><i class="fa fa-check"></i>8.1 Principle of simple random sample</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#description-of-a-population-by-random-variables"><i class="fa fa-check"></i>8.2 Description of a Population by random variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#discrete-random-variables"><i class="fa fa-check"></i>8.3 Discrete random variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#relation-between-random-variables"><i class="fa fa-check"></i>8.4. Relation between random variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#joint-probability"><i class="fa fa-check"></i>8.4.1 Joint probability</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#marginal-probability"><i class="fa fa-check"></i>8.4.2 Marginal Probability</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#conditional-probability"><i class="fa fa-check"></i>8.4.3 Conditional Probability</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#continuous-random-variables"><i class="fa fa-check"></i>8.5. Continuous random variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#uniformly-distributed-random-variables"><i class="fa fa-check"></i>8.5.1. Uniformly distributed random variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#normally-distributed-random-variables"><i class="fa fa-check"></i>8.5.2. Normally distributed random variables</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#numerical-measures-of-random-variables"><i class="fa fa-check"></i>5.6 Numerical measures of random variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#expected-value-and-variance"><i class="fa fa-check"></i>5.6.1 Expected value and Variance</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#rules-of-expected-valuevariance-and-covariace"><i class="fa fa-check"></i>Rules of expected value,variance and covariace</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#review-questions-1"><i class="fa fa-check"></i>Review questions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html"><i class="fa fa-check"></i>Lecture 9 Simple Random Sample and Paramter Estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#simple-random-sample"><i class="fa fa-check"></i>9.1 Simple random sample</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#law-of-large-numbers-lln"><i class="fa fa-check"></i>9.1.1 Law of large numbers (LLN)</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#central-limit-theorem-clt"><i class="fa fa-check"></i>9.1.2 Central limit theorem (CLT)</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#parameter-estimation"><i class="fa fa-check"></i>9.2 Parameter estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#point-estimation"><i class="fa fa-check"></i>9.2.1 Point estimation</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#interval-estimation"><i class="fa fa-check"></i>9.2.2 Interval estimation</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#interpretation-of-confidence-interval"><i class="fa fa-check"></i>6.2.3 Interpretation of confidence interval</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#quality-of-an-estimator"><i class="fa fa-check"></i>9.3 Quality of an estimator</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#consistence"><i class="fa fa-check"></i>9.3.1 Consistence</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#unbiasedness"><i class="fa fa-check"></i>9.3.2 Unbiasedness</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#chapter-summary"><i class="fa fa-check"></i>Chapter Summary</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#review-questions-2"><i class="fa fa-check"></i>Review questions:</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="test.html"><a href="test.html"><i class="fa fa-check"></i>Lecture 10 Statistical Testing</a>
+<ul>
+<li class="chapter" data-level="" data-path="test.html"><a href="test.html#test-as-searching-for-indication-of-updating-the-population-knowledge"><i class="fa fa-check"></i>10.1 Test as searching for indication of updating the population knowledge</a></li>
+<li class="chapter" data-level="" data-path="test.html"><a href="test.html#formal-procedure-of-a-statistical-test"><i class="fa fa-check"></i>10.2 Formal procedure of a statistical test</a></li>
+<li class="chapter" data-level="" data-path="test.html"><a href="test.html#tests-of-population-means-proportion"><i class="fa fa-check"></i>10.3 Tests of population means (proportion)</a></li>
+<li class="chapter" data-level="" data-path="test.html"><a href="test.html#compare-two-population-means"><i class="fa fa-check"></i>10.4 Compare two population means</a></li>
+<li class="chapter" data-level="" data-path="test.html"><a href="test.html#from-t-test-to-chi2-test"><i class="fa fa-check"></i>10.5 From t-test to <span class="math inline">\(\chi^2\)</span> test</a></li>
+<li class="chapter" data-level="" data-path="test.html"><a href="test.html#test-of-multinomial-proportions"><i class="fa fa-check"></i>10.6 Test of multinomial proportions**</a></li>
+<li class="chapter" data-level="" data-path="test.html"><a href="test.html#test-of-independence"><i class="fa fa-check"></i>10.7 Test of independence</a></li>
+<li class="chapter" data-level="" data-path="test.html"><a href="test.html#test-of-normality"><i class="fa fa-check"></i>10.8 Test of normality</a></li>
+<li class="chapter" data-level="" data-path="test.html"><a href="test.html#anova"><i class="fa fa-check"></i>10.9 ANOVA</a>
+<ul>
+<li class="chapter" data-level="" data-path="test.html"><a href="test.html#one-way-anova"><i class="fa fa-check"></i>10.9.1 One-way ANOVA</a></li>
+<li class="chapter" data-level="" data-path="test.html"><a href="test.html#two-way-anova"><i class="fa fa-check"></i>10.9.2 Two-way ANOVA</a></li>
+<li class="chapter" data-level="" data-path="test.html"><a href="test.html#review-questions-3"><i class="fa fa-check"></i>Review questions</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Regression.html"><a href="Regression.html"><i class="fa fa-check"></i>Lecture 11 Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="Regression.html"><a href="Regression.html#motivation-of-simple-regression"><i class="fa fa-check"></i>11.1 Motivation of Simple Regression</a></li>
+<li class="chapter" data-level="" data-path="Regression.html"><a href="Regression.html#least-squares-method"><i class="fa fa-check"></i>6.2 Least squares method</a>
+<ul>
+<li class="chapter" data-level="" data-path="Regression.html"><a href="Regression.html#least-square-methd-and-regression-line"><i class="fa fa-check"></i>Least Square Methd and Regression Line</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="Regression.html"><a href="Regression.html#statistics-in-a-regression-model"><i class="fa fa-check"></i>11.2 Statistics in a regression model</a></li>
+<li class="chapter" data-level="" data-path="Regression.html"><a href="Regression.html#interpretation-of-the-excel-regression-output"><i class="fa fa-check"></i>11.3 Interpretation of the Excel regression output</a></li>
+<li class="chapter" data-level="" data-path="Regression.html"><a href="Regression.html#multiple-regression"><i class="fa fa-check"></i>11.4 Multiple Regression</a></li>
+<li class="chapter" data-level="" data-path="Regression.html"><a href="Regression.html#multivariate-regression"><i class="fa fa-check"></i>11.5 Multivariate Regression</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Untitled</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="lecture-8-sample-population-random-variable-and-probability" class="section level1 hasAnchor">
+<h1>Lecture 8 Sample, Population, Random Variable and Probability<a href="lecture-8-sample-population-random-variable-and-probability.html#lecture-8-sample-population-random-variable-and-probability" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Concepts:</p>
+<pre><code>      Sample and population, description of a population by random variables, probability, calculation of probability for random variables, simple random sample, LLN and CLT, probability distribution of sample average</code></pre>
+<p>Statistical way of study is studying the population through collected sample data.</p>
+<p>A key question in sampling is: How can we ensure that a collected sample is representative of a population when information about the population is yet unknown?</p>
+<p>Being representative means that, for a population with an unknown proportion of red figures (see the following figure), if, for example, <span class="math inline">\(x\)</span> out of seven figures are red, the same ratio should be present in the sample.</p>
+<p>If <span class="math inline">\(x\)</span> out of 7 figures are red and every figure in the population has an equal chance of being chosen, then a red figure can be expected to have a chance of <span class="math inline">\(x/7\)</span> of being chosen. For a sample of size 70, we can expect roughly <span class="math inline">\(x \times 10\)</span> figures to be red in the sample due to the equal chance principle. Therefore, equal chance in selection will preserve the proportion of red figures in the sample. This is the principle underlying a simple random sample.</p>
+<div id="principle-of-simple-random-sample" class="section level2 hasAnchor">
+<h2>8.1 Principle of simple random sample<a href="lecture-8-sample-population-random-variable-and-probability.html#principle-of-simple-random-sample" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li><p>Each element has the same chance to be chosen.</p></li>
+<li><p>The chance for an element to be chosen is independent from each other.</p></li>
+</ul>
+<p><img src="vertopal_lecturet222/media/image7.png" style="width:2.50694in;height:1.27361in" /></p>
+<p>However, we also know that among the 70 data points, while the expected number of red figures is 10, the actual number can vary. It might be 11, or 9 for example. This
+is known as <strong>sample uncertainty.</strong> Similarly, if mean population
+Salary, i.e. the mean salary of all 300 thousand employees of the
+company is $52.5K, the sample average of the 300 employees in our data
+can be slightly different than 52.5K.</p>
+<p><strong>Sample Uncertainty</strong></p>
+<p>In the following interactive diagram you can investigate the sample uncertainty, chages in the sample mean and sample standard deviation, by change sample size number of samples and the population parameters.</p>
+<p></p>
+<!-- Sample Uncertainty Demonstration -->
+<div id="sample-uncertainty-container">
+    <div>
+        <label for="sampleSize">Sample Size:</label>
+        <input type="range" id="sampleSize" min="10" max="100" step="1" value="30">
+        <span id="sampleSize-value">30</span>
+    </div>
+    <div>
+        <label for="numSamples">Number of Samples:</label>
+        <input type="range" id="numSamples" min="5" max="100" step="1" value="10">
+        <span id="numSamples-value">10</span>
+    </div>
+    <div>
+        <label for="popMean">Population Mean:</label>
+        <input type="number" id="popMean" value="0" step="any">
+    </div>
+    <div>
+        <label for="popVariance">Population Variance:</label>
+        <input type="number" id="popVariance" value="1" step="any">
+    </div>
+    <div id="sample-uncertainty" style="border: 2px solid black; width: 800px; height: 500px;"></div>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    function generateNormalData(mean, stdDev, size) {
+        const data = [];
+        for (let i = 0; i < size; i++) {
+            const u1 = Math.random();
+            const u2 = Math.random();
+            const z1 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+            data.push(mean + stdDev * z1);
+        }
+        return data;
+    }
+
+    function generateSamples(sampleSize, numSamples, popMean, popStdDev) {
+        const means = [];
+        const stdDevs = [];
+        for (let i = 0; i < numSamples; i++) {
+            const sample = generateNormalData(popMean, popStdDev, sampleSize);
+            const mean = sample.reduce((a, b) => a + b, 0) / sampleSize;
+            const variance = sample.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (sampleSize - 1);
+            const stdDev = Math.sqrt(variance);
+            means.push(mean);
+            stdDevs.push(stdDev);
+        }
+        return { means, stdDevs };
+    }
+
+    function updatePlot() {
+        const sampleSize = parseInt(document.getElementById('sampleSize').value);
+        const numSamples = parseInt(document.getElementById('numSamples').value);
+        const popMean = parseFloat(document.getElementById('popMean').value);
+        const popVariance = parseFloat(document.getElementById('popVariance').value);
+        const popStdDev = Math.sqrt(popVariance);
+
+        document.getElementById('sampleSize-value').textContent = sampleSize;
+        document.getElementById('numSamples-value').textContent = numSamples;
+
+        const { means, stdDevs } = generateSamples(sampleSize, numSamples, popMean, popStdDev);
+
+        // Calculate axis ranges
+        const meanAxisRange = [popMean - popStdDev, popMean + popStdDev];
+        const stdDevMax = Math.max(...stdDevs);
+        const stdDevAxisRange = [0, Math.max(2 * popStdDev, stdDevMax + 1)];
+
+        const meanTrace = {
+            y: Array.from({ length: numSamples }, (_, i) => i + 1),
+            x: means,
+            mode: 'markers',
+            type: 'scatter',
+            name: 'Sample Means',
+            marker: { color: 'rgba(255, 99, 132, 0.7)' },
+            xaxis: 'x1',
+            yaxis: 'y1'
+        };
+
+        const stdDevTrace = {
+            y: Array.from({ length: numSamples }, (_, i) => i + 1),
+            x: stdDevs,
+            mode: 'markers',
+            type: 'scatter',
+            name: 'Sample Standard Deviations',
+            marker: { color: 'rgba(54, 162, 235, 0.7)' },
+            xaxis: 'x2',
+            yaxis: 'y2'
+        };
+
+        const layout = {
+            grid: { rows: 1, columns: 2, pattern: 'independent' },
+            xaxis: { title: 'Value', range: meanAxisRange },
+            yaxis: { title: 'Sample Index', range: [0, numSamples] },
+            xaxis2: { title: 'Sample Standard Deviation', range: stdDevAxisRange },
+            yaxis2: { title: 'Sample Index', range: [0, numSamples] },
+            title: 'Sample Means and Standard Deviations',
+            width: 800,
+            height: 500
+        };
+
+        Plotly.react('sample-uncertainty', [meanTrace, stdDevTrace], layout);
+    }
+
+    document.getElementById('sampleSize').addEventListener('input', updatePlot);
+    document.getElementById('numSamples').addEventListener('input', updatePlot);
+    document.getElementById('popMean').addEventListener('input', updatePlot);
+    document.getElementById('popVariance').addEventListener('input', updatePlot);
+    updatePlot();
+</script>
+<p></p>
+<p>Handling sample uncertainty is one of the main tasks in statistics.</p>
+<p></p>
+<!-- HTML for the first set of MCQs -->
+<button id="reveal-button-set21">Show MCQs Set 21</button>
+
+<div id="question-container-set21"></div>
+
+<script>
+    // Initial CSV data (3 questions)
+    const csvDataset21 = `
+What does being representative mean in sampling?
+Every sample is identical
+The sample reflects the unknown proportion of the population
+The sample is larger than the population
+The sample is smaller than the population
+The sample reflects the unknown proportion of the population
+What does the term 'population' refer to in statistics?
+The entire group being studied
+A small group of individuals
+A random selection of individuals
+A specific subgroup
+The entire group being studied
+If  x  out of 7 figures are red, what should be the expected ratio in the sample?
+ x/7 
+ x/10 
+ 7/x 
+ 10/x 
+ x/7 
+    `;
+
+    // Function to parse CSV data into questions
+    function parseCSV(data) {
+        const lines = data.trim().split('\n').map(line => line.trim());
+        const questions = [];
+
+        for (let i = 0; i < lines.length; i += 6) {
+            if (i + 5 < lines.length) {
+                questions.push({
+                    question: lines[i],
+                    options: lines.slice(i + 1, i + 5),
+                    correctAnswer: lines[i + 5]
+                });
+            }
+        }
+
+        return questions;
+    }
+
+    // Function to generate HTML for questions
+    function generateQuestionHTML(questions, containerId) {
+        let contentHTML = '';
+        questions.forEach((q, questionIndex) => {
+            contentHTML += `<div class="question-block">`;
+            contentHTML += `<p><strong>Question ${questionIndex + 1}:</strong> ${q.question}</p>`;
+            q.options.forEach((option, index) => {
+                contentHTML += `
+                    <div>
+                        <input type="radio" name="question${questionIndex}" id="${containerId}_option${questionIndex}_${index}" value="${option}" aria-label="${option}">
+                        <label for="${containerId}_option${questionIndex}_${index}">${option}</label>
+                    </div>
+                `;
+            });
+            contentHTML += `<div id="${containerId}_feedback${questionIndex}" class="feedback"></div>`;
+            contentHTML += `</div>`;
+        });
+
+        document.getElementById(containerId).innerHTML = contentHTML;
+    }
+
+    // Function to check the selected answer
+    function checkAnswer(questionIndex, containerId, questions) {
+        const selectedOption = document.querySelector(`input[name="question${questionIndex}"]:checked`);
+        const feedbackElement = document.getElementById(`${containerId}_feedback${questionIndex}`);
+
+        if (selectedOption) {
+            const answer = selectedOption.value;
+            if (answer === questions[questionIndex].correctAnswer) {
+                feedbackElement.textContent = 'Your answer is correct!';
+                feedbackElement.className = 'feedback correct';
+            } else {
+                feedbackElement.textContent = 'Your answer is incorrect.';
+                feedbackElement.className = 'feedback incorrect';
+            }
+        } else {
+            feedbackElement.textContent = '';
+        }
+    }
+
+    // Parse and display the first set of questions
+    const questionsset21 = parseCSV(csvDataset21);
+    generateQuestionHTML(questionsset21, 'question-container-set21');
+
+    // Attach event listeners to all radio buttons for the first set of questions
+    questionsset21.forEach((_, questionIndex) => {
+        document.querySelectorAll(`#question-container-set21 input[name="question${questionIndex}"]`).forEach(input => {
+            input.addEventListener('change', () => checkAnswer(questionIndex, 'question-container-set21', questionsset21));
+        });
+    });
+
+    // Toggle visibility of the first set of questions
+    const revealButtonset21 = document.getElementById('reveal-button-set21');
+    const questionContainerset21 = document.getElementById('question-container-set21');
+
+    revealButtonset21.addEventListener('click', () => {
+        if (questionContainerset21.style.display === 'none' || questionContainerset21.style.display === '') {
+            questionContainerset21.style.display = 'block';
+            revealButtonset21.textContent = 'Hide MCQs Set 1';
+        } else {
+            questionContainerset21.style.display = 'none';
+            revealButtonset21.textContent = 'Show MCQs Set 1';
+        }
+    });
+
+    // Ensure questions are hidden by default
+    questionContainerset21.style.display = 'none';
+</script>
+<p></p>
+</div>
+<div id="description-of-a-population-by-random-variables" class="section level2 hasAnchor">
+<h2>8.2 Description of a Population by random variables<a href="lecture-8-sample-population-random-variable-and-probability.html#description-of-a-population-by-random-variables" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>How can we describe a population variable, such as the SALARY of all employees in a company?</p>
+<p>Similar to a statistical variable, SALARY can take on many different values, with some values appearing more frequently than others. If we could collect data on the entire population, we could count the frequencies of these values to describe the population. However, since collecting data on the entire population is impractical, the question becomes: How can we describe the population variable, SALARY, without counting the frequencies?</p>
+<p>The following graphs display the distribution of salaries with increasing sample sizes of 300, 2,000, 10,000, and 23,318.</p>
+<p><img src="vertopal_lecturet222/media/histo2density.jpg" /></p>
+<p>As we increase the amount of data, the histogram increasingly resembles a smooth curve. This limiting curve is known as the probability density function (PDF).</p>
+<p>Recall that the area of the bars in a histogram represents the relative frequencies of the data over corresponding intervals. If we know the mathematical formula of the curve, we can calculate the areas under the curve for any given interval, which represents the relative frequency for that interval. Thus, we can obtain the frequencies of the population variable by specifying the curve, rather than counting individual data points.</p>
+<p>The task of describing a population variable is to determine this curve, known as the density function.</p>
+<p><a href="https://en.wikipedia.org/wiki/Carl_Friedrich_Gauss">Gauss</a> (1777-1855)
+solved the problem with the following function:</p>
+<p><span class="math display">\[f(x) = \frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-\mu)^2}{2\sigma^2}} \]</span>
+This function is called Gaussian density function. <span class="math inline">\(\mu\)</span> is the centre
+of the density function and the <span class="math inline">\(\sigma\)</span> is the standard deviation of
+the density function. When <span class="math inline">\(\mu=0\)</span> and <span class="math inline">\(\sigma=1\)</span> the normal density function takes the following form
+<span class="math display">\[f(x) = \frac{1}{\sqrt{2\pi}}e^{-\frac{x^2}{2}} \]</span></p>
+<p>This curve is called the standard normal density function. The standard normal distribution is of particular interest because probabilities for any normal random variable can be transformed into probabilities for a standard normal random variable.</p>
+<p>As described earlier, the density function can be seen as the limit of the histogram as the number of data points increases indefinitely. However, collecting such a large amount of data is often impractical. So, how can we interpret the density function in practical terms?</p>
+<p>If we randomly select one employee, what can we infer about his SALARY? Based on the histogram, we know that a SALARY value is much more likely to fall within the interval (52K,53K) than in the interval (26K,27K), because the frequency of Salaries in (52K,53K) is much higher than that over the interval (26K,27K). Thus, the area under the density function over an interval gives the probability that the value of SALARY will fall within that interval.</p>
+<p>The histogram of a statistical variable has the following two key properties:</p>
+<ol style="list-style-type: decimal">
+<li>The total area under the histogram is equal to one.</li>
+<li>The area of the histogram over a given interval represents the relative frequency of the variable taking values within that interval.</li>
+</ol>
+<p>Compared to the histogram of relative frequencies, the density function has similar properties:</p>
+<ol style="list-style-type: decimal">
+<li>The total area under the density function is equal to one.</li>
+<li>The area under the density function over a given interval represents the probability that the SALARY of a randomly chosen employee falls within that interval.</li>
+</ol>
+<p>The SALARY is considered a random variable, and the density function provides the probability that this random variable takes on values within any given interval.</p>
+<p><strong>Random variable vs. statistical variable</strong></p>
+<p><img src="vertopal_lecturet222/media/image9.jpg" style="width:3.50013in;height:2.12593in" alt="Image result for lotto draw" /> <img src="vertopal_lecturet222/media/image10.jpg" style="width:3.50644in;height:2.275in" alt="Image result for sample and population" /></p>
+<p><img src="vertopal_lecturet222/media/samplevspopulation.jpg" /></p>
+<p>What is the difference between a <strong>random variable</strong> and <strong>statistical
+variable</strong>?</p>
+<p>The *<strong>Lotto number before the draw is a random number</strong>, the <strong>recorded winning numbers are values of the statistical variable</strong>.</p>
+<p>Before the draw we do not know what, the winning number will be. But we know that the probability
+a particular number to be the winning number is very low.</p>
+<p>The number on each ball in a Lotto is not random, it is the randomly
+drawing process makes the outcome a random variable. Likewise, the
+salary of each employee is not random, but if we select the employee
+“randomly” from the population, SALARY becomes a random variable.</p>
+<p></p>
+<!-- HTML for the first set of MCQs -->
+<button id="reveal-button-set22">Show MCQs Set 21</button>
+
+<div id="question-container-set22"></div>
+
+<script>
+    // Initial CSV data (3 questions)
+    const csvDataset22 = `
+Who solved the problem of describing a population variable with a specific function?
+Newton
+Gauss
+Euler
+Pythagoras
+Gauss
+What is used to describe a random variable SALARY?
+Histogram
+Frequency table
+Probability distribution
+Pie chart
+Probability distribution
+Which of the following is a numerical measure for a random variable?
+Histogram
+Expected values
+Frequency table
+Pie chart
+Expected values
+What does the area under the density function over a given interval represent?
+The mean of the data
+The probability of the variable taking values within that interval
+The median of the data
+The mode of the data
+The probability of the variable taking values within that interval
+What does the density function provide for a random variable?
+The mean value
+The probability of taking on values within any given interval
+The median value
+The mode value
+The probability of taking on values within any given interval
+    `;
+
+    // Function to parse CSV data into questions
+    function parseCSV(data) {
+        const lines = data.trim().split('\n').map(line => line.trim());
+        const questions = [];
+
+        for (let i = 0; i < lines.length; i += 6) {
+            if (i + 5 < lines.length) {
+                questions.push({
+                    question: lines[i],
+                    options: lines.slice(i + 1, i + 5),
+                    correctAnswer: lines[i + 5]
+                });
+            }
+        }
+
+        return questions;
+    }
+
+    // Function to generate HTML for questions
+    function generateQuestionHTML(questions, containerId) {
+        let contentHTML = '';
+        questions.forEach((q, questionIndex) => {
+            contentHTML += `<div class="question-block">`;
+            contentHTML += `<p><strong>Question ${questionIndex + 1}:</strong> ${q.question}</p>`;
+            q.options.forEach((option, index) => {
+                contentHTML += `
+                    <div>
+                        <input type="radio" name="question${questionIndex}" id="${containerId}_option${questionIndex}_${index}" value="${option}" aria-label="${option}">
+                        <label for="${containerId}_option${questionIndex}_${index}">${option}</label>
+                    </div>
+                `;
+            });
+            contentHTML += `<div id="${containerId}_feedback${questionIndex}" class="feedback"></div>`;
+            contentHTML += `</div>`;
+        });
+
+        document.getElementById(containerId).innerHTML = contentHTML;
+    }
+
+    // Function to check the selected answer
+    function checkAnswer(questionIndex, containerId, questions) {
+        const selectedOption = document.querySelector(`input[name="question${questionIndex}"]:checked`);
+        const feedbackElement = document.getElementById(`${containerId}_feedback${questionIndex}`);
+
+        if (selectedOption) {
+            const answer = selectedOption.value;
+            if (answer === questions[questionIndex].correctAnswer) {
+                feedbackElement.textContent = 'Your answer is correct!';
+                feedbackElement.className = 'feedback correct';
+            } else {
+                feedbackElement.textContent = 'Your answer is incorrect.';
+                feedbackElement.className = 'feedback incorrect';
+            }
+        } else {
+            feedbackElement.textContent = '';
+        }
+    }
+
+    // Parse and display the first set of questions
+    const questionsset22 = parseCSV(csvDataset22);
+    generateQuestionHTML(questionsset22, 'question-container-set22');
+
+    // Attach event listeners to all radio buttons for the first set of questions
+    questionsset22.forEach((_, questionIndex) => {
+        document.querySelectorAll(`#question-container-set22 input[name="question${questionIndex}"]`).forEach(input => {
+            input.addEventListener('change', () => checkAnswer(questionIndex, 'question-container-set22', questionsset22));
+        });
+    });
+
+    // Toggle visibility of the first set of questions
+    const revealButtonset22 = document.getElementById('reveal-button-set22');
+    const questionContainerset22 = document.getElementById('question-container-set22');
+
+    revealButtonset22.addEventListener('click', () => {
+        if (questionContainerset22.style.display === 'none' || questionContainerset22.style.display === '') {
+            questionContainerset22.style.display = 'block';
+            revealButtonset22.textContent = 'Hide MCQs Set 1';
+        } else {
+            questionContainerset22.style.display = 'none';
+            revealButtonset22.textContent = 'Show MCQs Set 1';
+        }
+    });
+
+    // Ensure questions are hidden by default
+    questionContainerset22.style.display = 'none';
+</script>
+<p></p>
+</div>
+<div id="discrete-random-variables" class="section level2 hasAnchor">
+<h2>8.3 Discrete random variables<a href="lecture-8-sample-population-random-variable-and-probability.html#discrete-random-variables" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>If a random variable assumes only discrete values, it is called discrete random variable (discrete RV).
+For example, rolling a die can be described using a discrete random variable.
+We describe a discrete random variable by (1) listing all possible values and (2) specifying the corresponding probabilities.
+These details are typically organized in a table called probability distribution table.</p>
+<p>(This is similar to how relative frequency tables are used for categorical variables.)</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">X</th>
+<th align="left"><span class="math display">\[x_{1}\]</span></th>
+<th align="left"><span class="math display">\[x_{2}\]</span></th>
+<th align="left"><span class="math display">\[x_{3}\]</span></th>
+<th align="left">……</th>
+<th align="left">,<span class="math inline">\(x_{N}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">P</td>
+<td align="left"><span class="math display">\[p_{1}\]</span></td>
+<td align="left"><span class="math display">\[p_{2}\]</span></td>
+<td align="left"><span class="math display">\[p_{3}\]</span></td>
+<td align="left">……</td>
+<td align="left">,<span class="math inline">\(p_{N}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Here the random variable X can assume one of the N possible values
+<span class="math inline">\(x_{1},\ x_{2},x_{3},\ \ldots\ldots x_{N}\)</span> each with probability
+<span class="math inline">\(p_{1},\ p_{2},p_{3},\ \ldots\ldots..p_{N}\)</span>, respectively.</p>
+<p>Random variables can be used to describe random events, such as rolling a die. Each possible outcome of a random event is called a <strong>sample point</strong>.
+The set of all sample points is called the <strong>sample space</strong>, denoted by:
+<em>S</em> = {<span class="math inline">\(x_{1},\ x_{2},x_{3},\ \ldots\ldots x_{N}\)</span>}. Each sample point <span class="math inline">\(x_{i}\)</span>
+has a chance of occurring, measured by <span class="math inline">\(p_{i}\)</span>, which is called the <strong>probability</strong> of
+<span class="math inline">\(x_{i}\)</span>. Probability is a measure of the likelihood of each sample point occuring.</p>
+<p><strong>Formal requirement</strong> of probability:</p>
+<ol style="list-style-type: upper-alpha">
+<li>It must be scaled between 0 and 1.</li>
+</ol>
+<blockquote>
+<p><span class="math inline">\(0 \leq P({X = x}_{i}) \leq 1\)</span></p>
+</blockquote>
+<ol start="2" style="list-style-type: upper-alpha">
+<li>For mutually exclusive events <span class="math inline">\({X = x}_{i}\)</span> and <span class="math inline">\({X = x}_{j}\)</span></li>
+</ol>
+<blockquote>
+<p><span class="math inline">\(P\left(  \{X = x_i\} \bigcup \{X = x_j\} \right) = P\left( X = x_i \right) + P( X = x_j)\)</span></p>
+</blockquote>
+<ol start="3" style="list-style-type: upper-alpha">
+<li>The sum of the probabilities for all outcomes must equal 1.</li>
+</ol>
+<blockquote>
+<p><span class="math inline">\(\sum_{i = 1}^{N}{P({X = x}_{i})} = 1\)</span></p>
+</blockquote>
+<p><strong>There are three ways to assign probability:</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>Classic Method: equal chance principle</p></li>
+<li><p>Frequency Method: based on frequency tables of data.</p></li>
+<li><p>Subjective Method: expert’s opinions.</p></li>
+</ol>
+<p><strong>Example 1</strong></p>
+<p>Example 1 (rolling a dice)</p>
+<p>Let X be the number facing up of a dice. As value of X is the result a random event X is a random variable. It can be described by following probability table.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">X</th>
+<th align="left">1</th>
+<th align="left">2</th>
+<th align="left">3</th>
+<th align="left">4</th>
+<th align="left">5</th>
+<th align="left">6</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">P</td>
+<td align="left">1/6</td>
+<td align="left">1/6</td>
+<td align="left">1/6</td>
+<td align="left">1/6</td>
+<td align="left">1/6</td>
+<td align="left">1/6</td>
+</tr>
+</tbody>
+</table>
+<p>Following the classic method, because each face has the same chance each
+outcomes has the equal probability. According to the formal requirement
+C, all 6 probabilities add to one. We have</p>
+<p><span class="math display">\[P\left( X = x_i \right) = \frac{1}{6}\hspace{2cm} \mbox{for $x_i$ = 1,2,...,6}\]</span>
+According to requirement B we have:</p>
+<p><span class="math display">\[P(X &gt; 3)= P\Big(  \{X=4\} \bigcup \{X=5\} \bigcup \{X=6\}\Big) = P(X=4)+P(X=5)+P(X=6) = \frac{1}{2}\]</span></p>
+<p><span class="math display">\[P(X &lt; 2) = P(X=1) = \frac{1}{6}\]</span></p>
+<p><strong>Example 2</strong> (Lotto number)</p>
+<p>How big is the probability to win a Lotto? As in <strong>Lotto 7</strong> numbers are
+drawn from 45 numbers, the number of total possible outcomes is:</p>
+<p><span class="math display">\[45 \times 44 \times 43 \times 42 \times 41 \times 40 \times 39 \cong 228,713,000,000\]</span></p>
+<p>The probability to win with any 7 numbers is very low, as low as
+<span class="math inline">\(1/228,713,000,000\)</span>.</p>
+<p><strong>Example 3</strong> (Binomial distribution)</p>
+<p>We want to know the probability of the number of successes in <em>n</em>
+independent trials each of which has a success probability of <em>p</em>. The
+number of successes is a random variable, and it can assume all integer
+values from 0 to <em>n</em>. We call this RV binomial distributed random
+variable and denote it by:</p>
+<blockquote>
+<p><span class="math inline">\(X\ \sim B(n,p)\)</span></p>
+</blockquote>
+<p>The probability can be calculated using the following formula</p>
+<blockquote>
+<p><span class="math inline">\(P(X = x) = \ \frac{n!}{x!(n - x)!}p^{x}{(1 - p)}^{n - x}\)</span></p>
+</blockquote>
+<p>You can calculate the probability using the formula or using the Table
+of Binomial Probabilities.</p>
+<p>We can calculate the Binomial distribution and produce the bar chart
+using Excel for <span class="math inline">\(X\ \sim B(10,0.8)\)</span></p>
+<p><img src="vertopal_lecturet222/media/image15.png" style="width:4.02747in;height:2.21154in" /></p>
+</div>
+<div id="relation-between-random-variables" class="section level2 hasAnchor">
+<h2>8.4. Relation between random variables<a href="lecture-8-sample-population-random-variable-and-probability.html#relation-between-random-variables" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>A survey of 120 fund managers, each person was asked his or her education background fund managing performance. The results are summarised in the following table.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"> </th>
+<th align="left">Outperform the market</th>
+<th align="left">Not Outperform the Market</th>
+<th align="left">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Top 10 MBA</td>
+<td align="left">20</td>
+<td align="left">10</td>
+<td align="left">30</td>
+</tr>
+<tr class="even">
+<td align="left">Not Top 10 MBA</td>
+<td align="left">20</td>
+<td align="left">70</td>
+<td align="left">90</td>
+</tr>
+<tr class="odd">
+<td align="left">Total</td>
+<td align="left">40</td>
+<td align="left">80</td>
+<td align="left">120</td>
+</tr>
+</tbody>
+</table>
+<p>Table 1</p>
+<p>If one of the persons is randomly selected, the outcome can be described by two random variables: E for education background with E = 0 for top 10 MBA, and E = 1 for not top 10 MBA, and F for performance with F = 0 for outperform the market, and F = 1 for not outperform the market. Since the selection is random, E and F are two random variables. The joint probability of E and F is defined by the following probability table:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"> </th>
+<th align="left">F=0</th>
+<th align="left">F=1</th>
+<th align="right">Marginal probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Top 10 MBA</td>
+<td align="left">1/6</td>
+<td align="left">1/12</td>
+<td align="right">1/4</td>
+</tr>
+<tr class="even">
+<td align="left">Not Top 10 MBA</td>
+<td align="left">1/6</td>
+<td align="left">7/12</td>
+<td align="right">3/4</td>
+</tr>
+<tr class="odd">
+<td align="left">Marginal probability</td>
+<td align="left">1/3</td>
+<td align="left">2/3</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+<div id="joint-probability" class="section level3 hasAnchor">
+<h3>8.4.1 Joint probability<a href="lecture-8-sample-population-random-variable-and-probability.html#joint-probability" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The probability that two random variables assume specific values simultaneously is called the joint probability. The joint probabilities specified in the table above can be expressed as follows:</p>
+<p><span class="math display">\[P\Big(\{E=0\}\bigcup \{F=0\}\Big)=\frac{1}{6}\]</span>
+<span class="math display">\[P\Big(\{E=0\}\bigcup \{F=1\}\Big)=\frac{1}{12}\]</span>
+<span class="math display">\[P\Big(\{E=1\}\bigcup \{F=0\}\Big)=\frac{1}{6}\]</span>
+<span class="math display">\[P\Big(\{E=1\}\bigcup \{F=1\}\Big)=\frac{7}{12}\]</span></p>
+</div>
+<div id="marginal-probability" class="section level3 hasAnchor">
+<h3>8.4.2 Marginal Probability<a href="lecture-8-sample-population-random-variable-and-probability.html#marginal-probability" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In the survey example above, if one person is randomly selected, the probability that they outperform the market is 1/3, since40 out of 120 people outperformed the market. This is denoted by <span class="math inline">\(P(F = 0) = 1/3\)</span>. This probability is called marginal probability as it is given by the column sum (or row sum) of the joint probability table.</p>
+<p><span class="math display">\[P(F=0) = P\Big(\{F=0\} \bigcup \{E=0\}\Big) + P\Big(\{F=0\}\bigcup \{E=1\}\Big) = \frac{1}{6}+\frac{1}{6}=\frac{1}{3}\]</span></p>
+</div>
+<div id="conditional-probability" class="section level3 hasAnchor">
+<h3>8.4.3 Conditional Probability<a href="lecture-8-sample-population-random-variable-and-probability.html#conditional-probability" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The probability of an event can change when additional related information about the event is known. For example, in a multiple-choice question with 4 options, the probability of selecting the correct answer is initially 1/4. However, if it is known that option 1 is incorrect, the probability of choosing the correct answer increases to 1/3, as option 1 is eliminated.</p>
+<p>Similarly, if it is known that a randomly selected person has a top 10 education background, the probability of that person outperforming the market changes to 2/3. This is because, among 30 people with a top 10 MBA, 20 outperformed the market. We denote this conditional probability as
+<span class="math display">\[P(F=0|E=0)=\frac{2}{3}\]</span>
+Conditional probability can be calculated from the joint probability and the marginal probability:
+<span class="math display">\[P(F=0|E=0) = \frac{P\Big(\{F=0\} \bigcup \{E=0\}\Big)}{P(E=0)}= \frac{1/6}{1/4} = \frac{2}{3}\]</span>
+The above formula is sometime also written as:
+<span class="math display">\[P(F|E)=\frac{P(F\bigcup E)}{P(E)}\]</span>
+### 8.4.4 Independence</p>
+<p>In the survey example mentioned earlier, information about a fund manager’s educational background is useful in predicting their performance. This is evident because there are differences in performance between fund managers with top 10 MBA degrees and those without. When such differences exist, we say the two random variables E (educational background) and F (performance) are dependent. Conversely, if performance were the same regardless of educational background, knowledge of education would not enhance performance prediction. In such a scenario, we would say E and F are independent.</p>
+<p>Two random variables are <strong>independent</strong> if the conditional probability distribution equals to the marginal probability distribution.</p>
+<p><span class="math display">\[P(F|E) = P(F)\hspace{0.5cm}\Leftrightarrow \hspace{0.5cm}\mbox{F and E are independent.}\]</span>
+Inserting the definition above into the previous equation we have for independent E and F:</p>
+<p><span class="math display">\[P\Big(F\bigcup E\Big) = P(F)P(E)\]</span>
+The following table specifies independent E and F. We observe that the joint probability cab be calculated by multiplying the corresponding marginal probabilities using the formula above and the odds of outperform the market are the same in all groups.</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"> </th>
+<th align="left">F=0</th>
+<th align="left">F=1</th>
+<th align="right">Marginal probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Top 10 MBA</td>
+<td align="left">1/12</td>
+<td align="left">2/12</td>
+<td align="right">1/4</td>
+</tr>
+<tr class="even">
+<td align="left">Not Top 10 MBA</td>
+<td align="left">1/4</td>
+<td align="left">1/2</td>
+<td align="right">3/4</td>
+</tr>
+<tr class="odd">
+<td align="left">Marginal probability</td>
+<td align="left">1/3</td>
+<td align="left">2/3</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+<p></p>
+<!-- HTML for the first set of MCQs -->
+<button id="reveal-button-set23">Show MCQs Set 23</button>
+
+<div id="question-container-set23"></div>
+
+<script>
+    // Initial CSV data (3 questions)
+    const csvDataset23 = `
+What is a sample point?
+The average of all possible outcomes
+A single possible outcome of a random event
+The sum of all probabilities
+A continuous variable
+A single possible outcome of a random event
+What is the sample space?
+The set of all possible outcomes
+The probability of a single event
+The average of all outcomes
+The range of a continuous variable
+The set of all possible outcomes
+What is the random variable called in a binomial distribution?
+Normally distributed random variable
+Uniformly distributed random variable
+Binomial distributed random variable
+Poisson distributed random variable
+Binomial distributed random variable
+What is the joint probability table used to define in the context of the document?
+The relationship between education background and performance
+The relationship between age and performance
+The relationship between experience and performance
+The relationship between gender and performance
+The relationship between education background and performance
+What is the relationship between E and F if they are independent?
+P(F|E) = P(F)
+P(F|E) = P(E)
+P(F|E) = 0
+P(F|E) = 1
+P(F|E) = P(F)
+What is the marginal probability for "Top 10 MBA"?
+ 1/4
+ 1/2
+ 1/3
+ 2/3
+ 1/4
+What is the probability for "Not Top 10 MBA" when F=0?
+ 1/4
+ 1/2
+ 1/3
+ 2/3
+ 1/2
+Which method is used to find the probability for a standard normal random variable?
+Using probability tables
+Using the probability mass function
+Using the cumulative distribution function
+Using the density function
+Using probability tables
+    `;
+
+    // Function to parse CSV data into questions
+    function parseCSV(data) {
+        const lines = data.trim().split('\n').map(line => line.trim());
+        const questions = [];
+
+        for (let i = 0; i < lines.length; i += 6) {
+            if (i + 5 < lines.length) {
+                questions.push({
+                    question: lines[i],
+                    options: lines.slice(i + 1, i + 5),
+                    correctAnswer: lines[i + 5]
+                });
+            }
+        }
+
+        return questions;
+    }
+
+    // Function to generate HTML for questions
+    function generateQuestionHTML(questions, containerId) {
+        let contentHTML = '';
+        questions.forEach((q, questionIndex) => {
+            contentHTML += `<div class="question-block">`;
+            contentHTML += `<p><strong>Question ${questionIndex + 1}:</strong> ${q.question}</p>`;
+            q.options.forEach((option, index) => {
+                contentHTML += `
+                    <div>
+                        <input type="radio" name="question${questionIndex}" id="${containerId}_option${questionIndex}_${index}" value="${option}" aria-label="${option}">
+                        <label for="${containerId}_option${questionIndex}_${index}">${option}</label>
+                    </div>
+                `;
+            });
+            contentHTML += `<div id="${containerId}_feedback${questionIndex}" class="feedback"></div>`;
+            contentHTML += `</div>`;
+        });
+
+        document.getElementById(containerId).innerHTML = contentHTML;
+    }
+
+    // Function to check the selected answer
+    function checkAnswer(questionIndex, containerId, questions) {
+        const selectedOption = document.querySelector(`input[name="question${questionIndex}"]:checked`);
+        const feedbackElement = document.getElementById(`${containerId}_feedback${questionIndex}`);
+
+        if (selectedOption) {
+            const answer = selectedOption.value;
+            if (answer === questions[questionIndex].correctAnswer) {
+                feedbackElement.textContent = 'Your answer is correct!';
+                feedbackElement.className = 'feedback correct';
+            } else {
+                feedbackElement.textContent = 'Your answer is incorrect.';
+                feedbackElement.className = 'feedback incorrect';
+            }
+        } else {
+            feedbackElement.textContent = '';
+        }
+    }
+
+    // Parse and display the first set of questions
+    const questionsset23 = parseCSV(csvDataset23);
+    generateQuestionHTML(questionsset23, 'question-container-set23');
+
+    // Attach event listeners to all radio buttons for the first set of questions
+    questionsset23.forEach((_, questionIndex) => {
+        document.querySelectorAll(`#question-container-set23 input[name="question${questionIndex}"]`).forEach(input => {
+            input.addEventListener('change', () => checkAnswer(questionIndex, 'question-container-set23', questionsset23));
+        });
+    });
+
+    // Toggle visibility of the first set of questions
+    const revealButtonset23 = document.getElementById('reveal-button-set23');
+    const questionContainerset23 = document.getElementById('question-container-set23');
+
+    revealButtonset23.addEventListener('click', () => {
+        if (questionContainerset23.style.display === 'none' || questionContainerset23.style.display === '') {
+            questionContainerset23.style.display = 'block';
+            revealButtonset23.textContent = 'Hide MCQs Set 1';
+        } else {
+            questionContainerset23.style.display = 'none';
+            revealButtonset23.textContent = 'Show MCQs Set 1';
+        }
+    });
+
+    // Ensure questions are hidden by default
+    questionContainerset23.style.display = 'none';
+</script>
+<p></p>
+</div>
+</div>
+<div id="continuous-random-variables" class="section level2 hasAnchor">
+<h2>8.5. Continuous random variables<a href="lecture-8-sample-population-random-variable-and-probability.html#continuous-random-variables" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Recalling the example of SALARY in Section 8.3, we describe a continuous random variable (RV) through (1) possible values it may
+assume, and (2) its density function. The density function is the counterpart of
+histogram, Specifically, the area over an interval under the density function
+presenting the probability for the RV to assume values within this interval.</p>
+<div id="uniformly-distributed-random-variables" class="section level3 hasAnchor">
+<h3>8.5.1. Uniformly distributed random variables<a href="lecture-8-sample-population-random-variable-and-probability.html#uniformly-distributed-random-variables" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Example 4</strong> (uniform distribution)</p>
+<p><span class="math inline">\(X\sim\text{unif}(a,b)\)</span> is a continuous random variable that is
+uniformly distributed over the interval [a,b]. This random variable is
+often used to present our “No Knowledge” on the possible outcome within
+an interval. The wider the interval the less knowledge we have on the
+outcome. The narrow the interval, the more precise we know about the
+possible outcomes.</p>
+<p>The density function is
+<span class="math inline">\(f(x) = \frac{1}{b - a}\ \ \ \ for\ \ \ \ \ \ a \leq x \leq b,\ \ \ \ \ and\ \ \ f(x) = 0,\ \ \ otherwise\)</span>.</p>
+<p><img src="vertopal_lecturet222/media/image16.png" style="width:1.54478in;height:1.10306in" /></p>
+<p>What is the probability for the RV X to assume the value within the
+interval of [a, (a+b)/2]?</p>
+<p><span class="math display">\[P\left( a \leq X \leq \frac{a + b}{2} \right) = \frac{1}{b - a}\left( \frac{a + b}{2} - a \right) = \frac{1}{2}\]</span></p>
+<p>The calculation above is based on the fact that the probability is the
+area under the density function. <span class="math inline">\(\frac{1}{b - a}\)</span> is the height, and
+<span class="math inline">\((\frac{a + b}{2} - a)\)</span> is the width.</p>
+<p>Depending on the density function, this integral is often a very difficult task. The uniform distribution is really an exceptionally simple case.</p>
+</div>
+<div id="normally-distributed-random-variables" class="section level3 hasAnchor">
+<h3>8.5.2. Normally distributed random variables<a href="lecture-8-sample-population-random-variable-and-probability.html#normally-distributed-random-variables" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Formally for a continuous random variable X with density function f(x) the probability for X to assume value within the interval of (a,b) can be calculated:
+<span class="math display">\[P(a \le X \le b) = \int_a^bf(x)dx\]</span></p>
+<p>For normal random variable with <span class="math inline">\(X\sim N(\mu,\sigma^2)\)</span>,
+<span class="math display">\[\small
+P(a \le X \le b) = \int_a^b\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}-\int_{-\infty}^b\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}-\int_{-\infty}^a\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}=P(X\le b)-P(X\le a)
+\]</span>
+By the method of change variables, we make the substitute <span class="math inline">\(z=\frac{x-\mu}{\sigma}\)</span>, it follows</p>
+<p><span class="math display">\[\small
+\int_a^b\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}=\int_{-\infty}^{\frac{b-\mu}{\sigma}}\frac{1}{\sqrt{2\pi}}e^{-\frac{z^2}{2}}dz-\int_{-\infty}^{\frac{a-\mu}{\sigma}}\frac{1}{\sqrt{2\pi}}e^{-\frac{z^2}{2}}dz=P\Big(Z\le\frac{b-\mu}{\sigma}\Big)-P\Big(Z\le\frac{a-\mu}{\sigma}\Big)
+\]</span>
+The equation above tells us probability calculation for any normal random variables is reduced to the probability calculation of a standard normal random variable. The later is however still a difficult task. In this unit we do not actually calculate the probability but find the probability which has been calculated and tabulated by others in probability tables, i.e., we
+look up the probability in probability tables or use EXCEL.</p>
+<p>Conventionally a standard normal random variable is denoted by Z. We have <span class="math inline">\(Z \sim N(0,1)\)</span>.</p>
+<p>Calculation of probability for standard normal random variable using standard normal table:</p>
+<p><span class="math inline">\(P(Z \leq 0.0)\)</span></p>
+<p><span class="math inline">\(P(Z \leq 1)\)</span></p>
+<p><span class="math inline">\(P(Z \leq 1.12)\)</span></p>
+<p><span class="math display">\[P(X \leq 0.21)\]</span></p>
+<p><span class="math display">\[P(Z \leq 1.72)\]</span></p>
+<p><img src="vertopal_lecturet222/media/normaltable.jpg" /></p>
+<p>For <span class="math inline">\(X\ \sim N(52,\ 9.1)\)</span></p>
+<p><span class="math inline">\(P(X \leq 30)\)</span> : norm.dist(30,52,9.1,TRUE)</p>
+<p><span class="math inline">\(P(Z \leq 40)\)</span> : norm.dist(40,52,9.1,TRUE)</p>
+<p><span class="math inline">\(P(Z \leq 50)\)</span> : norm.dist(50,52,9.1,TRUE)</p>
+<p><span class="math inline">\(P(40 &lt; X \leq 60)\)</span>: norm.dist(60,51,9.1,TRUE)- norm.dist(40,51,9.1,TRUE)</p>
+<p><span class="math inline">\(P(X &gt; 60)\)</span> : 1- norm.dist(60,52,9.1,TRUE)</p>
+<p><strong>Using the standard normal table for non-standard normal random
+variables:</strong> <span class="math inline">\(X\ \sim N(52,\ 9.1)\)</span></p>
+<p><span class="math display">\[P(X &lt; 30) = P(X - 52 &lt; 30 - 52) = P\left( \frac{X - 52}{9.1} &lt; \frac{30 - 52}{9.1} \right) = P(Z &lt; - 2.417) = 0.0078\]</span></p>
+<p><span class="math display">\[P(X &lt; 40) = P(X - 52 &lt; 40 - 52) = P\left( \frac{X - 52}{9.1} &lt; \frac{40 - 52}{9.1} \right) = P(Z &lt; - 1.318) = 0.0934\]</span></p>
+<p><span class="math display">\[P(X &lt; 50) = P(X - 52 &lt; 50 - 52) = P\left( \frac{X - 52}{9.1} &lt; \frac{50 - 52}{9.1} \right) = P(Z &lt; - 0.219) = 0.4129\]</span></p>
+<p><span class="math inline">\(P(X &gt; 60) = 1 - P(X - 52 &lt; 60 - 52) = 1 - P\left( \frac{X - 52}{9.1} &lt; \frac{60 - 52}{9.1} \right) = 1 - P(Z &lt; 0.879) =\)</span><!-- -->0.1894</p>
+</div>
+</div>
+<div id="numerical-measures-of-random-variables" class="section level2 hasAnchor">
+<h2>5.6 Numerical measures of random variables<a href="lecture-8-sample-population-random-variable-and-probability.html#numerical-measures-of-random-variables" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Similar to describing statistical variables, we can use numerical measures to describe random variables. The two most commonly used numerical measures are the <strong>expected value</strong> and <strong>variance</strong>.</p>
+<div id="expected-value-and-variance" class="section level3 hasAnchor">
+<h3>5.6.1 Expected value and Variance<a href="lecture-8-sample-population-random-variable-and-probability.html#expected-value-and-variance" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>For a discrete random variable X with the probability table:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">X</th>
+<th align="left"><span class="math display">\[x_{1}\]</span></th>
+<th align="left"><span class="math display">\[x_{2}\]</span></th>
+<th align="left"><span class="math display">\[x_{3}\]</span></th>
+<th align="left">……</th>
+<th align="center"><span class="math inline">\(x_{N}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">P</td>
+<td align="left"><span class="math display">\[p_{1}\]</span></td>
+<td align="left"><span class="math display">\[p_{2}\]</span></td>
+<td align="left"><span class="math display">\[p_{3}\]</span></td>
+<td align="left">……</td>
+<td align="center"><span class="math inline">\(p_{N}\)</span></td>
+</tr>
+</tbody>
+</table>
+<p><strong>The expected value of X</strong> denoted by <span class="math inline">\(E(X)\)</span> is the counter part of sample average.</p>
+<p><span class="math display">\[E(X) = \sum_{i = 1}^{N}x_{i}p_{i}\]</span>
+<strong>The variance of X</strong> denoted by <span class="math inline">\(Var(X)\)</span> is the counter part of sample variance.</p>
+<p><span class="math display">\[Var(X) = \sum_{i = 1}^N\Big(x_i - E(X)\Big)^{2}p_i\]</span></p>
+<p>For continuous random variable X with a density function <span class="math inline">\(f(x)\)</span></p>
+<p><span class="math display">\[E(X) =  \int_{-\infty}^\infty xf(x)dx = \lim_{N \to \infty } \sum_{i = -N}^{N}x_{i}f(x_i)\Delta x = \lim_{N \to \infty } \sum_{i = -N}^{N}x_{i}p_i \]</span>
+<span class="math display">\[Var(X) =  \int_{-\infty}^\infty \Big(x-E(X)\Big)^2f(x)dx = \lim_{N \to \infty } \sum_{i = -N}^{N}\Big(x_{i}-E(X)\Big)^2f(x_i)\Delta x = \lim_{N \to \infty } \sum_{i = -N}^{N}\Big(x_i - E(X)\Big)^{2}p_i \]</span>
+In statistics, we often prefer to use the square root of the variance as the measure of variation.</p>
+<p>Because the unit of variance is the squared unit of the random variable, which can be difficult to comprehend, we often use the standard deviation instead of the variance.</p>
+<p><strong>Standard deviation</strong> of a random variable:
+<span class="math inline">\(SD(X) = \sigma_{X} = \sqrt{Var(X)}\)</span>.</p>
+<p><strong>Example 1 (Binomial random variable)</strong></p>
+<p>For binomial random variable <span class="math inline">\(X\sim B(n,p)\)</span>, we have</p>
+<p><span class="math inline">\(E(X) = \ np\)</span></p>
+<p><span class="math inline">\(Var(X) = np(1 - p)\)</span></p>
+<p><span class="math inline">\(SD(X) = \sqrt{np(1 - p)}\)</span></p>
+<p><strong>Example 2 (Normal random variables)</strong></p>
+<p>For a normal random variable <span class="math inline">\(X\sim N(\mu,\sigma^{2})\)</span>,</p>
+<p><span class="math inline">\(E(X) = \mu\)</span></p>
+<p><span class="math inline">\(Var(X) = \sigma^{2}\)</span></p>
+<p><span class="math inline">\(SD(X) = \sigma\)</span>.</p>
+<p>Because the normal distribution depends only on two parameters <span class="math inline">\((\mu,\sigma)\)</span>—the mean and the standard deviation—the distribution function is fully specified by these parameters.</p>
+<p>One application of these numerical measures is the <strong>68-95-99.7 rule</strong>. In fact, this rule holds exactly for normal random variables. Since we use the normal distribution to approximate the distribution of many statistical data sets, this is known as the <strong>empirical rule</strong>.</p>
+<p>Another application is that we can use these numerical measures to transform a normal random variable into a standard normal random variable. As a result, we can use the standard normal probability table to calculate the probabilities for all normal random variables.</p>
+<p>Assume <span class="math inline">\(X\sim N(\mu,\sigma^{2})\)</span>. Because <span class="math inline">\(X\)</span> is a random variable,
+<span class="math inline">\(aX + b\)</span> is also a random variable. The expected value and the variable
+of <span class="math inline">\(aX + b\)</span> can be calculated as follows.</p>
+</div>
+<div id="rules-of-expected-valuevariance-and-covariace" class="section level3 hasAnchor">
+<h3>Rules of expected value,variance and covariace<a href="lecture-8-sample-population-random-variable-and-probability.html#rules-of-expected-valuevariance-and-covariace" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><span class="math inline">\(E(aX + b) = \sum_{i = 1}^N\left( ax_i + b \right)p_i = \sum_{i = 1}^Nax_ip_i + \sum_{i = 1}^Nbp_i = a\sum_{i = 1}^Nx_ip_i + b\sum_{i = 1}^Np_i = aE(X) + b\)</span></p>
+<p><span class="math inline">\(Var(aX + b) =\sum_{i = 1}^N{\left( ax_i + b - E(aX+b) \right)^2}p_i = \sum_{i = 1}^N{{a^{2}(x}_{i} - E(X))^{2}}p_i = a^{2}Var(X)\)</span></p>
+<p>So we have two useful formulas that also hold for continuous RVs:</p>
+<p><span class="math inline">\(E(aX + b) = aE(X) + b\)</span></p>
+<p><span class="math inline">\(\text{Var}(aX + b) = a^{2}Var(X)\)</span></p>
+<p>Applying the formulas above to <span class="math inline">\(Z = \frac{X - \mu}{\sigma}\)</span>. We have:</p>
+<p><span class="math inline">\(E(Z) = E\left( \frac{X - \mu}{\sigma} \right) = \frac{1}{\sigma}E(X - \mu) = 0\)</span></p>
+<p><span class="math inline">\(\text{Var}(Z) = Var\left( \frac{X - \mu}{\sigma} \right) = \frac{1}{\sigma^{2}}\text{Var}(X) = 1\)</span>.</p>
+<p><span class="math inline">\(Z = \frac{X - \mu}{\sigma}\)</span> has expected value 0 and variance 1. It is
+standard normal.</p>
+<p>For two random variables we have population covariance and population correlation coefficient:</p>
+<p><strong>Covariance</strong> of a random variable:</p>
+<p><span class="math inline">\(Cov(X,Y) = \sum_{j = 1}^{M}{\sum_{i = 1}^{N}(x_{i}} - E(X))(y_{j} - E(Y))P(X = x_{i},Y = y_{j})\)</span></p>
+<p>For independent random variables we have <span class="math inline">\(P(X = x_{i},Y = y_{j}) = P(X = x_{i})P(Y = y_{j})\)</span>. It follows then the covariance of independent RVs is zero.</p>
+<p><span class="math inline">\(Cov(X,Y) = \sum_{j = 1}^{M}{\sum_{i = 1}^{N}{(x_{i}} - E(X))(y_{j} - E(Y))P(X = x_{i})P(Y = y_{j})} = 0\)</span></p>
+<p><strong>Correlation coefficient</strong> of two random variables is defined as follows:</p>
+<p><span class="math inline">\(\rho_{X,Y} = \frac{Cov(X,Y)}{\sqrt{\text{Var}(X)Var(Y)}}\)</span></p>
+<p><strong>Expected value and Variance of sum of random variable</strong></p>
+<p><span class="math inline">\(E(X + Y) = E(X) + E(Y)\)</span></p>
+<p>In text the formula above states the expected value of a sum of random variables is the sum the expected values of each of the random variables.</p>
+<p><span class="math inline">\(Var(X + Y) = Var(X) + Var(Y) + 2Cov(X,Y)\)</span></p>
+<p>For independent random variables <span class="math inline">\(Cov(X,Y)=0\)</span>. This implies that the variance of the sum of these variables is the sum of their variances.</p>
+<p><span class="math inline">\(Var(X + Y) = Var(X) + Var(Y)\)</span></p>
+<p></p>
+<!-- HTML for the first set of MCQs -->
+<button id="reveal-button-set24">Show MCQs Set 24</button>
+
+<div id="question-container-set24"></div>
+
+<script>
+    // Initial CSV data (3 questions)
+    const csvDataset24 = `
+What is the expected value of a random variable X denoted by?
+E(X)
+Var(X)
+P(X)
+Z(X)
+E(X)
+What are the two most often used numerical measures to describe random variables?
+Mean and Median
+Expected value and Variance
+Mode and Range
+Standard deviation and Interquartile range
+Expected value and Variance
+X ~ N(52,9.1^2). What is the probability P(X < 30) calculated as?
+P(Z < -0.219)
+P(Z < -1.318)
+P(Z < -2.417)
+1 - P(Z < 0.879)
+P(Z < -2.417)
+What is the variance of a random variable X used to measure?
+The spread of the random variable
+The central tendency of the random variable
+The mode of the random variable
+The median of the random variable
+The spread of the random variable
+What does the 68, 95, and 99.7 rule apply to?
+All types of distributions
+Only skewed distributions
+Normal random variables
+Uniform distributions
+Normal random variables
+What is the result of applying the formula Z = (X -mu)/sigma to a normal variable?
+A variable with mean mu and variance sigma^2.
+A variable with mean 0 and variance 1
+A variable with mean 1 and variance 0
+A variable with mean sigma and variance mu^2.
+A variable with mean 0 and variance 1
+    `;
+
+    // Function to parse CSV data into questions
+    function parseCSV(data) {
+        const lines = data.trim().split('\n').map(line => line.trim());
+        const questions = [];
+
+        for (let i = 0; i < lines.length; i += 6) {
+            if (i + 5 < lines.length) {
+                questions.push({
+                    question: lines[i],
+                    options: lines.slice(i + 1, i + 5),
+                    correctAnswer: lines[i + 5]
+                });
+            }
+        }
+
+        return questions;
+    }
+
+    // Function to generate HTML for questions
+    function generateQuestionHTML(questions, containerId) {
+        let contentHTML = '';
+        questions.forEach((q, questionIndex) => {
+            contentHTML += `<div class="question-block">`;
+            contentHTML += `<p><strong>Question ${questionIndex + 1}:</strong> ${q.question}</p>`;
+            q.options.forEach((option, index) => {
+                contentHTML += `
+                    <div>
+                        <input type="radio" name="question${questionIndex}" id="${containerId}_option${questionIndex}_${index}" value="${option}" aria-label="${option}">
+                        <label for="${containerId}_option${questionIndex}_${index}">${option}</label>
+                    </div>
+                `;
+            });
+            contentHTML += `<div id="${containerId}_feedback${questionIndex}" class="feedback"></div>`;
+            contentHTML += `</div>`;
+        });
+
+        document.getElementById(containerId).innerHTML = contentHTML;
+    }
+
+    // Function to check the selected answer
+    function checkAnswer(questionIndex, containerId, questions) {
+        const selectedOption = document.querySelector(`input[name="question${questionIndex}"]:checked`);
+        const feedbackElement = document.getElementById(`${containerId}_feedback${questionIndex}`);
+
+        if (selectedOption) {
+            const answer = selectedOption.value;
+            if (answer === questions[questionIndex].correctAnswer) {
+                feedbackElement.textContent = 'Your answer is correct!';
+                feedbackElement.className = 'feedback correct';
+            } else {
+                feedbackElement.textContent = 'Your answer is incorrect.';
+                feedbackElement.className = 'feedback incorrect';
+            }
+        } else {
+            feedbackElement.textContent = '';
+        }
+    }
+
+    // Parse and display the first set of questions
+    const questionsset24 = parseCSV(csvDataset24);
+    generateQuestionHTML(questionsset24, 'question-container-set24');
+
+    // Attach event listeners to all radio buttons for the first set of questions
+    questionsset24.forEach((_, questionIndex) => {
+        document.querySelectorAll(`#question-container-set24 input[name="question${questionIndex}"]`).forEach(input => {
+            input.addEventListener('change', () => checkAnswer(questionIndex, 'question-container-set24', questionsset24));
+        });
+    });
+
+    // Toggle visibility of the first set of questions
+    const revealButtonset24 = document.getElementById('reveal-button-set24');
+    const questionContainerset24 = document.getElementById('question-container-set24');
+
+    revealButtonset24.addEventListener('click', () => {
+        if (questionContainerset24.style.display === 'none' || questionContainerset24.style.display === '') {
+            questionContainerset24.style.display = 'block';
+            revealButtonset24.textContent = 'Hide MCQs Set 1';
+        } else {
+            questionContainerset24.style.display = 'none';
+            revealButtonset24.textContent = 'Show MCQs Set 1';
+        }
+    });
+
+    // Ensure questions are hidden by default
+    questionContainerset24.style.display = 'none';
+</script>
+<p></p>
+</div>
+</div>
+<div id="review-questions-1" class="section level2 hasAnchor">
+<h2>Review questions<a href="lecture-8-sample-population-random-variable-and-probability.html#review-questions-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ol style="list-style-type: decimal">
+<li><p>How do we describe a population of interest?</p></li>
+<li><p>We use tables, diagrams, numerical measures to describe statistical variable. What are the three counter parts in describing a random variable?</p></li>
+<li><p>What is the difference between a random variable and a statistical
+variable</p></li>
+<li><p>What is a simple random sample?</p></li>
+<li><p>Why is the principle of simple random sample useful?</p></li>
+<li><p>What is distribution of sample average?</p></li>
+<li><p>What does the central limit theorem say?</p></li>
+</ol>
+<iframe src="https://www.youtube.com/watch?v=8Sl28fkrozE&amp;t=253s" frameborder="0" width="850" height="650">
+</iframe>
+
+</div>
+</div>
+<div class = rmdtranslate style="height: 100px;" style="width: 700px;">
+<div id="google_translate_element"></div>
+<script>
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+            {pageLanguage: 'en', gaId: 'UA-88838732-1'},
+            'google_translate_element'
+        );
+
+        /*
+            To remove the "powered by google",
+            uncomment one of the following code blocks.
+            NB: This breaks Google's Attribution Requirements:
+            https://developers.google.com/translate/v2/attribution#attribution-and-logos
+        */
+
+        // Native (but only works in browsers that support query selector)
+        //if(typeof(document.querySelector) == 'function') {
+        //    document.querySelector('.goog-logo-link').setAttribute('style', 'display: none');
+        //    document.querySelector('.goog-te-gadget').setAttribute('style', 'font-size: 0');
+        //}
+
+        // If you have jQuery - works cross-browser - uncomment this
+        // jQuery('.goog-logo-link').css('display', 'none');
+        // jQuery('.goog-te-gadget').css('font-size', '0');
+    }
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</div>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Website with Chatbot Button</title>
+<style>
+  /* Style your chatbot button */
+  #chatbot-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1001; /* Ensure the chatbot button is above the interactive content */
+  }
+
+  /* Style the interactive content */
+  #interactive-content {
+    display: none;
+    position: absolute;
+    bottom: 70px;
+    right: 20px;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-width: 0.5px; /* Adjust the border width as needed */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+
+  /* Style the iframe with specific width and height */
+  #interactive-frame {
+    width: 800px; /* Set the width you prefer */
+    height: 800px; /* Set the height you prefer */
+    border: none;
+  }
+
+  /* Style the full-screen button */
+  #fullscreen-button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+  <!-- Chatbot button -->
+  <button id="chatbot-button">Peer AI</button>
+
+  <!-- Interactive content -->
+  <div id="interactive-content">
+    <!-- Your interactive website content goes here -->
+    <iframe id="interactive-frame" src="https://chatgptfree.ai/"></iframe>
+    <button id="fullscreen-button">Toggle Full Screen</button>
+  </div>
+
+  <script>
+    // Get references to elements
+    const chatbotButton = document.getElementById('chatbot-button');
+    const interactiveContent = document.getElementById('interactive-content');
+    const interactiveFrame = document.getElementById('interactive-frame');
+    const fullscreenButton = document.getElementById('fullscreen-button');
+
+    // Toggle the visibility of the interactive content and full-screen button
+    chatbotButton.addEventListener('click', () => {
+      if (interactiveContent.style.display === 'none') {
+        interactiveContent.style.display = 'block';
+        fullscreenButton.style.display = 'block';
+      } else {
+        interactiveContent.style.display = 'none';
+        fullscreenButton.style.display = 'none';
+      }
+    });
+
+    // Toggle full-screen mode for the interactive frame
+    fullscreenButton.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        interactiveFrame.requestFullscreen().catch(err => {
+          console.error('Error attempting to enable full-screen:', err);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    });
+  </script>
+</body>
+</html>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="lecture-7-introduction-to-statistics.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="lecture-9-simple-random-sample-and-paramter-estimation.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/benmarwick/bookdown-ort/edit/master/08lecture8.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
