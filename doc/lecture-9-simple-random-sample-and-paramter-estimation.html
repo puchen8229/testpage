@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Lecture 9 Simple Random Sample and Paramter Estimation | Business Statistics</title>
+  <meta name="description" content="These lecture notes adopt the template of ‘a minimal example of using the bookdown package to write a book’ by Yihui Xie. The output format for this example is bookdown::gitbook." />
+  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Lecture 9 Simple Random Sample and Paramter Estimation | Business Statistics" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="These lecture notes adopt the template of ‘a minimal example of using the bookdown package to write a book’ by Yihui Xie. The output format for this example is bookdown::gitbook." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Lecture 9 Simple Random Sample and Paramter Estimation | Business Statistics" />
+  
+  <meta name="twitter:description" content="These lecture notes adopt the template of ‘a minimal example of using the bookdown package to write a book’ by Yihui Xie. The output format for this example is bookdown::gitbook." />
+  
+
+<meta name="author" content="Pu Chen" />
+
+
+<meta name="date" content="2024-09-02" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="lecture-8-sample-population-random-variable-and-probability.html"/>
+<link rel="next" href="lecture-10-statistical-testing.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script async defer src="https://hypothes.is/embed.js"></script>
+
+
+
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Proface</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html"><i class="fa fa-check"></i>Lecture 7 Introduction to Statistics</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#sources-of-data"><i class="fa fa-check"></i>7.1.1 Sources of data</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#components-of-a-data-set"><i class="fa fa-check"></i>7.1.2 Components of a data set</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#variable-types-and-scales-of-measurement"><i class="fa fa-check"></i>7.1.3 Variable types and scales of measurement</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#statistical-way-of-study"><i class="fa fa-check"></i>7.1.4 Statistical Way of Study</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#characteristics-of-a-statiatical-variable"><i class="fa fa-check"></i>7.1.5 Characteristics of a statiatical variable</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#descriptive-statistics"><i class="fa fa-check"></i>7.2 Descriptive Statistics</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#frequency-tables"><i class="fa fa-check"></i>7.2.1 Frequency tables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#diagrams"><i class="fa fa-check"></i>7.2.2 Diagrams</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#column-charts-bar-charts-and-pie-charts"><i class="fa fa-check"></i>7.2.2.1 Column charts, bar charts, and pie charts</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#histogram"><i class="fa fa-check"></i>7.2.2.2 Histogram</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#numerical-measures"><i class="fa fa-check"></i>7.2.3 Numerical measures</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#measures-of-central-location"><i class="fa fa-check"></i>7.2.3.1 Measures of central location</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#measures-of-variation-dispersion"><i class="fa fa-check"></i>7.2.3.2 Measures of variation (dispersion):</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#rules-of-68-95-and-99.7"><i class="fa fa-check"></i>7.2.4 Rules of 68, 95, and 99.7</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#descriptive-statistis-for-two-statistical-variables"><i class="fa fa-check"></i>7.2.5 Descriptive statistis for two statistical variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-categotical-variables"><i class="fa fa-check"></i>7.2.5.1 Two categotical variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-way-tables-for-two-categorical-variables"><i class="fa fa-check"></i>Two way tables for two categorical variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#clustered-column-charts"><i class="fa fa-check"></i>Clustered column charts</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#one-categorical-variable-one-numerical-variable"><i class="fa fa-check"></i>7.2.5.2 One categorical variable one numerical variable</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-way-table-for-categorical-and-numerical-variables"><i class="fa fa-check"></i>Two-way table for categorical and numerical variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#comparative-box-plots"><i class="fa fa-check"></i>Comparative box plots</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-numerical-variables"><i class="fa fa-check"></i>7.5.2.3 Two numerical variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-way-frequency-table"><i class="fa fa-check"></i>Two-way frequency table</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#covariance-and-correlation-coefficient"><i class="fa fa-check"></i>Covariance and correlation coefficient</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#scatter-plot"><i class="fa fa-check"></i>Scatter plot</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#correlation-coefficient-and-scatter-plot"><i class="fa fa-check"></i>Correlation coefficient and scatter plot</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#overview-of-types-of-variables-and-the-used-descriptive-tools"><i class="fa fa-check"></i>Overview of types of variables and the used descriptive tools</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#examples-of-applications"><i class="fa fa-check"></i>7.2.6 Examples of applications:</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#summary"><i class="fa fa-check"></i>Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#review-questions"><i class="fa fa-check"></i>Review questions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html"><i class="fa fa-check"></i>Lecture 8 Sample, Population, Random Variable and Probability</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#principle-of-simple-random-sample"><i class="fa fa-check"></i>8.1 Principle of simple random sample</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#description-of-a-population-by-random-variables"><i class="fa fa-check"></i>8.2 Description of a Population by random variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#discrete-random-variables"><i class="fa fa-check"></i>8.3 Discrete random variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#relation-between-random-variables"><i class="fa fa-check"></i>8.4. Relation between random variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#joint-probability"><i class="fa fa-check"></i>8.4.1 Joint probability</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#marginal-probability"><i class="fa fa-check"></i>8.4.2 Marginal Probability</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#conditional-probability"><i class="fa fa-check"></i>8.4.3 Conditional Probability</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#independence"><i class="fa fa-check"></i>8.4.4 Independence</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#continuous-random-variables"><i class="fa fa-check"></i>8.5. Continuous random variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#uniformly-distributed-random-variables"><i class="fa fa-check"></i>8.5.1. Uniformly distributed random variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#normally-distributed-random-variables"><i class="fa fa-check"></i>8.5.2. Normally distributed random variables</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#numerical-measures-of-random-variables"><i class="fa fa-check"></i>5.6 Numerical measures of random variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#expected-value-and-variance"><i class="fa fa-check"></i>5.6.1 Expected value and Variance</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#rules-of-expected-valuevariance-and-covariace"><i class="fa fa-check"></i>Rules of expected value,variance and covariace</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#review-questions-1"><i class="fa fa-check"></i>Review questions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html"><i class="fa fa-check"></i>Lecture 9 Simple Random Sample and Paramter Estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#simple-random-sample"><i class="fa fa-check"></i>9.1 Simple random sample</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#law-of-large-numbers-lln"><i class="fa fa-check"></i>9.1.1 Law of large numbers (LLN)</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#central-limit-theorem-clt"><i class="fa fa-check"></i>9.1.2 Central limit theorem (CLT)</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#parameter-estimation"><i class="fa fa-check"></i>9.2 Parameter estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#point-estimation"><i class="fa fa-check"></i>9.2.1 Point estimation</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#interval-estimation"><i class="fa fa-check"></i>9.2.2 Interval estimation</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#interpretation-of-confidence-interval"><i class="fa fa-check"></i>6.2.3 Interpretation of confidence interval</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#quality-of-an-estimator"><i class="fa fa-check"></i>9.3 Quality of an estimator</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#consistence"><i class="fa fa-check"></i>9.3.1 Consistence</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#unbiasedness"><i class="fa fa-check"></i>9.3.2 Unbiasedness</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#chapter-summary"><i class="fa fa-check"></i>Chapter Summary</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#review-questions-2"><i class="fa fa-check"></i>Review questions:</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html"><i class="fa fa-check"></i>Lecture 10 Statistical Testing</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#test-as-searching-for-indication-of-updating-the-population-knowledge"><i class="fa fa-check"></i>10.1 Test as searching for indication of updating the population knowledge</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#formal-procedure-of-a-statistical-test"><i class="fa fa-check"></i>10.2 Formal procedure of a statistical test</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#tests-of-population-means-proportion"><i class="fa fa-check"></i>10.3 Tests of population means (proportion)</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#compare-two-population-means"><i class="fa fa-check"></i>10.4 Compare two population means</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#from-t-test-to-chi2-test"><i class="fa fa-check"></i>10.5 From t-test to <span class="math inline">\(\chi^2\)</span> test</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#test-of-multinomial-proportions"><i class="fa fa-check"></i>10.6 Test of multinomial proportions**</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#test-of-independence"><i class="fa fa-check"></i>10.7 Test of independence</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#test-of-normality"><i class="fa fa-check"></i>10.8 Test of normality</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#anova"><i class="fa fa-check"></i>10.9 ANOVA</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#one-way-anova"><i class="fa fa-check"></i>10.9.1 One-way ANOVA</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#two-way-anova"><i class="fa fa-check"></i>10.9.2 Two-way ANOVA</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#review-questions-3"><i class="fa fa-check"></i>Review questions</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html"><i class="fa fa-check"></i>Lecture 11 Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#motivation-of-simple-regression"><i class="fa fa-check"></i>11.1 Motivation of Simple Regression</a></li>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#least-squares-method"><i class="fa fa-check"></i>6.2 Least squares method</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#least-square-methd-and-regression-line"><i class="fa fa-check"></i>Least Square Methd and Regression Line</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#statistics-in-a-regression-model"><i class="fa fa-check"></i>11.2 Statistics in a regression model</a></li>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#interpretation-of-the-excel-regression-output"><i class="fa fa-check"></i>11.3 Interpretation of the Excel regression output</a></li>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#multiple-regression"><i class="fa fa-check"></i>11.4 Multiple Regression</a></li>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#multivariate-regression"><i class="fa fa-check"></i>11.5 Multivariate Regression</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Business Statistics</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="lecture-9-simple-random-sample-and-paramter-estimation" class="section level1 hasAnchor">
+<h1>Lecture 9 Simple Random Sample and Paramter Estimation<a href="lecture-9-simple-random-sample-and-paramter-estimation.html#lecture-9-simple-random-sample-and-paramter-estimation" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="simple-random-sample" class="section level2 hasAnchor">
+<h2>9.1 Simple random sample<a href="lecture-9-simple-random-sample-and-paramter-estimation.html#simple-random-sample" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Following the principle of simple random sample, each sample point is randomly and independently selected from the same population. Therefore all sample points are independent and identically distributed random variables, often denoted as i.i.d. random variables. The mean of all sample points is the mean of i.i.d. random variables. This mean is itself also a random variable. We want to calculate the the expected value and variance of the sample mean. Let <span class="math inline">\(X_1, X_2,...,X_N\)</span> be the i.i.d. sample points with <span class="math inline">\(E(X_i)=\mu\)</span> and <span class="math inline">\(Var(X_i)=\sigma^2\)</span>, the sample mean is given by <span class="math inline">\(\overline{X} = \frac{1}{N}\sum_{i=1}^NX_i\)</span>.</p>
+<p><strong>Expected value of sample mean</strong></p>
+<p><span class="math display">\[E(\overline{X})=E(\frac{1}{N}\sum_{s=1}^NX_i) = \frac{1}{N}\sum_{i=1}^NE(X_i) = \frac{1}{N}\sum_{i=1}^N\mu = \mu\]</span>
+<strong>Variance of sample mean</strong></p>
+<p><span class="math display">\[Var(\overline{X})=Var\Big(\frac{1}{N}\sum_{s=1}^NX_i\Big) = \frac{1}{N^2}Var\Big(\sum_{i=1}^NX_i\Big) = \frac{1}{N^2}\sum_{i=1}^NVar(X_i) = \frac{\sigma^2}{N}\]</span></p>
+<div id="law-of-large-numbers-lln" class="section level3 hasAnchor">
+<h3>9.1.1 Law of large numbers (LLN)<a href="lecture-9-simple-random-sample-and-paramter-estimation.html#law-of-large-numbers-lln" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The sample mean <span class="math inline">\(\overline{X}\)</span> has an interesting property: its expected value is <span class="math inline">\(\mu\)</span> and its variance is <span class="math inline">\(\frac{\sigma^2}{N}\)</span>, which decreases as <span class="math inline">\(N\)</span> increases. As <span class="math inline">\(N \to \infty\)</span>, the variance converges to 0, which implies all possible values of <span class="math inline">\(\overline{X}\)</span> will become increasingly concentrated around the point <span class="math inline">\(\mu\)</span>. This phenomenon, where the sample mean appraoches the population mean as the sample size increases, is known as the law of large numbers (LLN). It can be denoted as:
+<span class="math display">\[\overline{X} \overset{p}{\longrightarrow}\mu\]</span>
+The law of large numbers (LLN) indicates that the sample average is a good estimator of the population mean. Although the sample average is still a realisation of the random variable <span class="math inline">\(\overline{X}\)</span>, the LLN tells us this realisation should be very close to <span class="math inline">\(\mu\)</span>. Moreover, as the sample size increases the sample average will get closer to <span class="math inline">\(\mu\)</span>.</p>
+</div>
+<div id="central-limit-theorem-clt" class="section level3 hasAnchor">
+<h3>9.1.2 Central limit theorem (CLT)<a href="lecture-9-simple-random-sample-and-paramter-estimation.html#central-limit-theorem-clt" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The law fo large numbers (LLN) tells us the convergence of the sample average <span class="math inline">\(\overline{X}\)</span> to the population mean <span class="math inline">\(\mu\)</span>. In practice, however, we often want to assess the uncertainty of <span class="math inline">\(\overline{X}\)</span> as an estimate of <span class="math inline">\(\mu\)</span>. If the population is normal i.e. <span class="math inline">\(X\sim N(\mu,\sigma^2)\)</span>, it can be show the sample average is also normal. Since a normal distribution is fully determined by its expected value and variance. Hence we have:
+<span class="math display">\[\overline{X} \sim N(\mu,\frac{\sigma^2}{N})\]</span>
+If the population is not normally distributed, the distribution of the sample average <span class="math inline">\(\overline{X}\)</span> will still approach a normal distribution under very general conditions. According to the Central Limit Theorem (CLT), regardless of the shape of the population distribution, the distribution of the sample average <span class="math inline">\(\overline{X}\)</span> will converge to a normal distribution as the sample size <span class="math inline">\(N\)</span> becomes large, provided certain regularity conditions are met. Specifically, the CLT states:
+<span class="math display">\[\overline{X}  \overset{d}{\longrightarrow} N(\mu,\frac{\sigma^2}{N})\]</span>
+The central limit theorem (CLT) helps us gauge the uncertainty of using <span class="math inline">\(\overline{X}\)</span> as estimate for <span class="math inline">\(\mu\)</span>.</p>
+<p>In statistics a function of sample points is called sample statistic. For example, the sample average is a sample statistic. The distribution of a sample statistic is referred to as sampling distribution. In some textbooks the distribution of <span class="math inline">\(\overline{X}\)</span> is also referred to sampling distribution.</p>
+<p></p>
+<!-- HTML for the first set of MCQs -->
+<button id="reveal-button-set53">Show MCQs Set 53</button>
+
+<div id="question-container-set53"></div>
+
+<script>
+    // Initial CSV data (3 questions)
+    const csvDataset53 = `
+What does a p-value of 0.71 indicate in hypothesis testing?
+Strong evidence against the null hypothesis
+Weak evidence against the null hypothesis
+No rejection of the null hypothesis
+Acceptance of the alternative hypothesis
+No rejection of the null hypothesis
+What does the implementation of multivariate regression involve?
+Running a single regression
+Running M times the multiple regressions
+Running a quadratic regression
+Running a linear regression
+Running M times the multiple regressions
+What is the role of the error term  u_{ij}  in the regression equation?
+It represents the dependent variable
+It accounts for the error in prediction
+It is a constant
+It is the independent variable
+It accounts for the error in prediction
+    `;
+
+    // Function to parse CSV data into questions
+    function parseCSV(data) {
+        const lines = data.trim().split('\n').map(line => line.trim());
+        const questions = [];
+
+        for (let i = 0; i < lines.length; i += 6) {
+            if (i + 5 < lines.length) {
+                questions.push({
+                    question: lines[i],
+                    options: lines.slice(i + 1, i + 5),
+                    correctAnswer: lines[i + 5]
+                });
+            }
+        }
+
+        return questions;
+    }
+
+    // Function to generate HTML for questions
+    function generateQuestionHTML(questions, containerId) {
+        let contentHTML = '';
+        questions.forEach((q, questionIndex) => {
+            contentHTML += `<div class="question-block">`;
+            contentHTML += `<p><strong>Question ${questionIndex + 1}:</strong> ${q.question}</p>`;
+            q.options.forEach((option, index) => {
+                contentHTML += `
+                    <div>
+                        <input type="radio" name="question${questionIndex}" id="${containerId}_option${questionIndex}_${index}" value="${option}" aria-label="${option}">
+                        <label for="${containerId}_option${questionIndex}_${index}">${option}</label>
+                    </div>
+                `;
+            });
+            contentHTML += `<div id="${containerId}_feedback${questionIndex}" class="feedback"></div>`;
+            contentHTML += `</div>`;
+        });
+
+        document.getElementById(containerId).innerHTML = contentHTML;
+    }
+
+    // Function to check the selected answer
+    function checkAnswer(questionIndex, containerId, questions) {
+        const selectedOption = document.querySelector(`input[name="question${questionIndex}"]:checked`);
+        const feedbackElement = document.getElementById(`${containerId}_feedback${questionIndex}`);
+
+        if (selectedOption) {
+            const answer = selectedOption.value;
+            if (answer === questions[questionIndex].correctAnswer) {
+                feedbackElement.textContent = 'Your answer is correct!';
+                feedbackElement.className = 'feedback correct';
+            } else {
+                feedbackElement.textContent = 'Your answer is incorrect.';
+                feedbackElement.className = 'feedback incorrect';
+            }
+        } else {
+            feedbackElement.textContent = '';
+        }
+    }
+
+    // Parse and display the first set of questions
+    const questionsset53 = parseCSV(csvDataset53);
+    generateQuestionHTML(questionsset53, 'question-container-set53');
+
+    // Attach event listeners to all radio buttons for the first set of questions
+    questionsset53.forEach((_, questionIndex) => {
+        document.querySelectorAll(`#question-container-set53 input[name="question${questionIndex}"]`).forEach(input => {
+            input.addEventListener('change', () => checkAnswer(questionIndex, 'question-container-set53', questionsset53));
+        });
+    });
+
+    // Toggle visibility of the first set of questions
+    const revealButtonset53 = document.getElementById('reveal-button-set53');
+    const questionContainerset53 = document.getElementById('question-container-set53');
+
+    revealButtonset53.addEventListener('click', () => {
+        if (questionContainerset53.style.display === 'none' || questionContainerset53.style.display === '') {
+            questionContainerset53.style.display = 'block';
+            revealButtonset53.textContent = 'Hide MCQs Set 1';
+        } else {
+            questionContainerset53.style.display = 'none';
+            revealButtonset53.textContent = 'Show MCQs Set 1';
+        }
+    });
+
+    // Ensure questions are hidden by default
+    questionContainerset53.style.display = 'none';
+</script>
+<p></p>
+</div>
+</div>
+<div id="parameter-estimation" class="section level2 hasAnchor">
+<h2>9.2 Parameter estimation<a href="lecture-9-simple-random-sample-and-paramter-estimation.html#parameter-estimation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Estimation involves using information from sample data to make inferences about the population. Since the population is described by the probability distribution’s density, determining the parameters of this distribution is crucial for understanding the population. The primary task in inferential statistics is to estimate these population parameters based on sample information.</p>
+<p><strong>Principles of Estimation:</strong></p>
+<p>In this unit we always use sample average <span class="math inline">\(\overline{x}\)</span> to estimate the
+population expected value <span class="math inline">\(\mu = E(X)\)</span> and sample variance <span class="math inline">\(s^{2}\)</span> to
+estimate the population variance <span class="math inline">\(\sigma^{2} = Var(X)\)</span>. Formally:</p>
+<p><span class="math inline">\(\hat{\mu}=\overline{x}\)</span></p>
+<p><span class="math inline">\(\hat{\sigma^{2}}=s^{2}\)</span></p>
+<p><span class="math inline">\(\hat{\sigma} = s\)</span></p>
+<p>This way of estimation is called <a href="https://en.wikipedia.org/wiki/Method_of_moments_(statistics)"><em>moment
+estimation</em></a>
+in statistics.</p>
+<div id="point-estimation" class="section level3 hasAnchor">
+<h3>9.2.1 Point estimation<a href="lecture-9-simple-random-sample-and-paramter-estimation.html#point-estimation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Point estimation</strong>: providing a single value for one parameter:</p>
+<p>We use sample average to estimate the population mean and we use the
+sample variance to estimate the population variance:</p>
+<p><span class="math inline">\(\hat{\mu}=\overline{x}\)</span></p>
+<p><span class="math inline">\(\hat{\sigma} = s\)</span></p>
+<p>The “hat” over a parameter is the notation of “estimate” used by
+statisticians.</p>
+</div>
+<div id="interval-estimation" class="section level3 hasAnchor">
+<h3>9.2.2 Interval estimation<a href="lecture-9-simple-random-sample-and-paramter-estimation.html#interval-estimation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>How reliable is <span class="math inline">\(\overline{x}\)</span> as an estimate for <span class="math inline">\(\mu\)</span>?</p>
+<p>We can use the scenario of Lotto to draw a parallel. Last week the
+winning number were 1,9,13,25,32,31,40. Can we use these numbers to
+predict the wining numbers next week? Obviously NO, because before the
+draw we cannot predict the winning number for sure (this is why we call
+it random variables). Simlarily, before the selection(draw) of the 300
+employees we cannot predict with certainty that the average salary is
+$52.5K. So if we redo the survey the average salary will be a different
+number! How can we answer the question:</p>
+<p><strong>How reliable is 52.5 as an estimate for <span class="math inline">\(\mathbf{\mu}\)</span>?</strong></p>
+<p>When we are considering the question: what will be the sample average if
+we redo the sampling, we are regarding the sample average no more as a
+constant number 52.4 but as a random variable <span class="math inline">\(\overline{X}\)</span>.</p>
+<p>The distribution of <span class="math inline">\(\overline{X}\)</span> and its relation to <span class="math inline">\(\mu\)</span> can
+be used to answer this question. Applying rules of 68, 95 and 99.7 to
+<span class="math inline">\(\overline{X}\)</span> and <span class="math inline">\(SD(\overline{X})\)</span> we can develop an <strong>interval
+estimation</strong>:</p>
+<p><span class="math inline">\(0.95 \approx P( \mu - 2SD(\overline{X}) \le \overline{X} \le \mu + 2SD(\overline{X}))\)</span></p>
+<p><span class="math inline">\(= P\left( - \overline{X} + \mu - 2SD(\overline{X}) &lt; 0 &lt; \mu + {2SD(\overline{X})} - \overline{X} \right)\)</span></p>
+<p><span class="math inline">\(= P\left( - \overline{X} - {2SD(\overline{X})} &lt; - \mu &lt; - \overline{X} + {2SD(\overline{X})} \right)\)</span></p>
+<p><span class="math inline">\(= P\left( \overline{X} + 2SD(\overline{X}) &gt; \mu &gt; \overline{X} -2SD(\overline{X}) \right) \approx 0.95\)</span></p>
+<p>replaceing <span class="math inline">\(SD(\overline{X})\)</span> by <span class="math inline">\(\frac{\sigma}{\sqrt{N}}\)</span> we have</p>
+<p><span class="math display">\[ P\left( \overline{X} - 2\frac{\sigma}{\sqrt{N}} &lt; \mu &lt; \overline{X} + 2\frac{\sigma}{\sqrt{N}} \right) \approx 0.95\]</span></p>
+<p>The last equation above states that the probability that the parameter
+<span class="math inline">\(\mu\)</span> lies with the <strong>interval</strong> <span class="math inline">\(\left( \overline{X} - 2\frac{\sigma}{\sqrt{N}},\overline{X} + 2\frac{\sigma}{\sqrt{N}} \right)\)</span>
+is approximately 95%. The probability is called confidence level, because we are 95% confident that <span class="math inline">\(\mu\)</span> is contained in this interval.
+In the literature the standard deviation of sample average <span class="math inline">\(\frac{\sigma}{\sqrt{N}}\)</span> is known as sample standard error.</p>
+<p>Confidence level is denoted as <span class="math inline">\(1-\alpha\)</span>, where <span class="math inline">\(\alpha\)</span> is the
+probability that the interval does not contain the parameter. As we know the rule of 68, 95 and 99.7 is approximative. To be more precise we should replace 2 by 1.96 the absolute value of 2.5th percentile of standard normal distribution <span class="math inline">\(z_\frac{\alpha}{2}=1.96\)</span>. So, we have</p>
+<p><span class="math inline">\(P\left( \overline{X} - z_{0.05/2}\frac{\sigma}{\sqrt{N}} &lt; \mu &lt; \overline{X} + z_{0.05/2}\frac{\sigma}{\sqrt{N}} \right) = 0.95 = 1 - 0.05\)</span></p>
+<p>Although 1-<span class="math inline">\(\alpha=0.95\)</span> is the most commonly used confidence level, generally <span class="math inline">\(\alpha\)</span> can be any small probability. The general formula are:</p>
+<p><span class="math inline">\(\left( \overline{X} - z_{\frac{\alpha}{2}}\ \frac{\sigma}{\sqrt{N}},\overline{X} + z_{\frac{\alpha}{2}}\ \frac{\sigma}{\sqrt{N}} \right)\)</span></p>
+<p><span class="math inline">\(\left( \overline{X} - t_{\frac{\alpha}{2},N - 1}\ \frac{s}{\sqrt{N}},\overline{X} + t_{\frac{\alpha}{2},N - 1}\ \frac{s}{\sqrt{N}} \right)\)</span></p>
+<p><span class="math inline">\(\left( \overline{p} - z_{\frac{\alpha}{2}}\ \sqrt{\frac{p(1 - p)}{N}},\overline{p} + z_{\frac{\alpha}{2}}\ \sqrt{\frac{p(1 - p)}{N}} \right)\)</span></p>
+<p>The second formula applies the case where <span class="math inline">\(\sigma\)</span> is unknown. When <span class="math inline">\(\sigma\)</span> is unknown, we replace it by the estimate <span class="math inline">\(\hat{\sigma} = s\)</span>. Because <span class="math inline">\(\hat{\sigma}\)</span> is not exactly <span class="math inline">\(\sigma\)</span>, we need to adjust the confidence interval to make sure the confidence level remains <span class="math inline">\(1-\alpha\)</span>. To account for this, we use the value of 2.5 percentile of <span class="math inline">\(t\)</span> distribution, denoted <span class="math inline">\(t_{\frac{\alpha}{2},N-1}\)</span>, instead the standard normal quantile <span class="math inline">\(z_{\frac{\alpha}{2}}\)</span>. <span class="math inline">\(t_{\frac{\alpha}{2},N-1}\)</span> value is slightly larger than <span class="math inline">\(z_{\frac{\alpha}{2}}\)</span> to account for the additional uncertainty introduced by replacing <span class="math inline">\(\sigma\)</span> by <span class="math inline">\(\hat{\sigma}=s\)</span>. As we know the more data we have the more precise the estimate becomes. Therefore the <span class="math inline">\(t_{\frac{\alpha}{2},N-1}\)</span> depends on the number of data <span class="math inline">\(N\)</span>. As <span class="math inline">\(N \to \infty\)</span> <span class="math inline">\(t_{\frac{\alpha}{2},N-1} \to z_{\frac{\alpha}{2}}\)</span>.</p>
+<p>The third formula is for estimation of a population proportion of a <span class="math inline">\((0,1)\)</span>-valued random variable.
+<span class="math inline">\(X = 1\)</span> with probability <span class="math inline">\(p\)</span> and <span class="math inline">\(X = 0\)</span> with probability <span class="math inline">\(1-p\)</span>. We have
+<span class="math display">\[\mu= E(X) = x_1*p_1+x_2*p_2 = 1*p+0*(1-p) = p\]</span></p>
+<p><span class="math display">\[\sigma^2=Var(X) = (x_1-E(X))^2*p_1+(x_2-E(X))^*p_2 = (1-p)^2*p+(0-p)^2*(1-p) = (1-p)*p*(1-p+p) = p(1-p)\]</span></p>
+<p><strong>Sample average</strong></p>
+<p><span class="math display">\[\overline{X} = \frac{1}{N}\sum_{i=1}^NX_i=\frac{\sum(X_i=1)}{N}=\overline{p}\]</span>
+Thus the sample average is the sample proportion.</p>
+<p>Replacing <span class="math inline">\(\overline{X}\)</span> by <span class="math inline">\(\overline{p}\)</span> and <span class="math inline">\(\sigma\)</span> by <span class="math inline">\(\sqrt{p(1-p)}\)</span> and inserting them into the first formula by the central limit theorem we have the third formula.</p>
+<p><span class="math inline">\(\left( \overline{p} - z_{\frac{\alpha}{2}}\ \sqrt{\frac{p(1 - p)}{N}},\overline{p} + z_{\frac{\alpha}{2}}\ \sqrt{\frac{p(1 - p)}{N}} \right)\)</span></p>
+<p><strong>Confidence interval and its relation to data, <span class="math inline">\(N\)</span>, <span class="math inline">\(\sigma\)</span>, and <span class="math inline">\(\mu\)</span></strong></p>
+<p>In the following interactive diagram you can study the influencing factor on the confidence inter by changing population parameters, number of data points and confidence level.</p>
+<p></p>
+<iframe src="confidenceinterval.html" style="border:none; width:100%; height:800px;">
+</iframe>
+<p></p>
+<p></p>
+<!-- HTML for the first set of MCQs -->
+<button id="reveal-button-set32">Show MCQs Set 32</button>
+
+<div id="question-container-set32"></div>
+
+<script>
+    // Initial CSV data (3 questions)
+    const csvDataset32 = `
+What is the purpose of point estimation?
+To provide a range of values
+To provide a single value for one parameter
+To predict future outcomes
+To calculate probabilities
+To provide a single value for one parameter
+What does the "hat" over a parameter signify in statistics?
+It indicates a hypothesis
+It denotes an estimate
+It represents a constant
+It shows a variable
+It denotes an estimate
+What is the main question addressed in interval estimation?
+How to calculate the mean
+How reliable is x̄ as an estimate for μ
+How to find the variance
+How to predict future values
+How reliable is x̄ as an estimate for μ
+What is the significance of the value 0.05 in the context of confidence intervals?
+It represents the confidence level
+It represents the probability that the interval contains the parameter
+It represents the probability that the interval does not contain the parameter
+It represents the sample size
+It represents the probability that the interval does not contain the parameter
+How can we use the rule of 95 to obtain a quick guess of a confidence interval?
+By using the mean and 2 standard errors
+By using the median and mode
+By using the range and variance
+By using the mode and interquartile range
+By using the mean and 2 standard errors
+What is the role of the central limit theorem in the context of the sample proportion?
+It increases the sample size
+It allows the use of the normal distribution for inference
+It decreases the sample size
+It eliminates the need for sampling
+It allows the use of the normal distribution for inference
+    `;
+
+    // Function to parse CSV data into questions
+    function parseCSV(data) {
+        const lines = data.trim().split('\n').map(line => line.trim());
+        const questions = [];
+
+        for (let i = 0; i < lines.length; i += 6) {
+            if (i + 5 < lines.length) {
+                questions.push({
+                    question: lines[i],
+                    options: lines.slice(i + 1, i + 5),
+                    correctAnswer: lines[i + 5]
+                });
+            }
+        }
+
+        return questions;
+    }
+
+    // Function to generate HTML for questions
+    function generateQuestionHTML(questions, containerId) {
+        let contentHTML = '';
+        questions.forEach((q, questionIndex) => {
+            contentHTML += `<div class="question-block">`;
+            contentHTML += `<p><strong>Question ${questionIndex + 1}:</strong> ${q.question}</p>`;
+            q.options.forEach((option, index) => {
+                contentHTML += `
+                    <div>
+                        <input type="radio" name="question${questionIndex}" id="${containerId}_option${questionIndex}_${index}" value="${option}" aria-label="${option}">
+                        <label for="${containerId}_option${questionIndex}_${index}">${option}</label>
+                    </div>
+                `;
+            });
+            contentHTML += `<div id="${containerId}_feedback${questionIndex}" class="feedback"></div>`;
+            contentHTML += `</div>`;
+        });
+
+        document.getElementById(containerId).innerHTML = contentHTML;
+    }
+
+    // Function to check the selected answer
+    function checkAnswer(questionIndex, containerId, questions) {
+        const selectedOption = document.querySelector(`input[name="question${questionIndex}"]:checked`);
+        const feedbackElement = document.getElementById(`${containerId}_feedback${questionIndex}`);
+
+        if (selectedOption) {
+            const answer = selectedOption.value;
+            if (answer === questions[questionIndex].correctAnswer) {
+                feedbackElement.textContent = 'Your answer is correct!';
+                feedbackElement.className = 'feedback correct';
+            } else {
+                feedbackElement.textContent = 'Your answer is incorrect.';
+                feedbackElement.className = 'feedback incorrect';
+            }
+        } else {
+            feedbackElement.textContent = '';
+        }
+    }
+
+    // Parse and display the first set of questions
+    const questionsset32 = parseCSV(csvDataset32);
+    generateQuestionHTML(questionsset32, 'question-container-set32');
+
+    // Attach event listeners to all radio buttons for the first set of questions
+    questionsset32.forEach((_, questionIndex) => {
+        document.querySelectorAll(`#question-container-set32 input[name="question${questionIndex}"]`).forEach(input => {
+            input.addEventListener('change', () => checkAnswer(questionIndex, 'question-container-set32', questionsset32));
+        });
+    });
+
+    // Toggle visibility of the first set of questions
+    const revealButtonset32 = document.getElementById('reveal-button-set32');
+    const questionContainerset32 = document.getElementById('question-container-set32');
+
+    revealButtonset32.addEventListener('click', () => {
+        if (questionContainerset32.style.display === 'none' || questionContainerset32.style.display === '') {
+            questionContainerset32.style.display = 'block';
+            revealButtonset32.textContent = 'Hide MCQs Set 1';
+        } else {
+            questionContainerset32.style.display = 'none';
+            revealButtonset32.textContent = 'Show MCQs Set 1';
+        }
+    });
+
+    // Ensure questions are hidden by default
+    questionContainerset32.style.display = 'none';
+</script>
+<p></p>
+</div>
+<div id="interpretation-of-confidence-interval" class="section level3 hasAnchor">
+<h3>6.2.3 Interpretation of confidence interval<a href="lecture-9-simple-random-sample-and-paramter-estimation.html#interpretation-of-confidence-interval" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><span class="math inline">\(P\left( \overline{X} - z_{\frac{\alpha}{2}}\ \frac{\sigma}{\sqrt{N}} &lt; \mu &lt; \overline{X} + z_{\frac{\alpha}{2}}\ \frac{\sigma}{\sqrt{N}} \right) = 1 - \alpha\)</span></p>
+<p>says if we redo the sampling many times, say 100 times, then about 95
+times the confidence interval calculated using the formula discussed above,
+<span class="math inline">\(\left( \overline{x} - z_{\frac{\alpha}{2}}\ \frac{\sigma}{\sqrt{N}},\overline{x} + z_{\frac{\alpha}{2}}\ \frac{\sigma}{\sqrt{N}} \right)\)</span>
+will contain the parameter <span class="math inline">\(\mu\)</span>.</p>
+</div>
+</div>
+<div id="quality-of-an-estimator" class="section level2 hasAnchor">
+<h2>9.3 Quality of an estimator<a href="lecture-9-simple-random-sample-and-paramter-estimation.html#quality-of-an-estimator" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="consistence" class="section level3 hasAnchor">
+<h3>9.3.1 Consistence<a href="lecture-9-simple-random-sample-and-paramter-estimation.html#consistence" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>$ is one realization of the random variable <span class="math inline">\(\overline{X}\)</span>.
+Why is it a good estimate of <span class="math inline">\(\mu\)</span>?</p>
+<p>Following the law of large numbers for i.i.d sample points we have:
+<span class="math display">\[\hat{\mu}=\overline{X} \overset{p}{\longrightarrow}\mu\]</span>
+The equation above says the estimator will converge to the true paramter in probability. This good property is known as <strong>consistent</strong>.</p>
+</div>
+<div id="unbiasedness" class="section level3 hasAnchor">
+<h3>9.3.2 Unbiasedness<a href="lecture-9-simple-random-sample-and-paramter-estimation.html#unbiasedness" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><span class="math display">\[E(\hat{\mu})=E(\overline{X})=\mu\]</span>
+The equation above says, the estimator gets it on average correctly. This good property is known as
+<strong>unbiased</strong>. Unbiasedness and consistence are two good properties of an estimator.</p>
+<p><strong>Demonstration of unbiasedness and consistency</strong></p>
+<p>In the following interactive diagram illustrate the concept of unbiasedness and consistency.</p>
+
+<!-- Unbiasedness and Consistency Demonstration -->
+<div id="estimator-demonstration-container">
+    <div>
+        <label for="popMean">Population Mean:</label>
+        <input type="number" id="popMean" value="0" step="any">
+    </div>
+    <div>
+        <label for="popVariance">Population Variance:</label>
+        <input type="number" id="popVariance" value="1" step="any">
+    </div>
+    <div>
+        <label for="sampleSize">Sample Size:</label>
+        <input type="range" id="sampleSize" min="10" max="2000" step="1" value="30">
+        <span id="sampleSize-value">30</span>
+    </div>
+    <div>
+        <label for="numSamples">Number of Samples:</label>
+        <input type="range" id="numSamples" min="10" max="100" step="1" value="50">
+        <span id="numSamples-value">50</span>
+    </div>
+    <div id="estimator-demonstration" style="border: 2px solid black; width: 800px; height: 500px;"></div>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    function generateNormalData(mean, stdDev, size) {
+        const data = [];
+        for (let i = 0; i < size; i++) {
+            const u1 = Math.random();
+            const u2 = Math.random();
+            const z1 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+            data.push(mean + stdDev * z1);
+        }
+        return data;
+    }
+
+    function generateSamples(sampleSize, numSamples, popMean, popStdDev) {
+        const means = [];
+        for (let i = 0; i < numSamples; i++) {
+            const sample = generateNormalData(popMean, popStdDev, sampleSize);
+            const mean = sample.reduce((a, b) => a + b, 0) / sampleSize;
+            means.push(mean);
+        }
+        return means;
+    }
+
+    function updatePlot() {
+        const popMean = parseFloat(document.getElementById('popMean').value);
+        const popVariance = parseFloat(document.getElementById('popVariance').value);
+        const popStdDev = Math.sqrt(popVariance);
+        const sampleSize = parseInt(document.getElementById('sampleSize').value);
+        const numSamples = parseInt(document.getElementById('numSamples').value);
+
+        document.getElementById('sampleSize-value').textContent = sampleSize;
+        document.getElementById('numSamples-value').textContent = numSamples;
+
+        const sampleMeans = generateSamples(sampleSize, numSamples, popMean, popStdDev);
+
+        const meanTrace = {
+            x: sampleMeans,
+            type: 'histogram',
+            name: 'Sample Means',
+            marker: { color: 'rgba(255, 99, 132, 0.7)' },
+            opacity: 0.75
+        };
+
+        const populationMeanTrace = {
+            x: [popMean],
+            type: 'scatter',
+            mode: 'markers',
+            name: 'Population Mean',
+            marker: { color: 'blue', size: 12 },
+            showlegend: false
+        };
+
+        const layout = {
+            title: 'Distribution of Sample Means and Population Mean',
+            xaxis: { 
+                title: 'Sample Mean', 
+                range: [popMean - 2, popMean + 2] // Adjusted range to be within -2 and +2 around the population mean
+            },
+            yaxis: { title: 'Frequency' },
+            width: 800,
+            height: 500
+        };
+
+        Plotly.react('estimator-demonstration', [meanTrace, populationMeanTrace], layout);
+    }
+
+    document.getElementById('sampleSize').addEventListener('input', updatePlot);
+    document.getElementById('numSamples').addEventListener('input', updatePlot);
+    document.getElementById('popMean').addEventListener('input', updatePlot);
+    document.getElementById('popVariance').addEventListener('input', updatePlot);
+    updatePlot();
+</script>
+<p></p>
+</div>
+<div id="chapter-summary" class="section level3 hasAnchor">
+<h3>Chapter Summary<a href="lecture-9-simple-random-sample-and-paramter-estimation.html#chapter-summary" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Why do we need estimation?</p>
+<p>Point estimation: <span class="math inline">\(\widehat{\mu} = \overline{X}\)</span> and
+<span class="math inline">\({\widehat{\sigma}}^{2} = S^{2}\)</span></p>
+<p>Interval estimation: the rule of 95:</p>
+<p><span class="math inline">\(\left( \overline{X} - z_{\frac{\alpha}{2}}\ \frac{\sigma}{\sqrt{N}},\overline{X} + z_{\frac{\alpha}{2}}\ \frac{\sigma}{\sqrt{N}} \right)\)</span>
+when <span class="math inline">\(\sigma\)</span> is known</p>
+<p><span class="math inline">\(\left( \overline{X} - t_{\frac{\alpha}{2},N - 1}\ \frac{s}{\sqrt{N}},\overline{X} + t_{\frac{\alpha}{2},N - 1}\ \frac{s}{\sqrt{N}} \right)\)</span>
+when <span class="math inline">\(\sigma\)</span> is estimated by s</p>
+<p><span class="math inline">\(\left( \overline{X} - z_{\frac{\alpha}{2}}\ \sqrt{\frac{p(1 - p)}{N}},\overline{X} + z_{\frac{\alpha}{2}}\ \sqrt{\frac{p(1 - p)}{N}} \right)\)</span></p>
+<p>Quality of an estimator: unbiasedness and consistence</p>
+<p><span class="math inline">\(E\left( \widehat{\mu} \right) = \mu\)</span></p>
+<p><span class="math inline">\(\hat{\mu}=\overline{X} \overset{p}{\longrightarrow}\mu\)</span></p>
+</div>
+<div id="review-questions-2" class="section level3 hasAnchor">
+<h3>Review questions:<a href="lecture-9-simple-random-sample-and-paramter-estimation.html#review-questions-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ol style="list-style-type: decimal">
+<li><p>Why do we need a point estimate?</p></li>
+<li><p>Why do we need an interval estimation?</p></li>
+<li><p>How can we use the rule of 95 to obtain a quick guess of a confidence
+interval?</p></li>
+<li><p>What are the two criteria used to judge the quality of an estimator?</p></li>
+</ol>
+
+</div>
+</div>
+</div>
+<div class = rmdtranslate style="height: 100px;" style="width: 700px;">
+<div id="google_translate_element"></div>
+<script>
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+            {pageLanguage: 'en', gaId: 'UA-88838732-1'},
+            'google_translate_element'
+        );
+
+        /*
+            To remove the "powered by google",
+            uncomment one of the following code blocks.
+            NB: This breaks Google's Attribution Requirements:
+            https://developers.google.com/translate/v2/attribution#attribution-and-logos
+        */
+
+        // Native (but only works in browsers that support query selector)
+        //if(typeof(document.querySelector) == 'function') {
+        //    document.querySelector('.goog-logo-link').setAttribute('style', 'display: none');
+        //    document.querySelector('.goog-te-gadget').setAttribute('style', 'font-size: 0');
+        //}
+
+        // If you have jQuery - works cross-browser - uncomment this
+        // jQuery('.goog-logo-link').css('display', 'none');
+        // jQuery('.goog-te-gadget').css('font-size', '0');
+    }
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</div>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Website with Chatbot Button</title>
+<style>
+  /* Style your chatbot button */
+  #chatbot-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1001; /* Ensure the chatbot button is above the interactive content */
+  }
+
+  /* Style the interactive content */
+  #interactive-content {
+    display: none;
+    position: absolute;
+    bottom: 70px;
+    right: 20px;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-width: 0.5px; /* Adjust the border width as needed */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+
+  /* Style the iframe with specific width and height */
+  #interactive-frame {
+    width: 800px; /* Set the width you prefer */
+    height: 800px; /* Set the height you prefer */
+    border: none;
+  }
+
+  /* Style the full-screen button */
+  #fullscreen-button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+  <!-- Chatbot button -->
+  <button id="chatbot-button">Peer AI</button>
+
+  <!-- Interactive content -->
+  <div id="interactive-content">
+    <!-- Your interactive website content goes here -->
+    <iframe id="interactive-frame" src="https://chatgptfree.ai/"></iframe>
+    <button id="fullscreen-button">Toggle Full Screen</button>
+  </div>
+
+  <script>
+    // Get references to elements
+    const chatbotButton = document.getElementById('chatbot-button');
+    const interactiveContent = document.getElementById('interactive-content');
+    const interactiveFrame = document.getElementById('interactive-frame');
+    const fullscreenButton = document.getElementById('fullscreen-button');
+
+    // Toggle the visibility of the interactive content and full-screen button
+    chatbotButton.addEventListener('click', () => {
+      if (interactiveContent.style.display === 'none') {
+        interactiveContent.style.display = 'block';
+        fullscreenButton.style.display = 'block';
+      } else {
+        interactiveContent.style.display = 'none';
+        fullscreenButton.style.display = 'none';
+      }
+    });
+
+    // Toggle full-screen mode for the interactive frame
+    fullscreenButton.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        interactiveFrame.requestFullscreen().catch(err => {
+          console.error('Error attempting to enable full-screen:', err);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    });
+  </script>
+</body>
+</html>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="lecture-8-sample-population-random-variable-and-probability.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="lecture-10-statistical-testing.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/benmarwick/bookdown-ort/edit/master/09lecture9.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

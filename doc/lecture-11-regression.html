@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Lecture 11 Regression | Business Statistics</title>
+  <meta name="description" content="These lecture notes adopt the template of ‘a minimal example of using the bookdown package to write a book’ by Yihui Xie. The output format for this example is bookdown::gitbook." />
+  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Lecture 11 Regression | Business Statistics" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="These lecture notes adopt the template of ‘a minimal example of using the bookdown package to write a book’ by Yihui Xie. The output format for this example is bookdown::gitbook." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Lecture 11 Regression | Business Statistics" />
+  
+  <meta name="twitter:description" content="These lecture notes adopt the template of ‘a minimal example of using the bookdown package to write a book’ by Yihui Xie. The output format for this example is bookdown::gitbook." />
+  
+
+<meta name="author" content="Pu Chen" />
+
+
+<meta name="date" content="2024-09-02" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="lecture-10-statistical-testing.html"/>
+
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script async defer src="https://hypothes.is/embed.js"></script>
+
+
+
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Proface</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html"><i class="fa fa-check"></i>Lecture 7 Introduction to Statistics</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#sources-of-data"><i class="fa fa-check"></i>7.1.1 Sources of data</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#components-of-a-data-set"><i class="fa fa-check"></i>7.1.2 Components of a data set</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#variable-types-and-scales-of-measurement"><i class="fa fa-check"></i>7.1.3 Variable types and scales of measurement</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#statistical-way-of-study"><i class="fa fa-check"></i>7.1.4 Statistical Way of Study</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#characteristics-of-a-statiatical-variable"><i class="fa fa-check"></i>7.1.5 Characteristics of a statiatical variable</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#descriptive-statistics"><i class="fa fa-check"></i>7.2 Descriptive Statistics</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#frequency-tables"><i class="fa fa-check"></i>7.2.1 Frequency tables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#diagrams"><i class="fa fa-check"></i>7.2.2 Diagrams</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#column-charts-bar-charts-and-pie-charts"><i class="fa fa-check"></i>7.2.2.1 Column charts, bar charts, and pie charts</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#histogram"><i class="fa fa-check"></i>7.2.2.2 Histogram</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#numerical-measures"><i class="fa fa-check"></i>7.2.3 Numerical measures</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#measures-of-central-location"><i class="fa fa-check"></i>7.2.3.1 Measures of central location</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#measures-of-variation-dispersion"><i class="fa fa-check"></i>7.2.3.2 Measures of variation (dispersion):</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#rules-of-68-95-and-99.7"><i class="fa fa-check"></i>7.2.4 Rules of 68, 95, and 99.7</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#descriptive-statistis-for-two-statistical-variables"><i class="fa fa-check"></i>7.2.5 Descriptive statistis for two statistical variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-categotical-variables"><i class="fa fa-check"></i>7.2.5.1 Two categotical variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-way-tables-for-two-categorical-variables"><i class="fa fa-check"></i>Two way tables for two categorical variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#clustered-column-charts"><i class="fa fa-check"></i>Clustered column charts</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#one-categorical-variable-one-numerical-variable"><i class="fa fa-check"></i>7.2.5.2 One categorical variable one numerical variable</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-way-table-for-categorical-and-numerical-variables"><i class="fa fa-check"></i>Two-way table for categorical and numerical variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#comparative-box-plots"><i class="fa fa-check"></i>Comparative box plots</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-numerical-variables"><i class="fa fa-check"></i>7.5.2.3 Two numerical variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-way-frequency-table"><i class="fa fa-check"></i>Two-way frequency table</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#covariance-and-correlation-coefficient"><i class="fa fa-check"></i>Covariance and correlation coefficient</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#scatter-plot"><i class="fa fa-check"></i>Scatter plot</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#correlation-coefficient-and-scatter-plot"><i class="fa fa-check"></i>Correlation coefficient and scatter plot</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#overview-of-types-of-variables-and-the-used-descriptive-tools"><i class="fa fa-check"></i>Overview of types of variables and the used descriptive tools</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#examples-of-applications"><i class="fa fa-check"></i>7.2.6 Examples of applications:</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#summary"><i class="fa fa-check"></i>Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#review-questions"><i class="fa fa-check"></i>Review questions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html"><i class="fa fa-check"></i>Lecture 8 Sample, Population, Random Variable and Probability</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#principle-of-simple-random-sample"><i class="fa fa-check"></i>8.1 Principle of simple random sample</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#description-of-a-population-by-random-variables"><i class="fa fa-check"></i>8.2 Description of a Population by random variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#discrete-random-variables"><i class="fa fa-check"></i>8.3 Discrete random variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#relation-between-random-variables"><i class="fa fa-check"></i>8.4. Relation between random variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#joint-probability"><i class="fa fa-check"></i>8.4.1 Joint probability</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#marginal-probability"><i class="fa fa-check"></i>8.4.2 Marginal Probability</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#conditional-probability"><i class="fa fa-check"></i>8.4.3 Conditional Probability</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#independence"><i class="fa fa-check"></i>8.4.4 Independence</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#continuous-random-variables"><i class="fa fa-check"></i>8.5. Continuous random variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#uniformly-distributed-random-variables"><i class="fa fa-check"></i>8.5.1. Uniformly distributed random variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#normally-distributed-random-variables"><i class="fa fa-check"></i>8.5.2. Normally distributed random variables</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#numerical-measures-of-random-variables"><i class="fa fa-check"></i>5.6 Numerical measures of random variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#expected-value-and-variance"><i class="fa fa-check"></i>5.6.1 Expected value and Variance</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#rules-of-expected-valuevariance-and-covariace"><i class="fa fa-check"></i>Rules of expected value,variance and covariace</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#review-questions-1"><i class="fa fa-check"></i>Review questions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html"><i class="fa fa-check"></i>Lecture 9 Simple Random Sample and Paramter Estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#simple-random-sample"><i class="fa fa-check"></i>9.1 Simple random sample</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#law-of-large-numbers-lln"><i class="fa fa-check"></i>9.1.1 Law of large numbers (LLN)</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#central-limit-theorem-clt"><i class="fa fa-check"></i>9.1.2 Central limit theorem (CLT)</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#parameter-estimation"><i class="fa fa-check"></i>9.2 Parameter estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#point-estimation"><i class="fa fa-check"></i>9.2.1 Point estimation</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#interval-estimation"><i class="fa fa-check"></i>9.2.2 Interval estimation</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#interpretation-of-confidence-interval"><i class="fa fa-check"></i>6.2.3 Interpretation of confidence interval</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#quality-of-an-estimator"><i class="fa fa-check"></i>9.3 Quality of an estimator</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#consistence"><i class="fa fa-check"></i>9.3.1 Consistence</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#unbiasedness"><i class="fa fa-check"></i>9.3.2 Unbiasedness</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#chapter-summary"><i class="fa fa-check"></i>Chapter Summary</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#review-questions-2"><i class="fa fa-check"></i>Review questions:</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html"><i class="fa fa-check"></i>Lecture 10 Statistical Testing</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#test-as-searching-for-indication-of-updating-the-population-knowledge"><i class="fa fa-check"></i>10.1 Test as searching for indication of updating the population knowledge</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#formal-procedure-of-a-statistical-test"><i class="fa fa-check"></i>10.2 Formal procedure of a statistical test</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#tests-of-population-means-proportion"><i class="fa fa-check"></i>10.3 Tests of population means (proportion)</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#compare-two-population-means"><i class="fa fa-check"></i>10.4 Compare two population means</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#from-t-test-to-chi2-test"><i class="fa fa-check"></i>10.5 From t-test to <span class="math inline">\(\chi^2\)</span> test</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#test-of-multinomial-proportions"><i class="fa fa-check"></i>10.6 Test of multinomial proportions**</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#test-of-independence"><i class="fa fa-check"></i>10.7 Test of independence</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#test-of-normality"><i class="fa fa-check"></i>10.8 Test of normality</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#anova"><i class="fa fa-check"></i>10.9 ANOVA</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#one-way-anova"><i class="fa fa-check"></i>10.9.1 One-way ANOVA</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#two-way-anova"><i class="fa fa-check"></i>10.9.2 Two-way ANOVA</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#review-questions-3"><i class="fa fa-check"></i>Review questions</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html"><i class="fa fa-check"></i>Lecture 11 Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#motivation-of-simple-regression"><i class="fa fa-check"></i>11.1 Motivation of Simple Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#least-square-methd-and-regression-line"><i class="fa fa-check"></i>Least Square Methd and Regression Line</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#statistics-in-a-regression-model"><i class="fa fa-check"></i>11.2 Statistics in a regression model</a></li>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#interpretation-of-the-excel-regression-output"><i class="fa fa-check"></i>11.3 Interpretation of the Excel regression output</a></li>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#multiple-regression"><i class="fa fa-check"></i>11.4 Multiple Regression</a></li>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#multivariate-regression"><i class="fa fa-check"></i>11.5 Multivariate Regression</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Business Statistics</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="lecture-11-regression" class="section level1 hasAnchor">
+<h1>Lecture 11 Regression<a href="lecture-11-regression.html#lecture-11-regression" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Concepts:</p>
+<pre><code>      regression, linear regression model, least square method, coeffiicent of determination</code></pre>
+<div id="motivation-of-simple-regression" class="section level2 hasAnchor">
+<h2>11.1 Motivation of Simple Regression<a href="lecture-11-regression.html#motivation-of-simple-regression" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Regression analysis is one of the most commonly used statistical techniques
+in business research. It is about to find a linear relation between two
+(or more) variables. For example examining the scatter plot of Years of
+experience versus Age reveals a positively correlation between these variables. The
+correlation coefficient is 0.89 confirms the positive relationship. Often,
+we represent this relationship with a line. How do we determine this line?</p>
+<p>In 1795 <a href="https://en.wikipedia.org/wiki/Carl_Friedrich_Gauss">Gauss</a>
+developed the least squares method. This mehtod involves choosing the line that minimises the sum of the squared distance between data point and the line.</p>
+<p><img src="vertopal_lecturet222/media/regression.jpg" />
+## 6.2 Least squares method</p>
+<p>Excel demonstration of the least square (LS) method:</p>
+<p><img src="vertopal_lecturet222/media/image25.jpg" style="width:6.26806in;height:1.65903in" /></p>
+<p><img src="vertopal_lecturet222/media/image26.png" style="width:3.51081in;height:2.81169in" /></p>
+<p>Alternatively, we can use EXCEL regression function to obtain the
+regression parameters.</p>
+<p><img src="vertopal_lecturet222/media/image27.png" style="width:3.27273in;height:3.43082in" /></p>
+<div id="least-square-methd-and-regression-line" class="section level3 hasAnchor">
+<h3>Least Square Methd and Regression Line<a href="lecture-11-regression.html#least-square-methd-and-regression-line" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In the following interactive diagram</p>
+<ul>
+<li>you can move the data points to se how the regression line follows the data points.</li>
+<li>change the slope and the the intercept of the green line to see how the sum of squared differences change.</li>
+<li>Verify the the regression line in obtained by choose the slope and the intercept such that the sum of squared differences is minimised.</li>
+<li>Move the point to investigate the impact of an outlier point on the regression line.</li>
+</ul>
+<p></p>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movable Points with Regression Line, Axis Labels, and SSD</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+        .controls {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="myCanvas" width="800" height="600"></canvas>
+    <div class="controls">
+        <label for="slopeInput">Slope of Green Line:</label>
+        <input id="slopeInput" type="number" step="0.01" value="0">
+    </div>
+    <div class="controls">
+        <label for="interceptInput">Intercept of Green Line:</label>
+        <input id="interceptInput" type="number" step="0.01" value="0">
+    </div>
+    <div class="controls">
+        <span id="ssdOutput">SSD to Green Line = 0.00</span>
+    </div>
+    <script>
+        const canvas = document.getElementById('myCanvas');
+        const ctx = canvas.getContext('2d');
+        const points = [];
+        let selectedPoint = null;
+
+        // Generate 10 pairs of random numbers
+        for (let i = 0; i < 10; i++) {
+            points.push({
+                x: Math.random() * (canvas.width - 60) + 50,
+                y: Math.random() * (canvas.height - 60) + 50
+            });
+        }
+
+        function drawPoints() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawAxes();
+            ctx.fillStyle = 'blue';
+            points.forEach(point => {
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 5, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            drawRegressionLine();
+            drawRegressionEquation();
+            drawGreenLine();
+            drawSSD();
+            drawSSR();
+        }
+
+        function drawAxes() {
+            ctx.strokeStyle = 'black';
+            ctx.beginPath();
+
+            // Draw x-axis at the top
+            ctx.moveTo(50, 50);
+            ctx.lineTo(canvas.width - 10, 50);
+
+            // Draw y-axis on the left
+            ctx.moveTo(50, 50);
+            ctx.lineTo(50, canvas.height - 10);
+
+            ctx.stroke();
+
+            // X-axis label
+            ctx.fillStyle = 'black';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('X-axis', (canvas.width - 50) / 2 + 50, 40);
+
+            // Y-axis label
+            ctx.save();
+            ctx.translate(20, (canvas.height - 50) / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Y-axis', 0, 0);
+            ctx.restore();
+        }
+
+        function drawRegressionLine() {
+            if (points.length < 2) return;
+            const { slope, intercept } = calculateRegressionLine(points);
+            ctx.strokeStyle = 'red';
+            ctx.beginPath();
+            const startX = 50;
+            const startY = slope * startX + intercept;
+            const endX = canvas.width - 10;
+            const endY = slope * endX + intercept;
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+        }
+
+        function drawRegressionEquation() {
+            const { slope, intercept } = calculateRegressionLine(points);
+            const formattedSlope = slope.toFixed(2);
+            const formattedIntercept = intercept.toFixed(2);
+            ctx.fillStyle = 'black';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.fillText(`Regression: y = ${formattedSlope}x + ${formattedIntercept}`, 10, 10);
+        }
+
+        function drawGreenLine() {
+            const slope = parseFloat(document.getElementById('slopeInput').value);
+            const intercept = parseFloat(document.getElementById('interceptInput').value);
+            ctx.strokeStyle = 'green';
+            ctx.beginPath();
+            const startX = 50;
+            const startY = slope * startX + intercept;
+            const endX = canvas.width - 10;
+            const endY = slope * endX + intercept;
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+        }
+
+        function drawSSD() {
+            const slope = parseFloat(document.getElementById('slopeInput').value);
+            const intercept = parseFloat(document.getElementById('interceptInput').value);
+            const ssd = calculateSSD(points, slope, intercept).toFixed(2);
+            document.getElementById('ssdOutput').textContent = `SSD to Green Line = ${ssd}`;
+        }
+
+        function drawSSR() {
+            const { slope, intercept } = calculateRegressionLine(points);
+            const ssr = calculateSSR(points, slope, intercept).toFixed(2);
+            ctx.fillStyle = 'black';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.fillText(`SSR = ${ssr}`, 10, 30);
+        }
+
+        function calculateRegressionLine(points) {
+            const n = points.length;
+            const sumX = points.reduce((acc, point) => acc + point.x, 0);
+            const sumY = points.reduce((acc, point) => acc + point.y, 0);
+            const sumXY = points.reduce((acc, point) => acc + point.x * point.y, 0);
+            const sumXX = points.reduce((acc, point) => acc + point.x * point.x, 0);
+
+            const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+            const intercept = (sumY - slope * sumX) / n;
+            return { slope, intercept };
+        }
+
+        function calculateSSD(points, slope, intercept) {
+            return points.reduce((acc, point) => {
+                const predictedY = slope * point.x + intercept;
+                const difference = point.y - predictedY;
+                return acc + difference * difference;
+            }, 0);
+        }
+
+        function calculateSSR(points, slope, intercept) {
+            return points.reduce((acc, point) => {
+                const predictedY = slope * point.x + intercept;
+                const residual = point.y - predictedY;
+                return acc + residual * residual;
+            }, 0);
+        }
+
+        function getPointAt(x, y) {
+            for (let i = 0; i < points.length; i++) {
+                const point = points[i];
+                const dx = x - point.x;
+                const dy = y - point.y;
+                if (Math.sqrt(dx * dx + dy * dy) < 10) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            const index = getPointAt(mouseX, mouseY);
+            if (index !== -1) {
+                selectedPoint = index;
+            }
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (selectedPoint === null) return;
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            points[selectedPoint] = { x: mouseX, y: mouseY };
+            drawPoints();
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            selectedPoint = null;
+        });
+
+        document.getElementById('slopeInput').addEventListener('input', drawPoints);
+        document.getElementById('interceptInput').addEventListener('input', drawPoints);
+
+        drawPoints();
+    </script>
+</body>
+<p></p>
+<!-- HTML for the first set of MCQs -->
+<button id="reveal-button-set51">Show MCQs Set 51</button>
+
+<div id="question-container-set51"></div>
+
+<script>
+    // Initial CSV data (3 questions)
+    const csvDataset51 = `
+Who developed the least squares method? 
+Newton  
+Euler   
+Gauss   
+Pythagoras  
+Gauss   
+What is the purpose of the least squares method?    
+To maximize the sum of squared distances    
+To minimize the sum of squared distances    
+To find the average of squared distances    
+To calculate the median of squared distances    
+To minimize the sum of squared distances    
+What is often used to represent the relationship in regression analysis?    
+A curve 
+A line  
+A bar graph 
+A pie chart 
+A line  
+A linear regression (LR) analysis produces the equation Y = 3 + 0.4X. This indicates that:  
+When Y = 0.4, X = 3 
+When Y = 0, X = 3   
+When X = 3, Y = 0.4 
+When X = 0, Y = 3   
+When X = 0, Y = 4   
+    `;
+
+    // Function to parse CSV data into questions
+    function parseCSV(data) {
+        const lines = data.trim().split('\n').map(line => line.trim());
+        const questions = [];
+
+        for (let i = 0; i < lines.length; i += 6) {
+            if (i + 5 < lines.length) {
+                questions.push({
+                    question: lines[i],
+                    options: lines.slice(i + 1, i + 5),
+                    correctAnswer: lines[i + 5]
+                });
+            }
+        }
+
+        return questions;
+    }
+
+    // Function to generate HTML for questions
+    function generateQuestionHTML(questions, containerId) {
+        let contentHTML = '';
+        questions.forEach((q, questionIndex) => {
+            contentHTML += `<div class="question-block">`;
+            contentHTML += `<p><strong>Question ${questionIndex + 1}:</strong> ${q.question}</p>`;
+            q.options.forEach((option, index) => {
+                contentHTML += `
+                    <div>
+                        <input type="radio" name="question${questionIndex}" id="${containerId}_option${questionIndex}_${index}" value="${option}" aria-label="${option}">
+                        <label for="${containerId}_option${questionIndex}_${index}">${option}</label>
+                    </div>
+                `;
+            });
+            contentHTML += `<div id="${containerId}_feedback${questionIndex}" class="feedback"></div>`;
+            contentHTML += `</div>`;
+        });
+
+        document.getElementById(containerId).innerHTML = contentHTML;
+    }
+
+    // Function to check the selected answer
+    function checkAnswer(questionIndex, containerId, questions) {
+        const selectedOption = document.querySelector(`input[name="question${questionIndex}"]:checked`);
+        const feedbackElement = document.getElementById(`${containerId}_feedback${questionIndex}`);
+
+        if (selectedOption) {
+            const answer = selectedOption.value;
+            if (answer === questions[questionIndex].correctAnswer) {
+                feedbackElement.textContent = 'Your answer is correct!';
+                feedbackElement.className = 'feedback correct';
+            } else {
+                feedbackElement.textContent = 'Your answer is incorrect.';
+                feedbackElement.className = 'feedback incorrect';
+            }
+        } else {
+            feedbackElement.textContent = '';
+        }
+    }
+
+    // Parse and display the first set of questions
+    const questionsset51 = parseCSV(csvDataset51);
+    generateQuestionHTML(questionsset51, 'question-container-set51');
+
+    // Attach event listeners to all radio buttons for the first set of questions
+    questionsset51.forEach((_, questionIndex) => {
+        document.querySelectorAll(`#question-container-set51 input[name="question${questionIndex}"]`).forEach(input => {
+            input.addEventListener('change', () => checkAnswer(questionIndex, 'question-container-set51', questionsset51));
+        });
+    });
+
+    // Toggle visibility of the first set of questions
+    const revealButtonset51 = document.getElementById('reveal-button-set51');
+    const questionContainerset51 = document.getElementById('question-container-set51');
+
+    revealButtonset51.addEventListener('click', () => {
+        if (questionContainerset51.style.display === 'none' || questionContainerset51.style.display === '') {
+            questionContainerset51.style.display = 'block';
+            revealButtonset51.textContent = 'Hide MCQs Set 1';
+        } else {
+            questionContainerset51.style.display = 'none';
+            revealButtonset51.textContent = 'Show MCQs Set 1';
+        }
+    });
+
+    // Ensure questions are hidden by default
+    questionContainerset51.style.display = 'none';
+</script>
+<p></p>
+</div>
+</div>
+<div id="statistics-in-a-regression-model" class="section level2 hasAnchor">
+<h2>11.2 Statistics in a regression model<a href="lecture-11-regression.html#statistics-in-a-regression-model" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>The least-square method can be applied to data to obtain the regression
+line. How can we judge the reliability of the regression line? How can
+we make sure that the regression line is not a product of randomness but
+reflects a substantial relation between the variables? What are the
+statistics in the regression output?</p>
+<p>To assess the statistical property of the regression line, we need to
+add some probability assumptions to the regression model:</p>
+<p><span class="math display">\[y_{i} = a + bx_{i} + u_{i}\]</span></p>
+<p>Assumption 1: <span class="math inline">\(u_{i}\sim\text{iid}\ N(0,\sigma^{2})\)</span> , where iid is the
+abbreviation of independently and identically distributed.</p>
+<p>With this assumption we can calculate for the LS estimation:</p>
+<p><span class="math display">\[\widehat{b} - b = (\sum_{i = 1}^{N}\left( x_{i} - \overline{x} \right)^{2})^{- 1}\sum_{i = 1}^{N}{\left( x_{i} - \overline{x} \right)u_{i}}\ \]</span></p>
+<p>This implies
+<span class="math inline">\(\widehat{b} - b\sim N\left( 0,s_{X}^{- 2}\sigma^{2} \right)\)</span>. This
+provides a way to test <span class="math inline">\(H_{0}:b = 0\)</span> vs. <span class="math inline">\(H_{0}:b\  \neq 0\)</span>. Rejection
+of the null hypothesis implies that the variable X has really an impact
+on the variable Y. In this way we can assess the reliability of the
+regression equation, and this is also how we interpret the regression
+output.</p>
+</div>
+<div id="interpretation-of-the-excel-regression-output" class="section level2 hasAnchor">
+<h2>11.3 Interpretation of the Excel regression output<a href="lecture-11-regression.html#interpretation-of-the-excel-regression-output" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><img src="vertopal_lecturet222/media/image28.png" style="width:4.35065in;height:2.38965in" /></p>
+<ol style="list-style-type: decimal">
+<li><p>Regression equation: <span class="math inline">\(y_{i} = a + bx_{i} + u_{i}\)</span> with a = 39.37 and
+b = 0.73, y is Years of experience, x is Age.</p></li>
+<li><p><span class="math inline">\(H_{0}:a = 0\ \)</span>vs. <span class="math inline">\(H_{1}:a \neq 0\)</span>, <em>p</em>–value is 0.000267 &lt; 0.05,
+reject the <span class="math inline">\(H_{0}:a = 0\)</span>.</p></li>
+<li><p><span class="math inline">\(H_{0}:b = 0\ \)</span>vs. <span class="math inline">\(H_{1}:b \neq 0\)</span>, p value is 0.00747&lt;0.05,
+reject <span class="math inline">\(H_{0}:a = 0\)</span>. This implies <em>x</em> influences <em>y</em>.</p></li>
+<li><p><span class="math inline">\(H_{0}:b_{1} = 0,\ \ldots.,\ b_{k} = 0\ \)</span>vs.
+<span class="math inline">\(H_{1}:at\ least\ one\ b_{j} \neq 0\)</span>, p value is 0.00747&lt;0.05,
+reject <span class="math inline">\(H_{0}:b_{1} = 0\)</span>.</p></li>
+<li><p>This implies that in independent variables x influences the
+dependent <em>y</em>.</p></li>
+<li><p>R Square is 0.61 implying the linear relation is fairly good.
+R=<span class="math inline">\(\pm\)</span><!-- -->1 is perfect linear relation.</p></li>
+<li><p>For a good linear model, we can use the regression equation to
+predict y for a given x value. E.g. For Years of Exp = 30, we have
+<span class="math inline">\(Y\  = \ 39.37 + 0.73 \times 30\)</span>=61.27, meaning an employee with 30
+years of experience has on average a salary of $61.27K.</p></li>
+</ol>
+<p></p>
+<!-- HTML for the first set of MCQs -->
+<button id="reveal-button-set52">Show MCQs Set 52</button>
+
+<div id="question-container-set52"></div>
+
+<script>
+    // Initial CSV data (3 questions)
+    const csvDataset52 = `
+What tool can be used to obtain regression parameters in Excel?
+Solver
+Data Analysis Toolpak
+Regression function
+Pivot Table
+Regression function
+What is the input range used for in Excel's regression function?
+To define the output format
+To specify the data for analysis
+To set the chart type
+To adjust the font size
+To specify the data for analysis
+What conclusion can be drawn if the p-value for H_0 : b = 0 is less than 0.05?
+Reject H_0 : b = 0
+Accept H_0 : b = 0
+Accept H_1 : b ≠ 0
+No conclusion
+Reject H_0 : b = 0
+What should be done when independent variables are insignificant in a model?
+Use the linear model for prediction
+Disregard the model
+Modify the dependent variable
+Use a different statistical test
+Disregard the model
+    `;
+
+    // Function to parse CSV data into questions
+    function parseCSV(data) {
+        const lines = data.trim().split('\n').map(line => line.trim());
+        const questions = [];
+
+        for (let i = 0; i < lines.length; i += 6) {
+            if (i + 5 < lines.length) {
+                questions.push({
+                    question: lines[i],
+                    options: lines.slice(i + 1, i + 5),
+                    correctAnswer: lines[i + 5]
+                });
+            }
+        }
+
+        return questions;
+    }
+
+    // Function to generate HTML for questions
+    function generateQuestionHTML(questions, containerId) {
+        let contentHTML = '';
+        questions.forEach((q, questionIndex) => {
+            contentHTML += `<div class="question-block">`;
+            contentHTML += `<p><strong>Question ${questionIndex + 1}:</strong> ${q.question}</p>`;
+            q.options.forEach((option, index) => {
+                contentHTML += `
+                    <div>
+                        <input type="radio" name="question${questionIndex}" id="${containerId}_option${questionIndex}_${index}" value="${option}" aria-label="${option}">
+                        <label for="${containerId}_option${questionIndex}_${index}">${option}</label>
+                    </div>
+                `;
+            });
+            contentHTML += `<div id="${containerId}_feedback${questionIndex}" class="feedback"></div>`;
+            contentHTML += `</div>`;
+        });
+
+        document.getElementById(containerId).innerHTML = contentHTML;
+    }
+
+    // Function to check the selected answer
+    function checkAnswer(questionIndex, containerId, questions) {
+        const selectedOption = document.querySelector(`input[name="question${questionIndex}"]:checked`);
+        const feedbackElement = document.getElementById(`${containerId}_feedback${questionIndex}`);
+
+        if (selectedOption) {
+            const answer = selectedOption.value;
+            if (answer === questions[questionIndex].correctAnswer) {
+                feedbackElement.textContent = 'Your answer is correct!';
+                feedbackElement.className = 'feedback correct';
+            } else {
+                feedbackElement.textContent = 'Your answer is incorrect.';
+                feedbackElement.className = 'feedback incorrect';
+            }
+        } else {
+            feedbackElement.textContent = '';
+        }
+    }
+
+    // Parse and display the first set of questions
+    const questionsset52 = parseCSV(csvDataset52);
+    generateQuestionHTML(questionsset52, 'question-container-set52');
+
+    // Attach event listeners to all radio buttons for the first set of questions
+    questionsset52.forEach((_, questionIndex) => {
+        document.querySelectorAll(`#question-container-set52 input[name="question${questionIndex}"]`).forEach(input => {
+            input.addEventListener('change', () => checkAnswer(questionIndex, 'question-container-set52', questionsset52));
+        });
+    });
+
+    // Toggle visibility of the first set of questions
+    const revealButtonset52 = document.getElementById('reveal-button-set52');
+    const questionContainerset52 = document.getElementById('question-container-set52');
+
+    revealButtonset52.addEventListener('click', () => {
+        if (questionContainerset52.style.display === 'none' || questionContainerset52.style.display === '') {
+            questionContainerset52.style.display = 'block';
+            revealButtonset52.textContent = 'Hide MCQs Set 1';
+        } else {
+            questionContainerset52.style.display = 'none';
+            revealButtonset52.textContent = 'Show MCQs Set 1';
+        }
+    });
+
+    // Ensure questions are hidden by default
+    questionContainerset52.style.display = 'none';
+</script>
+<p></p>
+</div>
+<div id="multiple-regression" class="section level2 hasAnchor">
+<h2>11.4 Multiple Regression<a href="lecture-11-regression.html#multiple-regression" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><span class="math inline">\(y_{i} = a + b_{1}x_{1i} + b_{2}x_{2i} + \ldots + b_{k}x_{\text{ki}} + u_{i}\)</span></p>
+<p>is applicable for the case in which there are more than one influencing
+variables. This is why it called multiple regression.</p>
+<p><img src="vertopal_lecturet222/media/image29.png" style="width:3.31754in;height:1.729in" /></p>
+<p><img src="vertopal_lecturet222/media/image30.png" style="width:6.21442in;height:2.432in" /></p>
+<ol style="list-style-type: decimal">
+<li>Regression equation:
+<span class="math inline">\(y_{i} = a + {b_{1}x}_{1i} + {b_{2}x}_{2i} + u_{i}\)</span> with
+<span class="math inline">\(\widehat{a} = 45.80\)</span>,</li>
+</ol>
+<blockquote>
+<p><span class="math inline">\({\widehat{b}}_{1} = 0.068,\)</span> and <span class="math inline">\({\widehat{b}}_{2} = - 0.063\)</span>. <span class="math inline">\(y\)</span> is
+Salary, <span class="math inline">\(x_{1}\)</span> is Age and <span class="math inline">\(x_{2}\)</span> is Years of experience.</p>
+</blockquote>
+<ol start="2" style="list-style-type: decimal">
+<li><p><span class="math inline">\(H_{0}:a = 0\ \)</span>vs. <span class="math inline">\(H_{1}:a \neq 0\)</span>, <em>p</em>–value is 1.04e-64 &lt; 0.05,
+reject the <span class="math inline">\(H_{0}:a = 0\)</span>. Sometimes we say the independent variable
+is insignificant.</p></li>
+<li><p><span class="math inline">\(H_{0}:b_{1} = 0\ \)</span>vs. <span class="math inline">\(H_{1}:b_{1} \neq 0\)</span>, <em>p-</em>value is
+0.41&gt;0.05, No Rejection of <span class="math inline">\(H_{0}:b_{1} = 0\)</span>. This implies <em>Age</em>
+has no influences on <em>Salary</em>.</p></li>
+<li><p><span class="math inline">\(H_{0}:b_{2} = 0\ \)</span>vs. <span class="math inline">\(H_{1}:b_{2} \neq 0\)</span>, <em>p</em> value is
+0.47&gt;0.05, No Rejection of <span class="math inline">\(H_{0}:b_{2} = 0\)</span>. This implies <em>Years
+of Experience</em> has no influences on <em>Salary</em>.</p></li>
+<li><p><span class="math inline">\(H_{0}:b_{1} = 0,\ b_{2} = 0\ \)</span>vs.
+<span class="math inline">\(H_{1}:at\ least\ one\ b_{j} \neq 0\)</span>, <em>p</em> value is 0.71, No
+rejection</p></li>
+</ol>
+<blockquote>
+<p><span class="math inline">\(H_{0}:b_{1} = 0,\ b_{2} = 0\ \)</span>, implying that in independent
+variables do not influence the dependent <em>y</em>. i.e. the regression
+model does make sense.</p>
+</blockquote>
+<ol start="6" style="list-style-type: decimal">
+<li><p>R Square is 0.047 implying the linear relation is very weak. R
+Square =<span class="math inline">\(0\)</span> implies there is no linear relation between y and xs.</p></li>
+<li><p>When the independent variables are insignificant, we should not use
+the linear model for prediction.</p></li>
+</ol>
+</div>
+<div id="multivariate-regression" class="section level2 hasAnchor">
+<h2>11.5 Multivariate Regression<a href="lecture-11-regression.html#multivariate-regression" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Often we want to assess the impact of one set of variables X on the
+other set variables Y. This is Multivariate regression. It</p>
+<p><span class="math inline">\(y_{\text{ij}} = a + b_{1j}x_{1i} + b_{2j}x_{2i} + \ldots + b_{\text{kj}}x_{\text{ki}} + u_{\text{ij}}\)</span>
+for <span class="math inline">\(j = 1,2,\ldots,M\)</span></p>
+<p>We have here M multiple regressions with the same set of independent
+variables. The implement of the multivariate regression is simply by run
+<em>M</em> times the multiple regressions. The interpretation of the results is
+done equation b equation.</p>
+<p></p>
+<!-- HTML for the first set of MCQs -->
+<button id="reveal-button-set53">Show MCQs Set 53</button>
+
+<div id="question-container-set53"></div>
+
+<script>
+    // Initial CSV data (3 questions)
+    const csvDataset53 = `
+What does a p-value of 0.71 indicate in hypothesis testing?
+Strong evidence against the null hypothesis
+Weak evidence against the null hypothesis
+No rejection of the null hypothesis
+Acceptance of the alternative hypothesis
+No rejection of the null hypothesis
+What does the implementation of multivariate regression involve?
+Running a single regression
+Running M times the multiple regressions
+Running a quadratic regression
+Running a linear regression
+Running M times the multiple regressions
+What is the role of the error term  u_{ij}  in the regression equation?
+It represents the dependent variable
+It accounts for the error in prediction
+It is a constant
+It is the independent variable
+It accounts for the error in prediction
+    `;
+
+    // Function to parse CSV data into questions
+    function parseCSV(data) {
+        const lines = data.trim().split('\n').map(line => line.trim());
+        const questions = [];
+
+        for (let i = 0; i < lines.length; i += 6) {
+            if (i + 5 < lines.length) {
+                questions.push({
+                    question: lines[i],
+                    options: lines.slice(i + 1, i + 5),
+                    correctAnswer: lines[i + 5]
+                });
+            }
+        }
+
+        return questions;
+    }
+
+    // Function to generate HTML for questions
+    function generateQuestionHTML(questions, containerId) {
+        let contentHTML = '';
+        questions.forEach((q, questionIndex) => {
+            contentHTML += `<div class="question-block">`;
+            contentHTML += `<p><strong>Question ${questionIndex + 1}:</strong> ${q.question}</p>`;
+            q.options.forEach((option, index) => {
+                contentHTML += `
+                    <div>
+                        <input type="radio" name="question${questionIndex}" id="${containerId}_option${questionIndex}_${index}" value="${option}" aria-label="${option}">
+                        <label for="${containerId}_option${questionIndex}_${index}">${option}</label>
+                    </div>
+                `;
+            });
+            contentHTML += `<div id="${containerId}_feedback${questionIndex}" class="feedback"></div>`;
+            contentHTML += `</div>`;
+        });
+
+        document.getElementById(containerId).innerHTML = contentHTML;
+    }
+
+    // Function to check the selected answer
+    function checkAnswer(questionIndex, containerId, questions) {
+        const selectedOption = document.querySelector(`input[name="question${questionIndex}"]:checked`);
+        const feedbackElement = document.getElementById(`${containerId}_feedback${questionIndex}`);
+
+        if (selectedOption) {
+            const answer = selectedOption.value;
+            if (answer === questions[questionIndex].correctAnswer) {
+                feedbackElement.textContent = 'Your answer is correct!';
+                feedbackElement.className = 'feedback correct';
+            } else {
+                feedbackElement.textContent = 'Your answer is incorrect.';
+                feedbackElement.className = 'feedback incorrect';
+            }
+        } else {
+            feedbackElement.textContent = '';
+        }
+    }
+
+    // Parse and display the first set of questions
+    const questionsset53 = parseCSV(csvDataset53);
+    generateQuestionHTML(questionsset53, 'question-container-set53');
+
+    // Attach event listeners to all radio buttons for the first set of questions
+    questionsset53.forEach((_, questionIndex) => {
+        document.querySelectorAll(`#question-container-set53 input[name="question${questionIndex}"]`).forEach(input => {
+            input.addEventListener('change', () => checkAnswer(questionIndex, 'question-container-set53', questionsset53));
+        });
+    });
+
+    // Toggle visibility of the first set of questions
+    const revealButtonset53 = document.getElementById('reveal-button-set53');
+    const questionContainerset53 = document.getElementById('question-container-set53');
+
+    revealButtonset53.addEventListener('click', () => {
+        if (questionContainerset53.style.display === 'none' || questionContainerset53.style.display === '') {
+            questionContainerset53.style.display = 'block';
+            revealButtonset53.textContent = 'Hide MCQs Set 1';
+        } else {
+            questionContainerset53.style.display = 'none';
+            revealButtonset53.textContent = 'Show MCQs Set 1';
+        }
+    });
+
+    // Ensure questions are hidden by default
+    questionContainerset53.style.display = 'none';
+</script>
+<p></p>
+
+</div>
+</div>
+<div class = rmdtranslate style="height: 100px;" style="width: 700px;">
+<div id="google_translate_element"></div>
+<script>
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+            {pageLanguage: 'en', gaId: 'UA-88838732-1'},
+            'google_translate_element'
+        );
+
+        /*
+            To remove the "powered by google",
+            uncomment one of the following code blocks.
+            NB: This breaks Google's Attribution Requirements:
+            https://developers.google.com/translate/v2/attribution#attribution-and-logos
+        */
+
+        // Native (but only works in browsers that support query selector)
+        //if(typeof(document.querySelector) == 'function') {
+        //    document.querySelector('.goog-logo-link').setAttribute('style', 'display: none');
+        //    document.querySelector('.goog-te-gadget').setAttribute('style', 'font-size: 0');
+        //}
+
+        // If you have jQuery - works cross-browser - uncomment this
+        // jQuery('.goog-logo-link').css('display', 'none');
+        // jQuery('.goog-te-gadget').css('font-size', '0');
+    }
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</div>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Website with Chatbot Button</title>
+<style>
+  /* Style your chatbot button */
+  #chatbot-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1001; /* Ensure the chatbot button is above the interactive content */
+  }
+
+  /* Style the interactive content */
+  #interactive-content {
+    display: none;
+    position: absolute;
+    bottom: 70px;
+    right: 20px;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-width: 0.5px; /* Adjust the border width as needed */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+
+  /* Style the iframe with specific width and height */
+  #interactive-frame {
+    width: 800px; /* Set the width you prefer */
+    height: 800px; /* Set the height you prefer */
+    border: none;
+  }
+
+  /* Style the full-screen button */
+  #fullscreen-button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+  <!-- Chatbot button -->
+  <button id="chatbot-button">Peer AI</button>
+
+  <!-- Interactive content -->
+  <div id="interactive-content">
+    <!-- Your interactive website content goes here -->
+    <iframe id="interactive-frame" src="https://chatgptfree.ai/"></iframe>
+    <button id="fullscreen-button">Toggle Full Screen</button>
+  </div>
+
+  <script>
+    // Get references to elements
+    const chatbotButton = document.getElementById('chatbot-button');
+    const interactiveContent = document.getElementById('interactive-content');
+    const interactiveFrame = document.getElementById('interactive-frame');
+    const fullscreenButton = document.getElementById('fullscreen-button');
+
+    // Toggle the visibility of the interactive content and full-screen button
+    chatbotButton.addEventListener('click', () => {
+      if (interactiveContent.style.display === 'none') {
+        interactiveContent.style.display = 'block';
+        fullscreenButton.style.display = 'block';
+      } else {
+        interactiveContent.style.display = 'none';
+        fullscreenButton.style.display = 'none';
+      }
+    });
+
+    // Toggle full-screen mode for the interactive frame
+    fullscreenButton.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        interactiveFrame.requestFullscreen().catch(err => {
+          console.error('Error attempting to enable full-screen:', err);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    });
+  </script>
+</body>
+</html>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="lecture-10-statistical-testing.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/benmarwick/bookdown-ort/edit/master/11lecture11.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

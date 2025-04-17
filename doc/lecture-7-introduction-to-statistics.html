@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Lecture 7 Introduction to Statistics | Business Statistics</title>
+  <meta name="description" content="These lecture notes adopt the template of ‘a minimal example of using the bookdown package to write a book’ by Yihui Xie. The output format for this example is bookdown::gitbook." />
+  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Lecture 7 Introduction to Statistics | Business Statistics" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="These lecture notes adopt the template of ‘a minimal example of using the bookdown package to write a book’ by Yihui Xie. The output format for this example is bookdown::gitbook." />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Lecture 7 Introduction to Statistics | Business Statistics" />
+  
+  <meta name="twitter:description" content="These lecture notes adopt the template of ‘a minimal example of using the bookdown package to write a book’ by Yihui Xie. The output format for this example is bookdown::gitbook." />
+  
+
+<meta name="author" content="Pu Chen" />
+
+
+<meta name="date" content="2024-08-20" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+<link rel="next" href="lecture-8-sample-population-random-variable-and-probability.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script async defer src="https://hypothes.is/embed.js"></script>
+
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Proface</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html"><i class="fa fa-check"></i>Lecture 7 Introduction to Statistics</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#sources-of-data"><i class="fa fa-check"></i>7.1.1 Sources of data</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#components-of-a-data-set"><i class="fa fa-check"></i>7.1.2 Components of a data set</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#variable-types-and-scales-of-measurement"><i class="fa fa-check"></i>7.1.3 Variable types and scales of measurement</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#statistical-way-of-study"><i class="fa fa-check"></i>7.1.4 Statistical Way of Study</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#characteristics-of-a-statiatical-variable"><i class="fa fa-check"></i>7.1.5 Characteristics of a statiatical variable</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#descriptive-statistics"><i class="fa fa-check"></i>7.2 Descriptive Statistics</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#frequency-tables"><i class="fa fa-check"></i>7.2.1 Frequency tables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#diagrams"><i class="fa fa-check"></i>7.2.2 Diagrams</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#column-charts-bar-charts-and-pie-charts"><i class="fa fa-check"></i>7.2.2.1 Column charts, bar charts, and pie charts</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#histogram"><i class="fa fa-check"></i>7.2.2.2 Histogram</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#numerical-measures"><i class="fa fa-check"></i>7.2.3 Numerical measures</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#measures-of-central-location"><i class="fa fa-check"></i>7.2.3.1 Measures of central location</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#measures-of-variation-dispersion"><i class="fa fa-check"></i>7.2.3.2 Measures of variation (dispersion):</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#rules-of-68-95-and-99.7"><i class="fa fa-check"></i>7.2.4 Rules of 68, 95, and 99.7</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#descriptive-statistis-for-two-statistical-variables"><i class="fa fa-check"></i>7.2.5 Descriptive statistis for two statistical variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-categotical-variables"><i class="fa fa-check"></i>7.2.5.1 Two categotical variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-way-tables-for-two-categorical-variables"><i class="fa fa-check"></i>Two way tables for two categorical variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#clustered-column-charts"><i class="fa fa-check"></i>Clustered column charts</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#one-categorical-variable-one-numerical-variable"><i class="fa fa-check"></i>7.2.5.2 One categorical variable one numerical variable</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-way-table-for-categorical-and-numerical-variables"><i class="fa fa-check"></i>Two-way table for categorical and numerical variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#comparative-box-plots"><i class="fa fa-check"></i>Comparative box plots</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-numerical-variables"><i class="fa fa-check"></i>7.5.2.3 Two numerical variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#two-way-frequency-table"><i class="fa fa-check"></i>Two-way frequency table</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#covariance-and-correlation-coefficient"><i class="fa fa-check"></i>Covariance and correlation coefficient</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#scatter-plot"><i class="fa fa-check"></i>Scatter plot</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#correlation-coefficient-and-scatter-plot"><i class="fa fa-check"></i>Correlation coefficient and scatter plot</a></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#overview-of-types-of-variables-and-the-used-descriptive-tools"><i class="fa fa-check"></i>Overview of types of variables and the used descriptive tools</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#examples-of-applications"><i class="fa fa-check"></i>7.2.6 Examples of applications:</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#summary"><i class="fa fa-check"></i>Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-7-introduction-to-statistics.html"><a href="lecture-7-introduction-to-statistics.html#review-questions"><i class="fa fa-check"></i>Review questions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html"><i class="fa fa-check"></i>Lecture 8 Sample, Population, Random Variable and Probability</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#principle-of-simple-random-sample"><i class="fa fa-check"></i>8.1 Principle of simple random sample</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#description-of-a-population-by-random-variables"><i class="fa fa-check"></i>8.2 Description of a Population by random variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#discrete-random-variables"><i class="fa fa-check"></i>8.3 Discrete random variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#relation-between-random-variables"><i class="fa fa-check"></i>8.4. Relation between random variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#joint-probability"><i class="fa fa-check"></i>8.4.1 Joint probability</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#marginal-probability"><i class="fa fa-check"></i>8.4.2 Marginal Probability</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#conditional-probability"><i class="fa fa-check"></i>8.4.3 Conditional Probability</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#independence"><i class="fa fa-check"></i>8.4.4 Independence</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#continuous-random-variables"><i class="fa fa-check"></i>8.5. Continuous random variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#uniformly-distributed-random-variables"><i class="fa fa-check"></i>8.5.1. Uniformly distributed random variables</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#normally-distributed-random-variables"><i class="fa fa-check"></i>8.5.2. Normally distributed random variables</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#numerical-measures-of-random-variables"><i class="fa fa-check"></i>5.6 Numerical measures of random variables</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#expected-value-and-variance"><i class="fa fa-check"></i>5.6.1 Expected value and Variance</a></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#rules-of-expected-valuevariance-and-covariace"><i class="fa fa-check"></i>Rules of expected value,variance and covariace</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-8-sample-population-random-variable-and-probability.html"><a href="lecture-8-sample-population-random-variable-and-probability.html#review-questions-1"><i class="fa fa-check"></i>Review questions</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html"><i class="fa fa-check"></i>Lecture 9 Simple Random Sample and Paramter Estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#simple-random-sample"><i class="fa fa-check"></i>9.1 Simple random sample</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#law-of-large-numbers-lln"><i class="fa fa-check"></i>9.1.1 Law of large numbers (LLN)</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#central-limit-theorem-clt"><i class="fa fa-check"></i>9.1.2 Central limit theorem (CLT)</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#parameter-estimation"><i class="fa fa-check"></i>9.2 Parameter estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#point-estimation"><i class="fa fa-check"></i>9.2.1 Point estimation</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#interval-estimation"><i class="fa fa-check"></i>9.2.2 Interval estimation</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#interpretation-of-confidence-interval"><i class="fa fa-check"></i>6.2.3 Interpretation of confidence interval</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#quality-of-an-estimator"><i class="fa fa-check"></i>9.3 Quality of an estimator</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#consistence"><i class="fa fa-check"></i>9.3.1 Consistence</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#unbiasedness"><i class="fa fa-check"></i>9.3.2 Unbiasedness</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#chapter-summary"><i class="fa fa-check"></i>Chapter Summary</a></li>
+<li class="chapter" data-level="" data-path="lecture-9-simple-random-sample-and-paramter-estimation.html"><a href="lecture-9-simple-random-sample-and-paramter-estimation.html#review-questions-2"><i class="fa fa-check"></i>Review questions:</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html"><i class="fa fa-check"></i>Lecture 10 Statistical Testing</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#test-as-searching-for-indication-of-updating-the-population-knowledge"><i class="fa fa-check"></i>10.1 Test as searching for indication of updating the population knowledge</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#formal-procedure-of-a-statistical-test"><i class="fa fa-check"></i>10.2 Formal procedure of a statistical test</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#tests-of-population-means-proportion"><i class="fa fa-check"></i>10.3 Tests of population means (proportion)</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#compare-two-population-means"><i class="fa fa-check"></i>10.4 Compare two population means</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#from-t-test-to-chi2-test"><i class="fa fa-check"></i>10.5 From t-test to <span class="math inline">\(\chi^2\)</span> test</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#test-of-multinomial-proportions"><i class="fa fa-check"></i>10.6 Test of multinomial proportions**</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#test-of-independence"><i class="fa fa-check"></i>10.7 Test of independence</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#test-of-normality"><i class="fa fa-check"></i>10.8 Test of normality</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#anova"><i class="fa fa-check"></i>10.9 ANOVA</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#one-way-anova"><i class="fa fa-check"></i>10.9.1 One-way ANOVA</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#two-way-anova"><i class="fa fa-check"></i>10.9.2 Two-way ANOVA</a></li>
+<li class="chapter" data-level="" data-path="lecture-10-statistical-testing.html"><a href="lecture-10-statistical-testing.html#review-questions-3"><i class="fa fa-check"></i>Review questions</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html"><i class="fa fa-check"></i>Lecture 11 Regression</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#motivation-of-simple-regression"><i class="fa fa-check"></i>11.1 Motivation of Simple Regression</a></li>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#least-squares-method"><i class="fa fa-check"></i>6.2 Least squares method</a>
+<ul>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#least-square-methd-and-regression-line"><i class="fa fa-check"></i>Least Square Methd and Regression Line</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#statistics-in-a-regression-model"><i class="fa fa-check"></i>11.2 Statistics in a regression model</a></li>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#interpretation-of-the-excel-regression-output"><i class="fa fa-check"></i>11.3 Interpretation of the Excel regression output</a></li>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#multiple-regression"><i class="fa fa-check"></i>11.4 Multiple Regression</a></li>
+<li class="chapter" data-level="" data-path="lecture-11-regression.html"><a href="lecture-11-regression.html#multivariate-regression"><i class="fa fa-check"></i>11.5 Multivariate Regression</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Business Statistics</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="lecture-7-introduction-to-statistics" class="section level1 hasAnchor">
+<h1>Lecture 7 Introduction to Statistics<a href="lecture-7-introduction-to-statistics.html#lecture-7-introduction-to-statistics" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p><strong>Definition of Statistics</strong></p>
+<p>Statistics is the study of collecting, analyzing, and interpreting data. In the time of information society, data are flooding everywhere. Statistics is the tool for transforming data into useful products.</p>
+<div id="sources-of-data" class="section level2 hasAnchor">
+<h2>7.1.1 Sources of data<a href="lecture-7-introduction-to-statistics.html#sources-of-data" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ul>
+<li><p>Primary data: data collected by the researcher himself.</p></li>
+<li><p>Secondary data: data collected by others.</p></li>
+</ul>
+<!-- HTML for the first set of MCQs -->
+<button id="reveal-button-set1">Show MCQs Set 1</button>
+
+<div id="question-container-set1"></div>
+
+<script>
+    // Initial CSV data (3 questions)
+    const csvDataSet1 = `
+            When you use the data downloaded from ABS website, is the ABS data primary or secondary?
+            primary
+            secondary
+            primary and secondar
+            I do not know.
+            secondary
+            When you collect data by youself and use the data to do research, it the data primary or secondary?
+            primary
+            secondary
+            primary and secondar
+            I do not know.
+            primary
+            When ABS stuff used ABS data do research, it the data primary or secondary?
+            primary
+            secondary
+            primary and secondar
+            I do not know.
+            primary
+    `;
+
+    // Function to parse CSV data into questions
+    function parseCSV(data) {
+        const lines = data.trim().split('\n').map(line => line.trim());
+        const questions = [];
+
+        for (let i = 0; i < lines.length; i += 6) {
+            if (i + 5 < lines.length) {
+                questions.push({
+                    question: lines[i],
+                    options: lines.slice(i + 1, i + 5),
+                    correctAnswer: lines[i + 5]
+                });
+            }
+        }
+
+        return questions;
+    }
+
+    // Function to generate HTML for questions
+    function generateQuestionHTML(questions, containerId) {
+        let contentHTML = '';
+        questions.forEach((q, questionIndex) => {
+            contentHTML += `<div class="question-block">`;
+            contentHTML += `<p><strong>Question ${questionIndex + 1}:</strong> ${q.question}</p>`;
+            q.options.forEach((option, index) => {
+                contentHTML += `
+                    <div>
+                        <input type="radio" name="question${questionIndex}" id="${containerId}_option${questionIndex}_${index}" value="${option}" aria-label="${option}">
+                        <label for="${containerId}_option${questionIndex}_${index}">${option}</label>
+                    </div>
+                `;
+            });
+            contentHTML += `<div id="${containerId}_feedback${questionIndex}" class="feedback"></div>`;
+            contentHTML += `</div>`;
+        });
+
+        document.getElementById(containerId).innerHTML = contentHTML;
+    }
+
+    // Function to check the selected answer
+    function checkAnswer(questionIndex, containerId, questions) {
+        const selectedOption = document.querySelector(`input[name="question${questionIndex}"]:checked`);
+        const feedbackElement = document.getElementById(`${containerId}_feedback${questionIndex}`);
+
+        if (selectedOption) {
+            const answer = selectedOption.value;
+            if (answer === questions[questionIndex].correctAnswer) {
+                feedbackElement.textContent = 'Your answer is correct!';
+                feedbackElement.className = 'feedback correct';
+            } else {
+                feedbackElement.textContent = 'Your answer is incorrect.';
+                feedbackElement.className = 'feedback incorrect';
+            }
+        } else {
+            feedbackElement.textContent = '';
+        }
+    }
+
+    // Parse and display the first set of questions
+    const questionsSet1 = parseCSV(csvDataSet1);
+    generateQuestionHTML(questionsSet1, 'question-container-set1');
+
+    // Attach event listeners to all radio buttons for the first set of questions
+    questionsSet1.forEach((_, questionIndex) => {
+        document.querySelectorAll(`#question-container-set1 input[name="question${questionIndex}"]`).forEach(input => {
+            input.addEventListener('change', () => checkAnswer(questionIndex, 'question-container-set1', questionsSet1));
+        });
+    });
+
+    // Toggle visibility of the first set of questions
+    const revealButtonSet1 = document.getElementById('reveal-button-set1');
+    const questionContainerSet1 = document.getElementById('question-container-set1');
+
+    revealButtonSet1.addEventListener('click', () => {
+        if (questionContainerSet1.style.display === 'none' || questionContainerSet1.style.display === '') {
+            questionContainerSet1.style.display = 'block';
+            revealButtonSet1.textContent = 'Hide MCQs Set 1';
+        } else {
+            questionContainerSet1.style.display = 'none';
+            revealButtonSet1.textContent = 'Show MCQs Set 1';
+        }
+    });
+
+    // Ensure questions are hidden by default
+    questionContainerSet1.style.display = 'none';
+</script>
+<p></p>
+<p></p>
+<p><strong>Using Google Form to collect primary data</strong></p>
+<ul>
+<li>Step 1 Register a Google account</li>
+<li>Step 2 Add a Google Form in the Google drive</li>
+<li>Step 3 Design the survey questions via editing the Google Form</li>
+<li>Step 4 Preview the Google Form and the Google Sheet for a pilot run</li>
+<li>Step 5 Distribute the final Google Form via email or via a Link or via a QR code</li>
+</ul>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/JIbWFGE0mcg?si=exZSQcWGqac7at_Y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen>
+</iframe>
+</div>
+<div id="components-of-a-data-set" class="section level2 hasAnchor">
+<h2>7.1.2 Components of a data set<a href="lecture-7-introduction-to-statistics.html#components-of-a-data-set" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>As a result of a data collection process we obtain a data set. A typical data set looks like a data table as follows.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="lecture-7-introduction-to-statistics.html#cb1-1" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_url</span>(<span class="at">url =</span> <span class="st">&quot;https://docs.google.com/spreadsheets/d/1EmcgT4ztn_ux0r3exca0taNEwU2fsMaQvsHYbGibHOE/edit#gid=0&quot;</span>, <span class="at">height =</span> <span class="st">&quot;450px&quot;</span>)</span></code></pre></div>
+<iframe src="https://docs.google.com/spreadsheets/d/1EmcgT4ztn_ux0r3exca0taNEwU2fsMaQvsHYbGibHOE/edit#gid=0" width="100%" height="450px" data-external="1">
+</iframe>
+<p></p>
+<p><strong>Four components of a data set: Elements, variables, observations, and size</strong></p>
+<ul>
+<li><strong>Element</strong>: is the basic unit on which we measure its characteristics and collect the data. The set of all elements is called <a href="https://en.wikipedia.org/wiki/Statistical_population">population</a>. A census is a survey that collects data for the entire population. Data collected for a subset of the population is referred to as <a href="https://en.wikipedia.org/wiki/Sampling_(statistics)">sample data</a>.</li>
+<li><strong>Variables</strong>: describe common characteristics of elements.<br />
+</li>
+<li><strong>Observation</strong>: is the records of the values measured on one element</li>
+<li><strong>Size</strong>: is the total number of observations in the data set. It is also the total number of elements in the data set. Often, we call a data set sample data set and the size of the data set sample size.</li>
+</ul>
+</div>
+<div id="variable-types-and-scales-of-measurement" class="section level2 hasAnchor">
+<h2>7.1.3 Variable types and scales of measurement<a href="lecture-7-introduction-to-statistics.html#variable-types-and-scales-of-measurement" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Types of statistical variables
+- categorical
+- numerical</p>
+<p>scale of measurement
+- For categorical variables: nominal or ordinal
+- For numerical variables: discrete or continuous</p>
+<p>Examples:</p>
+<ul>
+<li>Gender is a nominal categorical variable despite that it is coded in numbers 1 and 2</li>
+<li>Job satisfaction score is an ordinal categorical variable because we know 2 is above 1 and 3 is above 2, etc. But we do not have 1 + 1 = 2.</li>
+<li>Age is discrete numerical variable because it takes only integer values.</li>
+<li>Salary is a continuous numerical variable.</li>
+</ul>
+<!-- HTML for the additional set of MCQs -->
+<button id="reveal-button-set2">Show MCQs Set 2</button>
+
+<div id="question-container-set2"></div>
+
+<script>
+    // Additional CSV data (3 questions)
+    const csvDataSet2 = `
+        What type of variable is Salary?
+        categorical
+        numerical 
+        quantitative
+        qualitative
+        numerical 
+        What is the scale of measurement Department?
+        nominal 
+        ordinal
+        discrete
+        continuous
+        nominal 
+        What type of variable is Promotion?
+        categorical
+        numerical 
+        quantitative
+        qualitative
+        categorical
+        What is the scale of measurement of Job Satisfaction Score?
+        nominal 
+        ordinal
+        discrete
+        continuous
+        ordinal  
+        What is the scale of measurement of Salary?
+        nominal 
+        ordinal
+        discrete
+        continuous
+        continuous
+    `;
+
+    // Function to parse CSV data into questions
+    function parseCSV(data) {
+        const lines = data.trim().split('\n').map(line => line.trim());
+        const questions = [];
+
+        for (let i = 0; i < lines.length; i += 6) {
+            if (i + 5 < lines.length) {
+                questions.push({
+                    question: lines[i],
+                    options: lines.slice(i + 1, i + 5),
+                    correctAnswer: lines[i + 5]
+                });
+            }
+        }
+
+        return questions;
+    }
+
+    // Function to generate HTML for questions
+    function generateQuestionHTML(questions, containerId) {
+        let contentHTML = '';
+        questions.forEach((q, questionIndex) => {
+            contentHTML += `<div class="question-block">`;
+            contentHTML += `<p><strong>Question ${questionIndex + 1}:</strong> ${q.question}</p>`;
+            q.options.forEach((option, index) => {
+                contentHTML += `
+                    <div>
+                        <input type="radio" name="question${questionIndex}" id="${containerId}_option${questionIndex}_${index}" value="${option}" aria-label="${option}">
+                        <label for="${containerId}_option${questionIndex}_${index}">${option}</label>
+                    </div>
+                `;
+            });
+            contentHTML += `<div id="${containerId}_feedback${questionIndex}" class="feedback"></div>`;
+            contentHTML += `</div>`;
+        });
+
+        document.getElementById(containerId).innerHTML = contentHTML;
+    }
+
+    // Function to check the selected answer
+    function checkAnswer(questionIndex, containerId, questions) {
+        const selectedOption = document.querySelector(`input[name="question${questionIndex}"]:checked`);
+        const feedbackElement = document.getElementById(`${containerId}_feedback${questionIndex}`);
+
+        if (selectedOption) {
+            const answer = selectedOption.value;
+            if (answer === questions[questionIndex].correctAnswer) {
+                feedbackElement.textContent = 'Your answer is correct!';
+                feedbackElement.className = 'feedback correct';
+            } else {
+                feedbackElement.textContent = 'Your answer is incorrect.';
+                feedbackElement.className = 'feedback incorrect';
+            }
+        } else {
+            feedbackElement.textContent = '';
+        }
+    }
+
+    // Parse and display the additional set of questions
+    const questionsSet2 = parseCSV(csvDataSet2);
+    generateQuestionHTML(questionsSet2, 'question-container-set2');
+
+    // Attach event listeners to all radio buttons for the additional set of questions
+    questionsSet2.forEach((_, questionIndex) => {
+        document.querySelectorAll(`#question-container-set2 input[name="question${questionIndex}"]`).forEach(input => {
+            input.addEventListener('change', () => checkAnswer(questionIndex, 'question-container-set2', questionsSet2));
+        });
+    });
+
+    // Toggle visibility of the additional set of questions
+    const revealButtonSet2 = document.getElementById('reveal-button-set2');
+    const questionContainerSet2 = document.getElementById('question-container-set2');
+
+    revealButtonSet2.addEventListener('click', () => {
+        if (questionContainerSet2.style.display === 'none' || questionContainerSet2.style.display === '') {
+            questionContainerSet2.style.display = 'block';
+            revealButtonSet2.textContent = 'Hide MCQs Set 2';
+        } else {
+            questionContainerSet2.style.display = 'none';
+            revealButtonSet2.textContent = 'Show MCQs Set 2';
+        }
+    });
+
+    // Ensure questions are hidden by default
+    questionContainerSet2.style.display = 'none';
+</script>
+<p></p>
+</div>
+<div id="statistical-way-of-study" class="section level2 hasAnchor">
+<h2>7.1.4 Statistical Way of Study<a href="lecture-7-introduction-to-statistics.html#statistical-way-of-study" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>Population</strong> and <strong>Sample</strong></p>
+<p>Statistics is often applied to solve problems associated with large numbers of elements called a population. The statistical study begins with collecting data that characterize the problem. If data is collected from the entire population, it is called a census. Typically, data are collected not from the entire population but only from a subset called a sample. The main task in statistics is analyzing the sample data in order to draw conclusions about the population.</p>
+<p><strong>Descriptive Statistics</strong> and <strong>Inferential Statistics</strong></p>
+<p>Describing and making statements about sample data are tasks of <a href="https://en.wikipedia.org/wiki/Descriptive_statistics">descriptive statistics</a>, typically involving the use of tables, graphs, numerical measures, and text to summarize and illustrate data. Making conclusions and statements about the population are tasks of <a href="https://en.wikipedia.org/wiki/Statistical_inference">inferential statistics</a>, typically involving making assumptions about the population, estimating parameters, testing hypotheses, forecasting, and constructing statistical models.</p>
+<p><strong>Observational Studies</strong> and <strong>Experimental Studies</strong></p>
+<p>Statistical studies can be classified into <a href="https://en.wikipedia.org/wiki/Observational_study">observational studies and experimental studies</a>. In an observational study, researchers observe what happens naturally instead of intervening with specific treatments. In an experimental study, researchers control the study by controlling as many variables as possible. While in business and economics most studies are observational, in medicine and psychology most studies are experimental.</p>
+</div>
+<div id="characteristics-of-a-statiatical-variable" class="section level2 hasAnchor">
+<h2>7.1.5 Characteristics of a statiatical variable<a href="lecture-7-introduction-to-statistics.html#characteristics-of-a-statiatical-variable" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>In classical scientific disciplines like mechanics or physics, we are accustomed to using a variable to describe a single object, such as the speed of a car, the body temperature of a person, or the income of the Smith family. These variables typically assume one value at a given time point. In contrast, a statistical variable is used to describe a large number of objects, such as the “Salary” variable in the dataset above, which describes the salaries of 300 employees. Therefore, to understand a statistical variable, we must always remember that it typically assumes different values simultaneously, and we aim to comprehend the variable as a whole with all its possible values.</p>
+<!-- HTML for the first set of MCQs -->
+<button id="reveal-button-set3">Show MCQs Set 3</button>
+
+<div id="question-container-set3"></div>
+
+<script>
+    // Initial CSV data (3 questions)
+    const csvDataset3 = `
+What is the main difference between a statistical variable and a variable in mechanics?
+A: The value of a statistical variable can change.
+B: A statistical variable assumes a large number of values at a given time point, while a mechanical variable assumes one value at a given time point. 
+C: A mechnical variable describes a single object while a statistical variable describes a population containing a large number of objects. 
+D: Both B and C.
+D: Both B and C.
+What is the primary difference between a classical variable in mechanics and a statistical variable?
+A classical variable describes a large number of objects, while a statistical variable describes a single object.
+A classical variable assumes multiple values simultaneously, while a statistical variable assumes one value at a time.
+A classical variable is used in physics only, while a statistical variable is used in business only.
+A classical variable is used to describe a single object at a specific time, while a statistical variable describes a large number of objects.
+A classical variable is used to describe a single object at a specific time, while a statistical variable describes a large number of objects.
+How should one understand a statistical variable?
+By focusing on the individual values it can take.
+By comprehending the variable as a whole with all its possible values.
+By calculating the average value of the variable.
+By determining the most frequent value of the variable.
+By comprehending the variable as a whole with all its possible values.
+    `;
+
+    // Function to parse CSV data into questions
+    function parseCSV(data) {
+        const lines = data.trim().split('\n').map(line => line.trim());
+        const questions = [];
+
+        for (let i = 0; i < lines.length; i += 6) {
+            if (i + 5 < lines.length) {
+                questions.push({
+                    question: lines[i],
+                    options: lines.slice(i + 1, i + 5),
+                    correctAnswer: lines[i + 5]
+                });
+            }
+        }
+
+        return questions;
+    }
+
+    // Function to generate HTML for questions
+    function generateQuestionHTML(questions, containerId) {
+        let contentHTML = '';
+        questions.forEach((q, questionIndex) => {
+            contentHTML += `<div class="question-block">`;
+            contentHTML += `<p><strong>Question ${questionIndex + 1}:</strong> ${q.question}</p>`;
+            q.options.forEach((option, index) => {
+                contentHTML += `
+                    <div>
+                        <input type="radio" name="question${questionIndex}" id="${containerId}_option${questionIndex}_${index}" value="${option}" aria-label="${option}">
+                        <label for="${containerId}_option${questionIndex}_${index}">${option}</label>
+                    </div>
+                `;
+            });
+            contentHTML += `<div id="${containerId}_feedback${questionIndex}" class="feedback"></div>`;
+            contentHTML += `</div>`;
+        });
+
+        document.getElementById(containerId).innerHTML = contentHTML;
+    }
+
+    // Function to check the selected answer
+    function checkAnswer(questionIndex, containerId, questions) {
+        const selectedOption = document.querySelector(`input[name="question${questionIndex}"]:checked`);
+        const feedbackElement = document.getElementById(`${containerId}_feedback${questionIndex}`);
+
+        if (selectedOption) {
+            const answer = selectedOption.value;
+            if (answer === questions[questionIndex].correctAnswer) {
+                feedbackElement.textContent = 'Your answer is correct!';
+                feedbackElement.className = 'feedback correct';
+            } else {
+                feedbackElement.textContent = 'Your answer is incorrect.';
+                feedbackElement.className = 'feedback incorrect';
+            }
+        } else {
+            feedbackElement.textContent = '';
+        }
+    }
+
+    // Parse and display the first set of questions
+    const questionsset3 = parseCSV(csvDataset3);
+    generateQuestionHTML(questionsset3, 'question-container-set3');
+
+    // Attach event listeners to all radio buttons for the first set of questions
+    questionsset3.forEach((_, questionIndex) => {
+        document.querySelectorAll(`#question-container-set3 input[name="question${questionIndex}"]`).forEach(input => {
+            input.addEventListener('change', () => checkAnswer(questionIndex, 'question-container-set3', questionsset3));
+        });
+    });
+
+    // Toggle visibility of the first set of questions
+    const revealButtonset3 = document.getElementById('reveal-button-set3');
+    const questionContainerset3 = document.getElementById('question-container-set3');
+
+    revealButtonset3.addEventListener('click', () => {
+        if (questionContainerset3.style.display === 'none' || questionContainerset3.style.display === '') {
+            questionContainerset3.style.display = 'block';
+            revealButtonset3.textContent = 'Hide MCQs Set 1';
+        } else {
+            questionContainerset3.style.display = 'none';
+            revealButtonset3.textContent = 'Show MCQs Set 1';
+        }
+    });
+
+    // Ensure questions are hidden by default
+    questionContainerset3.style.display = 'none';
+</script>
+<p></p>
+</div>
+<div id="descriptive-statistics" class="section level2 hasAnchor">
+<h2>7.2 Descriptive Statistics<a href="lecture-7-introduction-to-statistics.html#descriptive-statistics" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>Use the following 4 ways to to describe statistical variables.</p>
+<ul>
+<li>Tables</li>
+<li>Graphs</li>
+<li>Numerical measures</li>
+<li>Texts</li>
+</ul>
+</div>
+<div id="frequency-tables" class="section level2 hasAnchor">
+<h2>7.2.1 Frequency tables<a href="lecture-7-introduction-to-statistics.html#frequency-tables" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div class="float">
+<img src="table0.jpg" alt="Frequency table of Gender" />
+<div class="figcaption"><strong>Frequency table of Gender</strong></div>
+</div>
+<p>Beside the frequency table, a bar chart or a pie chart is use to to present the data.</p>
+<div class="float">
+<img src="vertopal_lecturet222/media/table0barpiechart.jpg" alt="Bar chart and Pie chart" />
+<div class="figcaption"><strong>Bar chart and Pie chart</strong></div>
+</div>
+<p>Data of one statistical variable appears as one column in a data set. Frequency is the counts a particular value appears in the column. We use a frequency table to summarise the data, where all possible values in the data are listed in the first column and the corresponding frequencies in the second column.</p>
+<div class="float">
+<img src="table1.jpg" alt="Frequency table of Job Satisfaction Score befor Training" />
+<div class="figcaption"><strong>Frequency table of Job Satisfaction Score befor Training</strong></div>
+</div>
+<p></p>
+<p>Using mathematical notation, the frequency table can be written as follows:</p>
+<p>p(Job Satisfaction=1)=0.31 <span class="math inline">\(\hspace{2cm}\)</span> p(Job Satisfaction=2)=0.37<br />
+p(Job Satisfaction≤3)=0.91 <span class="math inline">\(\hspace{2cm}\)</span> p(2≤Job Satisfaction≤3)=0.60</p>
+<p>The last formula above indicates that the proportion for the variable Job Satisfaction to assume a value between 2 and 3 is 60%.</p>
+<p>There are valid reasons for including a relative frequency column in the frequency table. It is important to remember that the ultimate objective of the statistical study is to address job satisfaction issues within the population. For a company with more than 400 thousand employees, the fact that 91 employees scored “1” for Job Satisfaction may not be as relevant as the realization that 31% of the employees scored “1”. Sometimes, a column of cumulative frequency is included because it provides information about the percentage of scores up to a certain point.</p>
+</div>
+<div id="diagrams" class="section level2 hasAnchor">
+<h2>7.2.2 Diagrams<a href="lecture-7-introduction-to-statistics.html#diagrams" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="column-charts-bar-charts-and-pie-charts" class="section level3 hasAnchor">
+<h3>7.2.2.1 Column charts, bar charts, and pie charts<a href="lecture-7-introduction-to-statistics.html#column-charts-bar-charts-and-pie-charts" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><img src="barchartpiechart.jpg" alt="Bar chart and Pie chart for Job Satisfaction Score before Training" />
+</p>
+<p>In the charts above we see that Job Satisfaction can assume 5 different values and the most frequent value is 2 then 1 and less less frequent values are 3, 4 and 5. While the bar chart emphasizes the absolute frequencies the pie chart is more suitable to show the relative frequencies.</p>
+</div>
+<div id="histogram" class="section level3 hasAnchor">
+<h3>7.2.2.2 Histogram<a href="lecture-7-introduction-to-statistics.html#histogram" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>For numerical variables, we need to group the data first and then create the frequency table. The reason is that, in principle, it may happen that no two values of a continuous variable are identical, and hence the frequency would always have value 1 for all possibly different values.</p>
+<p>For the variable <strong>Age</strong>, we have:</p>
+<div class="float">
+<img src="table2.jpg" alt="Frequency tables of Age with two different groupping" />
+<div class="figcaption"><strong>Frequency tables of Age with two different groupping</strong></div>
+</div>
+<p></p>
+<div class="float">
+<img src="histogram.jpg" alt="** Figure 2 Histogram of Age with two different groupping**" />
+<div class="figcaption">** Figure 2 Histogram of Age with two different groupping**</div>
+</div>
+<p></p>
+<p><strong>Choice of the number of bins and its impact</strong></p>
+<p></p>
+<!-- Histogram with Adjustable Number of Bins -->
+<div id="histogram-bin-container">
+    <div>
+        <label for="numBins">Number of Bins:</label>
+        <input type="range" id="numBins" min="5" max="40" step="1" value="10">
+        <span id="numBins-value">10</span>
+    </div>
+    <div id="histogram-bin" style="border: 2px solid black; width: 800px; height: 500px;"></div>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    // Function to generate normal random data
+    function generateNormalData(mean, stdDev, size) {
+        const data = [];
+        for (let i = 0; i < size; i++) {
+            const u1 = Math.random();
+            const u2 = Math.random();
+            const z1 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+            data.push(mean + stdDev * z1);
+        }
+        return data;
+    }
+
+    function updateHistogram() {
+        const numBins = parseInt(document.getElementById('numBins').value);
+        document.getElementById('numBins-value').textContent = numBins;
+
+        const data = generateNormalData(0, 1, 300); // Mean = 0, StdDev = 1, 300 data points
+
+        const trace = {
+            x: data,
+            type: 'histogram',
+            nbinsx: numBins, // Set the number of bins
+            marker: { color: 'rgba(75, 192, 192, 0.5)' },
+            opacity: 0.7
+        };
+
+        const layout = {
+            xaxis: { title: 'Value' },
+            yaxis: { title: 'Frequency', rangemode: 'tozero' }, // Ensure y-axis starts at zero
+            title: `Histogram with ${numBins} Bins`
+        };
+
+        Plotly.react('histogram-bin', [trace], layout);
+    }
+
+    document.getElementById('numBins').addEventListener('input', updateHistogram);
+    updateHistogram();
+</script>
+<p></p>
+<p>A histogram with peaks in the middle and lower values at both ends indicates that the majority of the data is concentrated in the middle, while the extremes have fewer observations. Conversely, a histogram that is very flat over a large range suggests that the data are spread out rather than concentrated within a specific range. If a histogram has a tall peak in the middle and the data range is narrow, it implies that the data are tightly concentrated around the middle.</p>
+<p>The shape of a histogram describes how the data of a statistical variable are distributed. In our daily lives, it works quite well to use two categorical variables {tall, short} and {thin, fat} to communicate the shape of a human figure. Similarly, we can use two numbers to describe the distribution (figure) of a statistical variable. The first number is the sample average that describes the center of the data, and the second number is the standard deviation that describes the dispersion of the data from the center. The numbers that characterise the distribution of statistical variables are called numerical measures.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/vdAThWnD9uI?si=ThF-JpMIXPG_5ViG" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen>
+</iframe>
+<!-- HTML for the first set of MCQs -->
+<button id="reveal-button-set4">Show MCQs Set 4</button>
+
+<div id="question-container-set4"></div>
+
+<script>
+    // Initial CSV data (3 questions)
+    const csvDataset4 = `
+What is the primary purpose of describing statistical variables in a dataset?
+To focus solely on individual values
+To create complex statistical models
+To simplify the data into a single average value
+To provide a comprehensive view of the variable including possible values and their frequencies
+To provide a comprehensive view of the variable including possible values and their frequencies
+Which of the following is an example of useful statistics?
+Employee with ID number 4 has 34 years of working experience.
+Employee with ID number 20 earned $65K.
+The percentage increase in salary
+The avarage salary is $52.5K 
+The avarage salary is $52.5K 
+What additional information might be pertinent when observing the "Gender" variable in a dataset?
+The total number of entries in the dataset
+The specific names of the employees
+The counts of each gender value
+The location of the company
+The counts of each gender value
+    `;
+
+    // Function to parse CSV data into questions
+    function parseCSV(data) {
+        const lines = data.trim().split('\n').map(line => line.trim());
+        const questions = [];
+
+        for (let i = 0; i < lines.length; i += 6) {
+            if (i + 5 < lines.length) {
+                questions.push({
+                    question: lines[i],
+                    options: lines.slice(i + 1, i + 5),
+                    correctAnswer: lines[i + 5]
+                });
+            }
+        }
+
+        return questions;
+    }
+
+    // Function to generate HTML for questions
+    function generateQuestionHTML(questions, containerId) {
+        let contentHTML = '';
+        questions.forEach((q, questionIndex) => {
+            contentHTML += `<div class="question-block">`;
+            contentHTML += `<p><strong>Question ${questionIndex + 1}:</strong> ${q.question}</p>`;
+            q.options.forEach((option, index) => {
+                contentHTML += `
+                    <div>
+                        <input type="radio" name="question${questionIndex}" id="${containerId}_option${questionIndex}_${index}" value="${option}" aria-label="${option}">
+                        <label for="${containerId}_option${questionIndex}_${index}">${option}</label>
+                    </div>
+                `;
+            });
+            contentHTML += `<div id="${containerId}_feedback${questionIndex}" class="feedback"></div>`;
+            contentHTML += `</div>`;
+        });
+
+        document.getElementById(containerId).innerHTML = contentHTML;
+    }
+
+    // Function to check the selected answer
+    function checkAnswer(questionIndex, containerId, questions) {
+        const selectedOption = document.querySelector(`input[name="question${questionIndex}"]:checked`);
+        const feedbackElement = document.getElementById(`${containerId}_feedback${questionIndex}`);
+
+        if (selectedOption) {
+            const answer = selectedOption.value;
+            if (answer === questions[questionIndex].correctAnswer) {
+                feedbackElement.textContent = 'Your answer is correct!';
+                feedbackElement.className = 'feedback correct';
+            } else {
+                feedbackElement.textContent = 'Your answer is incorrect.';
+                feedbackElement.className = 'feedback incorrect';
+            }
+        } else {
+            feedbackElement.textContent = '';
+        }
+    }
+
+    // Parse and display the first set of questions
+    const questionsset4 = parseCSV(csvDataset4);
+    generateQuestionHTML(questionsset4, 'question-container-set4');
+
+    // Attach event listeners to all radio buttons for the first set of questions
+    questionsset4.forEach((_, questionIndex) => {
+        document.querySelectorAll(`#question-container-set4 input[name="question${questionIndex}"]`).forEach(input => {
+            input.addEventListener('change', () => checkAnswer(questionIndex, 'question-container-set4', questionsset4));
+        });
+    });
+
+    // Toggle visibility of the first set of questions
+    const revealButtonset4 = document.getElementById('reveal-button-set4');
+    const questionContainerset4 = document.getElementById('question-container-set4');
+
+    revealButtonset4.addEventListener('click', () => {
+        if (questionContainerset4.style.display === 'none' || questionContainerset4.style.display === '') {
+            questionContainerset4.style.display = 'block';
+            revealButtonset4.textContent = 'Hide MCQs Set 1';
+        } else {
+            questionContainerset4.style.display = 'none';
+            revealButtonset4.textContent = 'Show MCQs Set 1';
+        }
+    });
+
+    // Ensure questions are hidden by default
+    questionContainerset4.style.display = 'none';
+</script>
+<p></p>
+<p></p>
+<!-- Histograms with Relative Frequencies and User Input -->
+<div id="histogram-container">
+    <div>
+        <label for="mean1">Set 1 Mean:</label>
+        <input type="number" id="mean1" step="any" value="0">
+    </div>
+    <div>
+        <label for="variance1">Set 1 Variance:</label>
+        <input type="number" id="variance1" step="any" value="1">
+    </div>
+    <div>
+        <label for="mean2">Set 2 Mean:</label>
+        <input type="number" id="mean2" step="any" value="5">
+    </div>
+    <div>
+        <label for="variance2">Set 2 Variance:</label>
+        <input type="number" id="variance2" step="any" value="4">
+    </div>
+    <div>
+        <label for="binWidth">Bin Width:</label>
+        <input type="number" id="binWidth" step="any" value="0.5">
+    </div>
+    <button onclick="updateHistograms()">Update Plot</button>
+    <div id="histograms" style="border: 2px solid black; width: 800px; height: 500px;"></div>
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script>
+    function generateNormalData(mean, variance, size) {
+        const stdDev = Math.sqrt(variance);
+        const data = [];
+        for (let i = 0; i < size; i++) {
+            const u1 = Math.random();
+            const u2 = Math.random();
+            const z1 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+            data.push(mean + stdDev * z1);
+        }
+        return data;
+    }
+
+    function updateHistograms() {
+        const mean1 = parseFloat(document.getElementById('mean1').value);
+        const variance1 = parseFloat(document.getElementById('variance1').value);
+        const mean2 = parseFloat(document.getElementById('mean2').value);
+        const variance2 = parseFloat(document.getElementById('variance2').value);
+        const binWidth = parseFloat(document.getElementById('binWidth').value);
+
+        const data1 = generateNormalData(mean1, variance1, 300);
+        const data2 = generateNormalData(mean2, variance2, 300);
+
+        const trace1 = {
+            x: data1,
+            type: 'histogram',
+            name: `Set 1 (Mean = ${mean1}, Variance = ${variance1})`,
+            marker: { color: 'rgba(255, 99, 132, 0.5)' },
+            opacity: 0.6,
+            histnorm: 'probability',
+            xbins: { size: binWidth }
+        };
+
+        const trace2 = {
+            x: data2,
+            type: 'histogram',
+            name: `Set 2 (Mean = ${mean2}, Variance = ${variance2})`,
+            marker: { color: 'rgba(54, 162, 235, 0.5)' },
+            opacity: 0.6,
+            histnorm: 'probability',
+            xbins: { size: binWidth }
+        };
+
+        const layout = {
+            barmode: 'overlay',
+            xaxis: { title: 'Value' },
+            yaxis: { title: 'Relative Frequency', rangemode: 'tozero' },
+            title: 'Histograms of Two Normal Distributions (Relative Frequencies)'
+        };
+
+        Plotly.react('histograms', [trace1, trace2], layout);
+    }
+
+    updateHistograms();
+</script>
+<p></p>
+</div>
+</div>
+<div id="numerical-measures" class="section level2 hasAnchor">
+<h2>7.2.3 Numerical measures<a href="lecture-7-introduction-to-statistics.html#numerical-measures" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="measures-of-central-location" class="section level3 hasAnchor">
+<h3>7.2.3.1 Measures of central location<a href="lecture-7-introduction-to-statistics.html#measures-of-central-location" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>For given data <span class="math inline">\(x_{1},x_{2},x_{3},\ldots,x_{N}\)</span>, we have</p>
+<p><strong>Sample Average:</strong></p>
+<p><span class="math inline">\(\overline{x} = \frac{x_{1} + x_{1} + \ldots{+ x}_{N}}{N} = \frac{1}{N}{\sum_{i = 1}^{N}x}_{i}\)</span></p>
+<p><strong>Sample Median:</strong></p>
+<p>Order the data in increasingly: data
+<span class="math inline">\(x_{(1)} \leq x_{(2)} \leq x_{(3)} \leq \ldots \leq x_{(N)}\)</span>, median of this
+data set is the value of the data element in the middle, i.e. 50%
+percent of the data are less than the median and 50% are larger than the
+median.</p>
+<p><span class="math inline">\(x_{\text{Median}} = x_{\big(\frac{N + 1}{2}\big)}\)</span> for uneven <span class="math inline">\(N\)</span>.</p>
+<p><span class="math inline">\(x_{\text{Median}} = \frac{x_{\big(\frac{N}{2}\big)} + x_{\big(\frac{N}{2}+1\big)}}{2}\)</span> for even <span class="math inline">\(N\)</span></p>
+<p>For a small group of kindergarten kids, average age provides useful information of the ages of the group. For the same group of kid with a senior nursery teacher average age does provide useful information. In this case sample median is a more appropriate measure.</p>
+<p><strong>Percentiles</strong></p>
+<p>Median of a data set is also called 50 percentile of the data set, because at least 50% of the data are less than or equal to
+<span class="math inline">\(x_{\text{Median}}\)</span> and at least 50 percent of the data are larger or equal to <span class="math inline">\(x_{\text{Median}}\)</span>. We denote 50 percentile by
+<span class="math inline">\(x_{\left\lceil 0.5 \right\rceil}.\)</span> We have
+<span class="math inline">\(x_{\text{Median}} = x_{\lbrack 0.5\rbrack}\)</span>.</p>
+<p>Beside the 50 percentile, many other percentiles are also used. When we read in news: 20% of households in Australia earned less that $25000 a year.
+$25000 was the 20 percentile of household income in Australia.</p>
+<p>We call the 25 percentile the lower quartile and the 75 percentile the upper quartile. For the lower quartile <span class="math inline">\(x_{\left\lceil 0.25 \right\rceil}\)</span>, we have at least 25% of
+the data less than or equal to <span class="math inline">\(x_{\left\lceil 0.25 \right\rceil}\)</span> and
+at least 75% of the data are larger or equal to
+<span class="math inline">\(x_{\left\lceil 0.25 \right\rceil}\)</span>. With two different percentiles we
+can easily know how many percent of the data lie within these two
+different percentiles. E.g. between the lower quartile
+<span class="math inline">\(x_{\left\lceil 0.25 \right\rceil}\)</span> and the upper quartile
+<span class="math inline">\(x_{\left\lceil 0.75 \right\rceil}\)</span>, there are at least 50% of the data.
+Formally</p>
+<p><span class="math inline">\(p\left( x_{\lbrack 0.25\rbrack} \leq x \leq x_{\lbrack 0.75\rbrack} \right) = 50\%\)</span></p>
+<p>This above equation says, 50% of the data <span class="math inline">\(x\)</span> lie within the interval
+<span class="math inline">\(\left\lbrack x_{\lbrack 0.25\rbrack},x_{\lbrack 0.75\rbrack} \right\rbrack\)</span>.
+Similarly, we have</p>
+<p><span class="math inline">\(p\left( x_{\lbrack 0.16\rbrack} \leq x \leq x_{\lbrack 0.84\rbrack} \right) = 68\%\)</span>.</p>
+<p><span class="math inline">\(p\left( x_{\lbrack 0.025\rbrack} \leq x \leq x_{\lbrack 0.975\rbrack} \right) = 95\%\)</span>.</p>
+<p>The last equation say, taking out 2.5% at both ends it remains 95% in the middle.</p>
+<p><strong>Mode:</strong> is the value of the data point with highest frequency for
+categorical data. For numerical data, mode is the interval (group) with
+highest frequency.</p>
+</div>
+<div id="measures-of-variation-dispersion" class="section level3 hasAnchor">
+<h3>7.2.3.2 Measures of variation (dispersion):<a href="lecture-7-introduction-to-statistics.html#measures-of-variation-dispersion" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Sample variance</strong></p>
+<p><span class="math inline">\(s_{X}^{2} = \frac{\left( x_{1} - \overline{x} \right)^{2} + \left( x_{2} - \overline{x} \right)^{2} + \ldots + \left( x_{N} - \overline{x} \right)^{2}}{N - 1}\)</span>
+=<span class="math inline">\(\frac{1}{N - 1}\sum_{i = 1}^{N}{(x_{i}} - \overline{x})^{2}\)</span></p>
+<p>The magnitude of variance is measured in squared unit of <span class="math inline">\(X\)</span> which is it difficult to comprehend. Therefore, people prefer to use the square root of variance called the standard deviation as a measure of variation.</p>
+<p><strong>Sample standard deviation</strong> <span class="math inline">\(\text{SD}(x) = s_{X} = \sqrt{s_{X}^{2}}\)</span></p>
+<p>When the sample standard deviation is larger the data points are spread far away from the center, while when it is small the data point are located closer to the center. Other measures of variation are range and interquartile range.</p>
+<p><strong>Interquartile range</strong> <span class="math inline">\(IQR = x_{[0.75]} - x_{[0.25]}\)</span></p>
+<p>The interquartile range give the interval of the middle 50% of the data.</p>
+<p><strong>Range</strong> <span class="math inline">\(L = \ x_{\text{MAX}} - x_{\text{MIN}}\)</span></p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Bxmgo4j1J2w?si=ZZmX0MzikkoSXaI7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen>
+</iframe>
+<p></p>
+<!-- HTML for the first set of MCQs -->
+<button id="reveal-button-set5">Show MCQs Set 5</button>
+
+<div id="question-container-set5"></div>
+
+<script>
+    // Initial CSV data (3 questions)
+    const csvDataset5 = `
+After the data has been arranged from smallest value to largest value, the value in the middle is called the
+range
+median
+mean
+None of the other answers are correct.
+median
+If a data set has an even number of observations, the median
+can not be determined
+is the average value of the two middle items
+must be equal to the mean
+is the average value of the two middle items when all items are arranged in ascending order
+is the average value of the two middle items
+The most frequently occurring value of a data set is called the
+range
+mode
+mean
+None of the other answers are correct.
+mode
+The 50th percentile is the
+mode
+median
+mean
+third quartile
+median
+A box plot is a graphical representation of data that is based on
+the empirical rule
+z-scores
+a histogram
+a five-number summary
+a five-number summary
+Which of the following descriptive statistics is not measured in the same units as the data?
+35th percentile
+standard deviation
+variance
+interquartile range
+variance
+The variance of a sample of 81 observations equals 64. The standard deviation of the sample equals
+0
+4096
+8
+6,561
+8
+    `;
+
+    // Function to parse CSV data into questions
+    function parseCSV(data) {
+        const lines = data.trim().split('\n').map(line => line.trim());
+        const questions = [];
+
+        for (let i = 0; i < lines.length; i += 6) {
+            if (i + 5 < lines.length) {
+                questions.push({
+                    question: lines[i],
+                    options: lines.slice(i + 1, i + 5),
+                    correctAnswer: lines[i + 5]
+                });
+            }
+        }
+
+        return questions;
+    }
+
+    // Function to generate HTML for questions
+    function generateQuestionHTML(questions, containerId) {
+        let contentHTML = '';
+        questions.forEach((q, questionIndex) => {
+            contentHTML += `<div class="question-block">`;
+            contentHTML += `<p><strong>Question ${questionIndex + 1}:</strong> ${q.question}</p>`;
+            q.options.forEach((option, index) => {
+                contentHTML += `
+                    <div>
+                        <input type="radio" name="question${questionIndex}" id="${containerId}_option${questionIndex}_${index}" value="${option}" aria-label="${option}">
+                        <label for="${containerId}_option${questionIndex}_${index}">${option}</label>
+                    </div>
+                `;
+            });
+            contentHTML += `<div id="${containerId}_feedback${questionIndex}" class="feedback"></div>`;
+            contentHTML += `</div>`;
+        });
+
+        document.getElementById(containerId).innerHTML = contentHTML;
+    }
+
+    // Function to check the selected answer
+    function checkAnswer(questionIndex, containerId, questions) {
+        const selectedOption = document.querySelector(`input[name="question${questionIndex}"]:checked`);
+        const feedbackElement = document.getElementById(`${containerId}_feedback${questionIndex}`);
+
+        if (selectedOption) {
+            const answer = selectedOption.value;
+            if (answer === questions[questionIndex].correctAnswer) {
+                feedbackElement.textContent = 'Your answer is correct!';
+                feedbackElement.className = 'feedback correct';
+            } else {
+                feedbackElement.textContent = 'Your answer is incorrect.';
+                feedbackElement.className = 'feedback incorrect';
+            }
+        } else {
+            feedbackElement.textContent = '';
+        }
+    }
+
+    // Parse and display the first set of questions
+    const questionsset5 = parseCSV(csvDataset5);
+    generateQuestionHTML(questionsset5, 'question-container-set5');
+
+    // Attach event listeners to all radio buttons for the first set of questions
+    questionsset5.forEach((_, questionIndex) => {
+        document.querySelectorAll(`#question-container-set5 input[name="question${questionIndex}"]`).forEach(input => {
+            input.addEventListener('change', () => checkAnswer(questionIndex, 'question-container-set5', questionsset5));
+        });
+    });
+
+    // Toggle visibility of the first set of questions
+    const revealButtonset5 = document.getElementById('reveal-button-set5');
+    const questionContainerset5 = document.getElementById('question-container-set5');
+
+    revealButtonset5.addEventListener('click', () => {
+        if (questionContainerset5.style.display === 'none' || questionContainerset5.style.display === '') {
+            questionContainerset5.style.display = 'block';
+            revealButtonset5.textContent = 'Hide MCQs Set 1';
+        } else {
+            questionContainerset5.style.display = 'none';
+            revealButtonset5.textContent = 'Show MCQs Set 1';
+        }
+    });
+
+    // Ensure questions are hidden by default
+    questionContainerset5.style.display = 'none';
+</script>
+<p></p>
+</div>
+</div>
+<div id="rules-of-68-95-and-99.7" class="section level2 hasAnchor">
+<h2>7.2.4 Rules of 68, 95, and 99.7<a href="lecture-7-introduction-to-statistics.html#rules-of-68-95-and-99.7" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><img src="vertopal_lecturet222/media/rules.jpg" /></p>
+<p>The rules of 68, 95 and 99.5 help us with using sample average and sample standard deviation to gauge the distribution of data.</p>
+<p>For the data of <em>Salary</em> as an example with <span class="math inline">\(\overline{\text{Salary}} = 52.5\ \)</span> and <span class="math inline">\(\text{SD}\left( \text{Salary} \right) = 9.3\)</span>, the rules tell us roughly 68% of the employees (or of the salary data) earn between $43.2K and $61.8K and roughly 95% of them earn between $33.9K and $71.1K. Does this statement sound like a magic?</p>
+<p>By mathematical notation the statement can written as follows</p>
+<p><span class="math inline">\(p(52.5 - 9.3 \leq Salary \leq 52.5 + 9.3) = p(43.2 \leq Salary \leq 61.8) \approx 68\%\)</span></p>
+<p><span class="math inline">\(p(52.5 - 2 \times 9.3 \leq Salary \leq 52.5 + 2 \times 9.3) = p(33.9 \leq Salary \leq 71.1) \approx 95\%\)</span></p>
+<p>The rules apply well when the data have bell shaped distribution, i.e., the histogram is roughly symmetric and has one peak.</p>
+<p><img src="vertopal_lecturet222/media/exerciserules.jpg" /></p>
+<p></p>
+<!-- HTML for the first set of MCQs -->
+<button id="reveal-button-set6">Show MCQs Set 6</button>
+
+<div id="question-container-set6"></div>
+
+<script>
+    // Initial CSV data (3 questions)
+    const csvDataset6 = `
+What is the percentage of data that falls within three standard deviations of the mean?
+99.70%
+98.70%
+95%
+100%
+99.70%
+The shelf life of a particular dairy product is normally distributed with a mean of 12 days and a standard deviation of 3 days. About what percent of the products last between 12 and 15 days?
+68%
+34%
+16%
+2.50%
+34%
+At a local high school, GPA's are normally distributed with a mean of 2.9 and standard deviation of 0.6. What is the GPA of the highest 2.5% of the students?
+4.1 
+4.1 or higher
+4.7
+4.5 or higher
+4.1 or higher
+    `;
+
+    // Function to parse CSV data into questions
+    function parseCSV(data) {
+        const lines = data.trim().split('\n').map(line => line.trim());
+        const questions = [];
+
+        for (let i = 0; i < lines.length; i += 6) {
+            if (i + 5 < lines.length) {
+                questions.push({
+                    question: lines[i],
+                    options: lines.slice(i + 1, i + 5),
+                    correctAnswer: lines[i + 5]
+                });
+            }
+        }
+
+        return questions;
+    }
+
+    // Function to generate HTML for questions
+    function generateQuestionHTML(questions, containerId) {
+        let contentHTML = '';
+        questions.forEach((q, questionIndex) => {
+            contentHTML += `<div class="question-block">`;
+            contentHTML += `<p><strong>Question ${questionIndex + 1}:</strong> ${q.question}</p>`;
+            q.options.forEach((option, index) => {
+                contentHTML += `
+                    <div>
+                        <input type="radio" name="question${questionIndex}" id="${containerId}_option${questionIndex}_${index}" value="${option}" aria-label="${option}">
+                        <label for="${containerId}_option${questionIndex}_${index}">${option}</label>
+                    </div>
+                `;
+            });
+            contentHTML += `<div id="${containerId}_feedback${questionIndex}" class="feedback"></div>`;
+            contentHTML += `</div>`;
+        });
+
+        document.getElementById(containerId).innerHTML = contentHTML;
+    }
+
+    // Function to check the selected answer
+    function checkAnswer(questionIndex, containerId, questions) {
+        const selectedOption = document.querySelector(`input[name="question${questionIndex}"]:checked`);
+        const feedbackElement = document.getElementById(`${containerId}_feedback${questionIndex}`);
+
+        if (selectedOption) {
+            const answer = selectedOption.value;
+            if (answer === questions[questionIndex].correctAnswer) {
+                feedbackElement.textContent = 'Your answer is correct!';
+                feedbackElement.className = 'feedback correct';
+            } else {
+                feedbackElement.textContent = 'Your answer is incorrect.';
+                feedbackElement.className = 'feedback incorrect';
+            }
+        } else {
+            feedbackElement.textContent = '';
+        }
+    }
+
+    // Parse and display the first set of questions
+    const questionsset6 = parseCSV(csvDataset6);
+    generateQuestionHTML(questionsset6, 'question-container-set6');
+
+    // Attach event listeners to all radio buttons for the first set of questions
+    questionsset6.forEach((_, questionIndex) => {
+        document.querySelectorAll(`#question-container-set6 input[name="question${questionIndex}"]`).forEach(input => {
+            input.addEventListener('change', () => checkAnswer(questionIndex, 'question-container-set6', questionsset6));
+        });
+    });
+
+    // Toggle visibility of the first set of questions
+    const revealButtonset6 = document.getElementById('reveal-button-set6');
+    const questionContainerset6 = document.getElementById('question-container-set6');
+
+    revealButtonset6.addEventListener('click', () => {
+        if (questionContainerset6.style.display === 'none' || questionContainerset6.style.display === '') {
+            questionContainerset6.style.display = 'block';
+            revealButtonset6.textContent = 'Hide MCQs Set 1';
+        } else {
+            questionContainerset6.style.display = 'none';
+            revealButtonset6.textContent = 'Show MCQs Set 1';
+        }
+    });
+
+    // Ensure questions are hidden by default
+    questionContainerset6.style.display = 'none';
+</script>
+<p></p>
+<p><strong>Summary</strong>: descriptive statistics is all about describing (1) possible
+values of the variable and (2) how frequent each value or each group of
+values appear in the data. Statistician used to call these two aspects
+by “<strong>distribution of the variable</strong>” or distribution of the data.</p>
+<p>In frequency tables all possible values are in the first column and
+frequencies in the second column. In a bar chart all possible values are
+on the horizontal axis and the frequencies are represented by the bars.
+The sample average, median and mode give the centre of the distribution
+and the standard deviation can be used to describe how concentrated the
+data are around the centre (68, 95, 99.7 rule). Quartiles and
+interquartile range can also be used to describe the location and the
+concentration of data.</p>
+<p>The following video clip shows how to create frequency tables and charts using Excel.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/3QdiZJNqgzc?si=GeYQ8GPI6-O4e2SR" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen>
+</iframe>
+<p></p>
+</div>
+<div id="descriptive-statistis-for-two-statistical-variables" class="section level2 hasAnchor">
+<h2>7.2.5 Descriptive statistis for two statistical variables<a href="lecture-7-introduction-to-statistics.html#descriptive-statistis-for-two-statistical-variables" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="two-categotical-variables" class="section level3 hasAnchor">
+<h3>7.2.5.1 Two categotical variables<a href="lecture-7-introduction-to-statistics.html#two-categotical-variables" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</div>
+<div id="two-way-tables-for-two-categorical-variables" class="section level3 hasAnchor">
+<h3>Two way tables for two categorical variables<a href="lecture-7-introduction-to-statistics.html#two-way-tables-for-two-categorical-variables" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Like in univariate cases, we also use frequency tables to summarise two statistical variables. Since we have two variables the frequencies for the pair of values of the two variables are organised in a two-way table.</p>
+<table style="width:51%;">
+<colgroup>
+<col width="18%" />
+<col width="8%" />
+<col width="8%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Promotion<br />
+<br />
+Gender</th>
+<th align="left">Yes</th>
+<th align="left">No</th>
+<th align="left">Marginal<br />
+Frequency</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Male</td>
+<td align="left">75</td>
+<td align="left">39</td>
+<td align="left">114</td>
+</tr>
+<tr class="even">
+<td align="left">Female</td>
+<td align="left">116</td>
+<td align="left">70</td>
+<td align="left">186</td>
+</tr>
+<tr class="odd">
+<td align="left">Marginal<br />
+Frequency</td>
+<td align="left">191</td>
+<td align="left">109</td>
+<td align="left">300</td>
+</tr>
+</tbody>
+</table>
+<p>In the two-way table we observe which combinations of values of the two statistical variables have the higher frequencies and which combinations have lower frequencies. The marginal frequency in the last column is the row sum of the two-way table. It is the frequency table for the variable Gender. The marginal frequency on the last row is the column sum the the two-way table. It is the frequency table of the variables Promotion. So a two-way frequency table contains not only frequencies of all combinations of two variables, it contains also the frequency table of each variable. One may want to know given the marginal frequencies of two variabales, can we uniquely determine the frequencies in the two-way table? The answer is given in the next section.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/FjXwKc6g6Dk" title="YouTube video player" frameborder="0" allow="accelerometer;  clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</div>
+<div id="clustered-column-charts" class="section level3 hasAnchor">
+<h3>Clustered column charts<a href="lecture-7-introduction-to-statistics.html#clustered-column-charts" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The two-way frequency table above can be presented as a clustered column chart.</p>
+<div class="float">
+<img src="vertopal_lecturet222/media/twbarchart.jpg" alt="Clustered column chart" />
+<div class="figcaption"><strong>Clustered column chart</strong></div>
+</div>
+<p>In each cluster the columns show the gender frequency with in the promoted group and not promoted group, respectively.</p>
+<p></p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/FjXwKc6g6Dk" title="YouTube video player" frameborder="0" allow="accelerometer;  clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+</iframe>
+</div>
+<div id="one-categorical-variable-one-numerical-variable" class="section level3 hasAnchor">
+<h3>7.2.5.2 One categorical variable one numerical variable<a href="lecture-7-introduction-to-statistics.html#one-categorical-variable-one-numerical-variable" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Relating a numerical numerical variable and a categorical variable together, the categorical variable separates the numerical into a number of groups corresponding to the values of the categorical variable. Main focus of study is comparing the numerical variable across different groups.</p>
+</div>
+<div id="two-way-table-for-categorical-and-numerical-variables" class="section level3 hasAnchor">
+<h3>Two-way table for categorical and numerical variables<a href="lecture-7-introduction-to-statistics.html#two-way-table-for-categorical-and-numerical-variables" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Similar to two categorical variables case, two-way frequency tables can be used to summarise one categorical variable and one numerical variable that has to be groupped before creataing the two-way frequency table.</p>
+<div class="float">
+<img src="vertopal_lecturet222/media/TableAgePromop.jpg" alt="Clustered column chart" />
+<div class="figcaption"><strong>Clustered column chart</strong></div>
+</div>
+</div>
+<div id="comparative-box-plots" class="section level3 hasAnchor">
+<h3>Comparative box plots<a href="lecture-7-introduction-to-statistics.html#comparative-box-plots" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Although clustered column charts can be utilised to present the two way table, comparative box plots are more often used to present the distribution of a numerical variable across many groups.</p>
+<p><img src="vertopal_lecturet222/media/comparativeBoxPlot.png" alt="Comparative bot plot" />
+A box plot summarises a numerical variable using 6 numerical measures: the min, the 25 percentile, the median, the average, the 75 percentile, and the maximum. The line at the lowest end is the minimum of the data, the lower side of the box in the middle is the 25 percentile, the line in the middle of the box in the median, the cross in the moddle of the box is the average, the upper side of the box is the 75 percentile, and the line at the upper end is the maximum of the data.</p>
+<p>Comparing the two bot plots we see the respective minimum and the respective maximum are the same in the two groups. The 25 percentile and the median are the same in the two groups, while the 75 percentile in the promoted group is slightly higher than that in the not promoted group.</p>
+<p></p>
+<p></p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/uw-3eiFQO10?si=CRD0SlHZxXZuKD4u" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+</iframe>
+</div>
+<div id="two-numerical-variables" class="section level3 hasAnchor">
+<h3>7.5.2.3 Two numerical variables<a href="lecture-7-introduction-to-statistics.html#two-numerical-variables" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+</div>
+<div id="two-way-frequency-table" class="section level3 hasAnchor">
+<h3>Two-way frequency table<a href="lecture-7-introduction-to-statistics.html#two-way-frequency-table" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="float">
+<img src="vertopal_lecturet222/media/twoWayTableTwoNumerical.jpg" alt="**Two-way frequency table of Age nd Years of experience" />
+<div class="figcaption">**Two-way frequency table of Age nd Years of experience</div>
+</div>
+</div>
+<div id="covariance-and-correlation-coefficient" class="section level3 hasAnchor">
+<h3>Covariance and correlation coefficient<a href="lecture-7-introduction-to-statistics.html#covariance-and-correlation-coefficient" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Sample covariance</strong>
+<span class="math inline">\(s_{\text{XY}} = \frac{\sum_{i = 1}^{N}{\left( x_{i} - \overline{x} \right)\left( y_{i} - \overline{y} \right)}}{N - 1}\)</span></p>
+<p>If the sample covariance is positive, this implies the two variables
+move in the same direction. If the sample covariance in negative, these
+two variables move in the opposite direction. However, the magnitude the
+covariance depends on the units in which the variables are measured. It
+cannot reflect the strength of the relationship. To remove the effect of
+the measuring units, statisticians normalize the sample covariance by
+dividing it with the sample standard deviations. This ratio is called
+Sample correlation coefficient which in independent from the measuring
+units:</p>
+<p><strong>Sample correlation coefficient</strong>
+<span class="math inline">\(\rho_{\text{XY}} = \frac{s_{\text{XY}}}{s_{X}s_{Y}} = \frac{\sum_{i = 1}^{N}{\left( x_{i} - \overline{x} \right)\left( y_{i} - \overline{y} \right)}}{\sqrt{\sum_{i = 1}^{N}{\left( x_{i} - \overline{x} \right)\left( x_{i} - \overline{x} \right)\sum_{i = 1}^{N}{\left( y_{i} - \overline{y} \right)\left( y_{i} - \overline{y} \right)}}}}\)</span></p>
+<p>The sample correlation coefficients are always between -1 and 1. If the
+correlation coefficient is close to 1, the two variables have strong
+positive linear relation, if it is close to -1, the two variables have a
+strong negative linear relation. If it is close to 0, there is no linear
+relations between the two variables.</p>
+</div>
+<div id="scatter-plot" class="section level3 hasAnchor">
+<h3>Scatter plot<a href="lecture-7-introduction-to-statistics.html#scatter-plot" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Scatter plots are often used to illustrate the relationship between two numerical variables. For two numerical variables, each pair of data is one point in the coordinate system representing the two numerical variables.</p>
+<p>The scatter plot is a good visual tool to look at the relationship between statistical variables. If the two variables move in the same direction, the
+data cloud would scatter around an upwards sloping line. If the two
+variables move in the opposite direction the data cloud would scatter
+around a downwards sloping line. <a href="https://www.youtube.com/watch?v=5JdSjiDZwrw">How to use Excel to create a scatter
+plot with a trend line?</a></p>
+<p>The following graph is a scatter plot of Age and Years of experience.</p>
+<div class="float">
+<img src="vertopal_lecturet222/media/scatter.jpg" alt="Scatter plot" />
+<div class="figcaption"><strong>Scatter plot</strong></div>
+</div>
+</div>
+<div id="correlation-coefficient-and-scatter-plot" class="section level3 hasAnchor">
+<h3>Correlation coefficient and scatter plot<a href="lecture-7-introduction-to-statistics.html#correlation-coefficient-and-scatter-plot" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Using the slider of correlation coefficient you can investigate the relationship between the correlation coefficient of generated data and the corresponding scatter plot.</p>
+
+    <div class="controls">
+        <label for="correlationSlider">Correlation Coefficient:</label>
+        <input type="range" id="correlationSlider" min="-1" max="1" step="0.01" value="0.6">
+        <span id="correlationValue">0.6</span>
+    </div>
+    <div id="myPlot"></div>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>
+        // Function to generate random data with a specific correlation
+        function generateData(n, correlation) {
+            const x = Array.from({ length: n }, () => Math.random());
+            const y = x.map(x_i => correlation * x_i + Math.sqrt(1 - correlation ** 2) * Math.random());
+            return { x, y };
+        }
+
+        // Function to calculate the trend line
+        function calculateTrendLine(x, y) {
+            const n = x.length;
+            const x_mean = x.reduce((a, b) => a + b, 0) / n;
+            const y_mean = y.reduce((a, b) => a + b, 0) / n;
+            const numerator = x.reduce((sum, xi, i) => sum + (xi - x_mean) * (y[i] - y_mean), 0);
+            const denominator = x.reduce((sum, xi) => sum + (xi - x_mean) ** 2, 0);
+            const slope = numerator / denominator;
+            const intercept = y_mean - slope * x_mean;
+
+            const trend_x = [Math.min(...x), Math.max(...x)];
+            const trend_y = trend_x.map(xi => slope * xi + intercept);
+            
+            return { x: trend_x, y: trend_y };
+        }
+
+        // Function to update the plot
+        function updatePlot(correlation) {
+            const { x, y } = generateData(40, correlation);
+            const { x: trend_x, y: trend_y } = calculateTrendLine(x, y);
+
+            const scatterTrace = {
+                x: x,
+                y: y,
+                mode: 'markers',
+                type: 'scatter',
+                marker: { color: 'rgba(255, 99, 132, 0.5)', size: 8 },
+                name: 'Data Points'
+            };
+
+            const trendLineTrace = {
+                x: trend_x,
+                y: trend_y,
+                mode: 'lines',
+                type: 'scatter',
+                line: { color: 'blue', width: 2 },
+                name: 'Trend Line'
+            };
+
+            const layout = {
+                autosize: false,
+                width: 500, // width in pixels
+                height: 500, // height in pixels
+                xaxis: { title: 'X' },
+                yaxis: { title: 'Y' },
+                title: `Scatter Plot with Correlation Coefficient ${correlation.toFixed(2)}`
+            };
+
+            Plotly.react('myPlot', [scatterTrace, trendLineTrace], layout);
+        }
+
+        // Initial plot
+        updatePlot(parseFloat(document.getElementById('correlationSlider').value));
+
+        // Add event listener to the slider
+        document.getElementById('correlationSlider').addEventListener('input', function() {
+            const correlation = parseFloat(this.value);
+            document.getElementById('correlationValue').textContent = correlation.toFixed(2);
+            updatePlot(correlation);
+        });
+    </script>
+</div>
+<div id="overview-of-types-of-variables-and-the-used-descriptive-tools" class="section level3 hasAnchor">
+<h3>Overview of types of variables and the used descriptive tools<a href="lecture-7-introduction-to-statistics.html#overview-of-types-of-variables-and-the-used-descriptive-tools" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="float">
+<img src="vertopal_lecturet222/media/descriptiveSummary.jpg" alt="**Summary of descriptive tools and variable types" />
+<div class="figcaption">**Summary of descriptive tools and variable types</div>
+</div>
+<p></p>
+<p></p>
+</div>
+</div>
+<div id="examples-of-applications" class="section level2 hasAnchor">
+<h2>7.2.6 Examples of applications:<a href="lecture-7-introduction-to-statistics.html#examples-of-applications" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><a href="https://www.theaustralian.com.au/topics/newspoll">Statistics can be use to predict the election results</a>
+In this case, statistics is used to answer questions such as how can we predict the outcome of the election? How many data are sufficient to make a reliable prediction. We will be able to carry out these tasks in week 9.</p>
+<p><a href="https://www2.asx.com.au/investors/investment-tools-and-resources/online-courses">Study of financial markets</a>
+In this case, statistics is used to forecast the future returns of stocks. In week 11, we willlearn regression technique that is the most often used statistical method for forecasting.</p>
+<p><a href="https://ahaslides.com/blog/10-methods-of-data-presentation/">Presentation of data</a>
+These are the most often used technique in data business reporting. We will learn these technique in week 7 to week 8.</p>
+<p><a href="https://weather.com/weather/today/l/-33.87,151.21?par=google">Weather forecase</a></p>
+<div id="summary" class="section level3 hasAnchor">
+<h3>Summary<a href="lecture-7-introduction-to-statistics.html#summary" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>Definition of statistics</li>
+<li>Skill(1) using Google Form for online data collection</li>
+<li>Understanding characteristics of statistical variables</li>
+<li>Skill(2) Creating frequency table, bar charts, and pie charts using Excel</li>
+<li>Skill(3) Creating frequency table, charts for two statistical variables</li>
+<li>Application of rules of 68, 95, and 99.7 to comprehend statistical variables</li>
+</ul>
+</div>
+</div>
+<div id="review-questions" class="section level2 hasAnchor">
+<h2>Review questions<a href="lecture-7-introduction-to-statistics.html#review-questions" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ol style="list-style-type: decimal">
+<li>What is statistics?</li>
+<li>How do you want to characterize a statistical variable?</li>
+<li>Where can we apply statistics in business?</li>
+<li>How to create a Google Form for online data collection?</li>
+<li>Why do we classify statistical variables into categorical and numerical?</li>
+</ol>
+<iframe src="https://pchen-stats.hf.space" frameborder="0" width="850" height="850">
+</iframe>
+
+</div>
+</div>
+<div class = rmdtranslate style="height: 100px;" style="width: 700px;">
+<div id="google_translate_element"></div>
+<script>
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+            {pageLanguage: 'en', gaId: 'UA-88838732-1'},
+            'google_translate_element'
+        );
+
+        /*
+            To remove the "powered by google",
+            uncomment one of the following code blocks.
+            NB: This breaks Google's Attribution Requirements:
+            https://developers.google.com/translate/v2/attribution#attribution-and-logos
+        */
+
+        // Native (but only works in browsers that support query selector)
+        //if(typeof(document.querySelector) == 'function') {
+        //    document.querySelector('.goog-logo-link').setAttribute('style', 'display: none');
+        //    document.querySelector('.goog-te-gadget').setAttribute('style', 'font-size: 0');
+        //}
+
+        // If you have jQuery - works cross-browser - uncomment this
+        // jQuery('.goog-logo-link').css('display', 'none');
+        // jQuery('.goog-te-gadget').css('font-size', '0');
+    }
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</div>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interactive Website with Chatbot Button</title>
+<style>
+  /* Style your chatbot button */
+  #chatbot-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1001; /* Ensure the chatbot button is above the interactive content */
+  }
+
+  /* Style the interactive content */
+  #interactive-content {
+    display: none;
+    position: absolute;
+    bottom: 70px;
+    right: 20px;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-width: 0.5px; /* Adjust the border width as needed */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+
+  /* Style the iframe with specific width and height */
+  #interactive-frame {
+    width: 800px; /* Set the width you prefer */
+    height: 800px; /* Set the height you prefer */
+    border: none;
+  }
+
+  /* Style the full-screen button */
+  #fullscreen-button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+  <!-- Chatbot button -->
+  <button id="chatbot-button">Peer AI</button>
+
+  <!-- Interactive content -->
+  <div id="interactive-content">
+    <!-- Your interactive website content goes here -->
+    <iframe id="interactive-frame" src="https://chatgptfree.ai/"></iframe>
+    <button id="fullscreen-button">Toggle Full Screen</button>
+  </div>
+
+  <script>
+    // Get references to elements
+    const chatbotButton = document.getElementById('chatbot-button');
+    const interactiveContent = document.getElementById('interactive-content');
+    const interactiveFrame = document.getElementById('interactive-frame');
+    const fullscreenButton = document.getElementById('fullscreen-button');
+
+    // Toggle the visibility of the interactive content and full-screen button
+    chatbotButton.addEventListener('click', () => {
+      if (interactiveContent.style.display === 'none') {
+        interactiveContent.style.display = 'block';
+        fullscreenButton.style.display = 'block';
+      } else {
+        interactiveContent.style.display = 'none';
+        fullscreenButton.style.display = 'none';
+      }
+    });
+
+    // Toggle full-screen mode for the interactive frame
+    fullscreenButton.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        interactiveFrame.requestFullscreen().catch(err => {
+          console.error('Error attempting to enable full-screen:', err);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    });
+  </script>
+</body>
+</html>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="lecture-8-sample-population-random-variable-and-probability.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/benmarwick/bookdown-ort/edit/master/07lecture7.Rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

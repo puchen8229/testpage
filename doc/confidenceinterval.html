@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confidence Interval Demonstration</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="range"], input[type="number"] {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <label for="numData">Number of Data Points:</label>
+        <input type="range" id="numData" min="10" max="2000" step="1" value="30">
+        <span id="numData-value">30</span>
+    </div>
+    <div class="container">
+        <label for="confLevel">Confidence Level (%):</label>
+        <input type="range" id="confLevel" min="50" max="99.9" step="0.1" value="95">
+        <span id="confLevel-value">95</span>
+    </div>
+    <div class="container">
+        <label for="stdDev">Standard Deviation:</label>
+        <input type="number" id="stdDev" value="1" step="any">
+    </div>
+    <div class="container">
+        <label for="popMean">Population Mean:</label>
+        <input type="number" id="popMean" value="0" step="any">
+    </div>
+    <div id="confidence-interval-plot" style="border: 2px solid black; width: 800px; height: 500px;"></div>
+
+    <script>
+        let sample = [];
+        let sampleMean = 0;
+        let stdDev = 1;
+        let popMean = 0;
+        let numData = 30;
+
+        const zValues = {
+            0.50: 0.674,
+            0.60: 0.842,
+            0.70: 1.036,
+            0.80: 1.282,
+            0.85: 1.440,
+            0.90: 1.645,
+            0.95: 1.960,
+            0.99: 2.576
+        };
+
+        function interpolateZ(confLevel) {
+            const conf = confLevel / 100;
+            const sortedKeys = Object.keys(zValues).map(Number).sort((a, b) => a - b);
+            const lowerKey = sortedKeys.find(key => key >= conf);
+            const upperKey = sortedKeys.reverse().find(key => key <= conf);
+
+            if (lowerKey === undefined || upperKey === undefined) {
+                return zValues[0.95];
+            }
+
+            if (lowerKey === upperKey) {
+                return zValues[lowerKey];
+            }
+
+            const lowerZ = zValues[lowerKey];
+            const upperZ = zValues[upperKey];
+            return lowerZ + (conf - lowerKey) / (upperKey - lowerKey) * (upperZ - lowerZ);
+        }
+
+        function generateNormalData(mean, stdDev, size) {
+            const data = [];
+            for (let i = 0; i < size; i++) {
+                const u1 = Math.random();
+                const u2 = Math.random();
+                const z1 = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+                data.push(mean + stdDev * z1);
+            }
+            return data;
+        }
+
+        function updatePlot() {
+            const confLevel = parseFloat(document.getElementById('confLevel').value);
+            document.getElementById('numData-value').textContent = numData;
+            document.getElementById('confLevel-value').textContent = confLevel;
+
+            const standardError = stdDev / Math.sqrt(numData);
+            const z = interpolateZ(confLevel);
+
+            const marginOfError = z * standardError;
+            const lowerBound = sampleMean - marginOfError;
+            const upperBound = sampleMean + marginOfError;
+
+            const data = [
+                {
+                    x: sample,
+                    type: 'histogram',
+                    name: 'Sample Data',
+                    marker: { color: 'rgba(255, 99, 132, 0.7)' },
+                    opacity: 0.75
+                },
+                {
+                    x: [popMean],
+                    type: 'scatter',
+                    mode: 'markers',
+                    name: 'Population Mean',
+                    marker: { color: 'blue', size: 12 },
+                    showlegend: false
+                },
+                {
+                    x: [sampleMean],
+                    type: 'scatter',
+                    mode: 'markers',
+                    name: 'Sample Mean',
+                    marker: { color: 'red', size: 12 },
+                    showlegend: false
+                },
+                {
+                    x: [lowerBound, upperBound],
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: 'Confidence Interval',
+                    line: { color: 'green', width: 2 },
+                    showlegend: false
+                }
+            ];
+
+            const layout = {
+                title: `Sample Data with ${confLevel}% Confidence Interval`,
+                xaxis: { 
+                    title: 'Value',
+                    range: [popMean - 4 * stdDev, popMean + 4 * stdDev],
+                    zeroline: false
+                },
+                yaxis: { title: 'Frequency' },
+                shapes: [
+                    {
+                        type: 'line',
+                        x0: lowerBound,
+                        x1: upperBound,
+                        y0: 0,
+                        y1: 0,
+                        xref: 'x',
+                        yref: 'y',
+                        line: {
+                            color: 'green',
+                            width: 2,
+                            dash: 'dash'
+                        }
+                    },
+                    {
+                        type: 'rect',
+                        x0: lowerBound,
+                        x1: upperBound,
+                        y0: 0,
+                        y1: 1,
+                        xref: 'x',
+                        yref: 'paper',
+                        fillcolor: 'rgba(0, 255, 0, 0.2)',
+                        line: {
+                            color: 'green',
+                            width: 2
+                        },
+                        opacity: 0.4
+                    }
+                ],
+                width: 800,
+                height: 500
+            };
+
+            Plotly.react('confidence-interval-plot', data, layout);
+        }
+
+        function generateDataAndUpdatePlot() {
+            numData = parseInt(document.getElementById('numData').value);
+            stdDev = parseFloat(document.getElementById('stdDev').value);
+            popMean = parseFloat(document.getElementById('popMean').value);
+
+            if (numData < 1 || stdDev <= 0) {
+                alert('Number of data points must be greater than 0 and standard deviation must be positive.');
+                return;
+            }
+
+            sample = generateNormalData(popMean, stdDev, numData);
+            sampleMean = sample.reduce((a, b) => a + b, 0) / numData;
+
+            updatePlot();
+        }
+
+        document.getElementById('numData').addEventListener('input', function() {
+            document.getElementById('numData-value').textContent = this.value;
+            generateDataAndUpdatePlot();
+        });
+        document.getElementById('confLevel').addEventListener('input', function() {
+            document.getElementById('confLevel-value').textContent = this.value;
+            updatePlot();
+        });
+        document.getElementById('stdDev').addEventListener('input', generateDataAndUpdatePlot);
+        document.getElementById('popMean').addEventListener('input', generateDataAndUpdatePlot);
+
+        generateDataAndUpdatePlot();
+    </script>
+</body>
+</html>
