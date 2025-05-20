@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interactive Demand and Supply Diagram with Time Series</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        #main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        #canvas-container {
+            margin: 20px 0;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            /* cursor: move; */ /* Main canvas cursor is handled by JS */
+        }
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        button {
+            padding: 8px 12px;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #e0e0e0;
+        }
+        #animate-btn {
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+        }
+        #random-animate-btn {
+            background-color: #2196F3;
+            color: white;
+            font-weight: bold;
+        }
+        #plot-time-series-btn {
+            background-color: #ff9800; /* Orange */
+            color: white;
+            font-weight: bold;
+        }
+        #plot-time-series-btn:hover {
+            background-color: #f57c00;
+        }
+        #animate-btn:hover {
+            background-color: #45a049;
+        }
+        #random-animate-btn:hover {
+            background-color: #0b7dda;
+        }
+        #animate-btn:disabled, #random-animate-btn:disabled, #plot-time-series-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .control-group {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            margin-right: 15px;
+        }
+        .info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            line-height: 1.5;
+        }
+        .price-controls {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+        .events-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .events-panel {
+            width: 280px;
+            padding: 15px;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .events-panel h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .event-item {
+            padding: 8px;
+            margin: 5px 0;
+            background-color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+            transition: all 0.2s;
+        }
+        .event-item:hover {
+            background-color: #f0f0f0;
+        }
+        .demand-event.positive {
+            border-left-color: #d32f2f;
+        }
+        .demand-event.negative {
+            border-left-color: #1976d2;
+        }
+        .supply-event.positive {
+            border-left-color: #388e3c;
+        }
+        .supply-event.negative {
+            border-left-color: #ffa000;
+        }
+        .shift-amount {
+            font-size: 0.9em;
+            color: #666;
+            float: right;
+        }
+        .animation-controls {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f0f7ff;
+            border-radius: 4px;
+        }
+        #time-series-canvas-container {
+            margin-top: 20px; 
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Demand and Supply Diagram with Time Series</h1>
+    
+    <div id="main-content">
+        <div>
+            <div id="canvas-container">
+                <canvas id="graph" width="600" height="400"></canvas>
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <span>Demand:</span>
+                    <button id="shift-demand-left">
+                        
+                    </button>
+                    <button id="shift-demand-right">
+                        
+                    </button>
+                </div>
+                
+                <div class="control-group">
+                    <span>Supply:</span>
+                    <button id="shift-supply-left">
+                        
+                    </button>
+                    <button id="shift-supply-right">
+                        
+                    </button>
+                </div>
+                
+                <button id="reset">Reset All</button>
+                <button id="animate-btn">Play Sequential Animation</button>
+                <button id="random-animate-btn">Play Random Animation</button>
+                <button id="plot-time-series-btn">Show Time Series</button>
+            </div>
+            
+            <div class="animation-controls">
+                <label for="animation-speed">Animation Speed:</label>
+                <input type="range" id="animation-speed" min="100" max="1000" step="100" value="500">
+                <span id="speed-value">Medium</span>
+                <div style="margin-top: 8px;">
+                    <label for="event-count">Number of Random Events:</label>
+                    <input type="number" id="event-count" min="1" max="13" value="10">
+                </div>
+            </div>
+            
+            <div class="price-controls">
+                <button id="add-price-floor">Add Price Floor</button>
+                <button id="add-price-ceiling">Add Price Ceiling</button>
+                <button id="remove-price-controls">Remove Price Controls</button>
+                <div style="margin-top: 8px;">
+                    <label for="price-control-value">Control Price:</label>
+                    <input type="range" id="price-control-value" min="0.1" max="0.9" step="0.01" value="0.5">
+                    <span id="price-control-display">0.50</span>
+                </div>
+            </div>
+            
+            <div class="info">
+                <p id="equilibrium-info">At the initial market equilibrium, the equilibrium price is P
+                    and the equilibrium quantity is Q
+                    .
+                </p>
+                <p id="market-status"></p>
+                <p id="animation-status"></p>
+            </div>
+
+            <div id="time-series-canvas-container">
+                <canvas id="time-series-graph" width="600" height="300"></canvas>
+            </div>
+        </div>
+        
+        <div class="events-container">
+            <div class="events-panel">
+                <h3>Demand-Side Events</h3>
+                <div class="event-item demand-event positive" data-shift="20" data-curve="demand">
+                    Population growth <span class="shift-amount">+20</span>
+                </div>
+                <div class="event-item demand-event positive" data-shift="25" data-curve="demand">
+                    Price of substitute increases <span class="shift-amount">+25</span>
+                </div>
+                <div class="event-item demand-event negative" data-shift="-25" data-curve="demand">
+                    Price of complement increases <span class="shift-amount">-25</span>
+                </div>
+                <div class="event-item demand-event positive" data-shift="30" data-curve="demand">
+                    Income increases (normal goods) <span class="shift-amount">+30</span>
+                </div>
+                <div class="event-item demand-event positive" data-shift="15" data-curve="demand">
+                    Expected future price increases <span class="shift-amount">+15</span>
+                </div>
+                <div class="event-item demand-event positive" data-shift="20" data-curve="demand">
+                    Preference changes positively <span class="shift-amount">+20</span>
+                </div>
+                <div class="event-item demand-event negative" data-shift="-20" data-curve="demand">
+                    Income increases (inferior goods) <span class="shift-amount">-20</span>
+                </div>
+            </div>
+            
+            <div class="events-panel">
+                <h3>Supply-Side Events</h3>
+                <div class="event-item supply-event positive" data-shift="25" data-curve="supply">
+                    Technology advancement <span class="shift-amount">+25</span>
+                </div>
+                <div class="event-item supply-event negative" data-shift="-20" data-curve="supply">
+                    Input price increases <span class="shift-amount">-20</span>
+                </div>
+                <div class="event-item supply-event positive" data-shift="15" data-curve="supply">
+                    Expected future price decreases <span class="shift-amount">+15</span>
+                </div>
+                <div class="event-item supply-event positive" data-shift="20" data-curve="supply">
+                    Number of sellers increases <span class="shift-amount">+20</span>
+                </div>
+                <div class="event-item supply-event negative" data-shift="-25" data-curve="supply">
+                    Government tax <span class="shift-amount">-25</span>
+                </div>
+                <div class="event-item supply-event negative" data-shift="-15" data-curve="supply">
+                    Profit of alternative product increases <span class="shift-amount">-15</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const canvas = document.getElementById("graph");
+            const ctx = canvas.getContext("2d");
+            const equilibriumInfo = document.getElementById("equilibrium-info");
+            const marketStatus = document.getElementById("market-status");
+            const animationStatus = document.getElementById("animation-status");
+            const priceControlValue = document.getElementById("price-control-value");
+            const priceControlDisplay = document.getElementById("price-control-display");
+            const animateBtn = document.getElementById("animate-btn");
+            const randomAnimateBtn = document.getElementById("random-animate-btn");
+            const plotTimeSeriesBtn = document.getElementById("plot-time-series-btn");
+            const animationSpeed = document.getElementById("animation-speed");
+            const speedValue = document.getElementById("speed-value");
+            const eventCount = document.getElementById("event-count");
+            const eventItems = document.querySelectorAll(".event-item");
+            
+            const tsCanvas = document.getElementById("time-series-graph");
+            const tsCtx = tsCanvas.getContext("2d");
+            const tsPadding = 50;
+            const tsGraphWidth = tsCanvas.width - tsPadding * 2;
+            const tsGraphHeight = tsCanvas.height - tsPadding * 2;
+
+            // Graph dimensions and padding
+            const padding = 50;
+            const graphWidth = canvas.width - padding * 2;
+            const graphHeight = canvas.height - padding * 2;
+            
+            // Initial curve parameters
+            let demandShift = 0;
+            let supplyShift = 0;
+            let isDragging = false;
+            let activeCurve = null;
+            const maxShift = 100;
+            const maxPrice = 1; // Max price for curves, also used for time series Y-axis max
+            
+            // Price control variables
+            let priceFloor = null;
+            let priceCeiling = null;
+            let currentPriceControl = 0.5;
+            
+            // Animation variables
+            let isAnimating = false;
+            let animationTimeout = null;
+            const speedLabels = {
+                100: "Fast",
+                500: "Medium",
+                1000: "Slow"
+            };
+
+            // Time Series Data
+            let marketHistory = [];
+            let timeStep = 0;
+
+            function recordEquilibriumState() {
+                const currentEquilibrium = findEquilibrium(demandShift, supplyShift);
+                marketHistory.push({
+                    time: timeStep,
+                    price: currentEquilibrium.y,
+                    quantity: currentEquilibrium.x
+                });
+                timeStep++;
+                // console.log("Recorded state: ", marketHistory[marketHistory.length-1]);
+            }
+            
+            animationSpeed.addEventListener("input", function() {
+                speedValue.textContent = speedLabels[this.value] || this.value + "ms";
+            });
+            
+            priceControlValue.addEventListener("input", function() {
+                currentPriceControl = parseFloat(this.value);
+                priceControlDisplay.textContent = currentPriceControl.toFixed(2);
+                drawCurves(); 
+            });
+            
+            document.getElementById("add-price-floor").addEventListener("click", function() {
+                priceFloor = currentPriceControl;
+                priceCeiling = null;
+                drawCurves();
+            });
+            
+            document.getElementById("add-price-ceiling").addEventListener("click", function() {
+                priceCeiling = currentPriceControl;
+                priceFloor = null;
+                drawCurves();
+            });
+            
+            document.getElementById("remove-price-controls").addEventListener("click", function() {
+                priceFloor = null;
+                priceCeiling = null;
+                drawCurves();
+            });
+            
+            eventItems.forEach(item => {
+                item.addEventListener("click", function() {
+                    if (isAnimating) return;
+                    
+                    const shiftAmount = parseInt(this.getAttribute("data-shift"));
+                    const curveType = this.getAttribute("data-curve");
+                    
+                    if (curveType === "demand") {
+                        demandShift = Math.max(-maxShift, Math.min(maxShift, demandShift + shiftAmount));
+                    } else {
+                        supplyShift = Math.max(-maxShift, Math.min(maxShift, supplyShift + shiftAmount));
+                    }
+                    
+                    drawCurves();
+                    recordEquilibriumState();
+                    
+                    document.querySelectorAll(`.${curveType}-event`).forEach(i => i.style.backgroundColor = "white");
+                    this.style.backgroundColor = "#e3f2fd";
+                });
+            });
+            
+            function getAllEvents() {
+                return Array.from(document.querySelectorAll(".event-item"));
+            }
+            
+            function getRandomEvents(count) {
+                const allEvents = getAllEvents();
+                const shuffled = [...allEvents].sort(() => 0.5 - Math.random());
+                return shuffled.slice(0, Math.min(count, allEvents.length));
+            }
+            
+            function runAnimation(events) {
+                if (isAnimating) return;
+                
+                isAnimating = true;
+                animateBtn.disabled = true;
+                randomAnimateBtn.disabled = true;
+                plotTimeSeriesBtn.disabled = true;
+                animateBtn.textContent = "Animating...";
+                randomAnimateBtn.textContent = "Animating...";
+                document.getElementById("reset").disabled = true;
+                
+                const speed = parseInt(animationSpeed.value);
+                
+                resetAnimationStateForSequence(() => {
+                    animateEventsSequentially(events, 0, speed);
+                });
+            }
+
+            function resetAnimationStateForSequence(callback) {
+                demandShift = 0;
+                supplyShift = 0;
+                marketHistory = []; 
+                timeStep = 0;
+                document.querySelectorAll(".event-item").forEach(i => i.style.backgroundColor = "white");
+                drawCurves();
+                recordEquilibriumState(); 
+                animationStatus.textContent = "Resetting for animation...";
+                setTimeout(callback, 800);
+            }
+            
+            function animateEventsSequentially(events, index, speed) {
+                if (index >= events.length) {
+                    isAnimating = false;
+                    animateBtn.disabled = false;
+                    randomAnimateBtn.disabled = false;
+                    plotTimeSeriesBtn.disabled = false;
+                    animateBtn.textContent = "Play Sequential Animation";
+                    randomAnimateBtn.textContent = "Play Random Animation";
+                    document.getElementById("reset").disabled = false;
+                    animationStatus.textContent = "Animation complete!";
+                    return;
+                }
+                
+                const event = events[index];
+                const shiftAmount = parseInt(event.getAttribute("data-shift"));
+                const curveType = event.getAttribute("data-curve");
+                
+                event.style.backgroundColor = "#e3f2fd";
+                animationStatus.textContent = `Applying: ${event.textContent.trim().split(" <")[0]} (${index+1}/${events.length})`;
+                
+                if (curveType === "demand") {
+                    demandShift = Math.max(-maxShift, Math.min(maxShift, demandShift + shiftAmount));
+                } else {
+                    supplyShift = Math.max(-maxShift, Math.min(maxShift, supplyShift + shiftAmount));
+                }
+                
+                drawCurves();
+                recordEquilibriumState();
+                
+                animationTimeout = setTimeout(() => {
+                    animateEventsSequentially(events, index + 1, speed);
+                }, speed);
+            }
+            
+            animateBtn.addEventListener("click", function() {
+                if (!isAnimating) {
+                    const demandEvents = Array.from(document.querySelectorAll(".demand-event"));
+                    const supplyEvents = Array.from(document.querySelectorAll(".supply-event"));
+                    const allEvents = [...demandEvents, ...supplyEvents];
+                    runAnimation(allEvents);
+                }
+            });
+            
+            randomAnimateBtn.addEventListener("click", function() {
+                if (!isAnimating) {
+                    const count = parseInt(eventCount.value) || 10;
+                    const randomEvents = getRandomEvents(count);
+                    runAnimation(randomEvents);
+                }
+            });
+            
+            function drawAxes() {
+                ctx.strokeStyle = "#000";
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(padding, padding);
+                ctx.lineTo(padding, canvas.height - padding);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(padding, canvas.height - padding);
+                ctx.lineTo(canvas.width - padding, canvas.height - padding);
+                ctx.stroke();
+                ctx.font = "14px Arial";
+                ctx.fillStyle = "#000";
+                ctx.textAlign = "center";
+                ctx.fillText("Price (P)", padding - 10, padding - 10);
+                ctx.fillText("Quantity (Q)", canvas.width - padding + 10, canvas.height - padding + 20);
+            }
+            
+            function demandFunction(x, shift = 0) {
+                const shiftedX = x - shift / maxShift * 0.2;
+                return Math.min(maxPrice, maxPrice - shiftedX * 1.5);
+            }
+            
+            function supplyFunction(x, shift = 0) {
+                const shiftedX = x - shift / maxShift * 0.2;
+                return Math.min(maxPrice, shiftedX * 1.5);
+            }
+            
+            function findEquilibrium(dShift, sShift) {
+                let low = 0, high = 1;
+                for (let i = 0; i < 20; i++) {
+                    const mid = (low + high) / 2;
+                    const diff = demandFunction(mid, dShift) - supplyFunction(mid, sShift);
+                    if (Math.abs(diff) < 0.0001) return {x: mid, y: demandFunction(mid, dShift)};
+                    if (diff > 0) low = mid;
+                    else high = mid;
+                }
+                return {x: (low + high) / 2, y: demandFunction((low + high) / 2, dShift)};
+            }
+            
+            const initialEquilibrium = findEquilibrium(0, 0);
+            
+            function drawPriceControls() {
+                if (priceFloor !== null) {
+                    ctx.strokeStyle = "#00aa00";
+                    ctx.setLineDash([5, 3]);
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(padding, canvas.height - padding - priceFloor * graphHeight);
+                    ctx.lineTo(canvas.width - padding, canvas.height - padding - priceFloor * graphHeight);
+                    ctx.stroke();
+                    ctx.fillStyle = "#00aa00";
+                    ctx.fillText("Price Floor", canvas.width - padding - 70, canvas.height - padding - priceFloor * graphHeight - 5);
+                    const eq = findEquilibrium(demandShift, supplyShift); 
+                    const floorQuantitySupplied = Math.min(1, priceFloor / 1.5 + supplyShift / maxShift * 0.2);
+                    const floorQuantityDemanded = Math.max(0, (maxPrice - priceFloor - demandShift / maxShift * 0.2) / 1.5);
+                    if (priceFloor > eq.y) {
+                        marketStatus.textContent = `Price floor creates surplus: ${(floorQuantitySupplied - floorQuantityDemanded).toFixed(2)} units`;
+                        marketStatus.style.color = "#00aa00";
+                    } else {
+                        if (priceCeiling === null) marketStatus.textContent = "Price floor is not binding.";
+                    }
+                }
+                if (priceCeiling !== null) {
+                    ctx.strokeStyle = "#aa0000";
+                    ctx.setLineDash([5, 3]);
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(padding, canvas.height - padding - priceCeiling * graphHeight);
+                    ctx.lineTo(canvas.width - padding, canvas.height - padding - priceCeiling * graphHeight);
+                    ctx.stroke();
+                    ctx.fillStyle = "#aa0000";
+                    ctx.fillText("Price Ceiling", canvas.width - padding - 80, canvas.height - padding - priceCeiling * graphHeight - 5);
+                    const eq = findEquilibrium(demandShift, supplyShift);
+                    const ceilingQuantitySupplied = Math.min(1, priceCeiling / 1.5 + supplyShift / maxShift * 0.2);
+                    const ceilingQuantityDemanded = Math.max(0, (maxPrice - priceCeiling - demandShift / maxShift * 0.2) / 1.5);
+                    if (priceCeiling < eq.y) {
+                        marketStatus.textContent = `Price ceiling creates shortage: ${(ceilingQuantityDemanded - ceilingQuantitySupplied).toFixed(2)} units`;
+                        marketStatus.style.color = "#aa0000";
+                    } else {
+                         if (priceFloor === null) marketStatus.textContent = "Price ceiling is not binding.";
+                    }
+                }
+                ctx.setLineDash([]);
+                if (priceFloor === null && priceCeiling === null) {
+                    marketStatus.textContent = "Market is in equilibrium with no price controls";
+                    marketStatus.style.color = "#000";
+                }
+            }
+            
+            function drawCurves() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawAxes();
+                canvas.style.cursor = "move"; 
+                
+                if (isDragging) {
+                    ctx.strokeStyle = activeCurve === "demand" ? "#ff6666" : "#6666ff";
+                    ctx.lineWidth = 3;
+                    const xPos = Math.min(Math.max(padding, lastMouseX), canvas.width - padding);
+                    const xNorm = (xPos - padding) / graphWidth;
+                    const yVal = activeCurve === "demand" ? 
+                        demandFunction(xNorm, demandShift) : 
+                        supplyFunction(xNorm, supplyShift);
+                    const yPos = canvas.height - padding - yVal * graphHeight;
+                    ctx.beginPath();
+                    ctx.arc(xPos, yPos, 8, 0, Math.PI * 2);
+                    ctx.fillStyle = activeCurve === "demand" ? "#ff6666" : "#6666ff";
+                    ctx.fill();
+                }
+                
+                ctx.strokeStyle = "rgba(255, 0, 0, 0.5)";
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                let dStartX = 0;
+                while (demandFunction(dStartX, 0) <= 0 && dStartX < 1) dStartX += 0.01;
+                let dEndX = 1;
+                while (demandFunction(dEndX, 0) <= 0 && dEndX > 0) dEndX -= 0.01;
+                if (dStartX < dEndX) {
+                    let firstPoint = true;
+                    for (let i = Math.floor(dStartX * graphWidth); i <= Math.floor(dEndX * graphWidth); i++) {
+                        const x = i / graphWidth;
+                        const y = demandFunction(x, 0);
+                        if (y >= maxPrice) continue;
+                        if (firstPoint) { ctx.moveTo(padding + i, canvas.height - padding - y * graphHeight); firstPoint = false; }
+                        else { ctx.lineTo(padding + i, canvas.height - padding - y * graphHeight); }
+                    }
+                    ctx.stroke();
+                    ctx.fillStyle = "rgba(255, 0, 0, 0.7)";
+                    ctx.fillText("D₀", padding + dStartX * graphWidth + 20, canvas.height - padding - demandFunction(dStartX + 0.05, 0) * graphHeight + 15);
+                }
+                
+                ctx.strokeStyle = "rgba(0, 0, 255, 0.5)";
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                let sStartX = 0;
+                while (supplyFunction(sStartX, 0) <= 0 && sStartX < 1) sStartX += 0.01;
+                let sEndX = 1;
+                while (supplyFunction(sEndX, 0) >= maxPrice && sEndX > 0) sEndX -= 0.01;
+                if (sStartX < sEndX) {
+                    for (let i = Math.floor(sStartX * graphWidth); i <= Math.floor(sEndX * graphWidth); i++) {
+                        const x = i / graphWidth;
+                        const y = supplyFunction(x, 0);
+                        if (i === Math.floor(sStartX * graphWidth)) { ctx.moveTo(padding + i, canvas.height - padding - y * graphHeight); }
+                        else { ctx.lineTo(padding + i, canvas.height - padding - y * graphHeight); }
+                    }
+                    ctx.stroke();
+                    ctx.fillStyle = "rgba(0, 0, 255, 0.7)";
+                    const s0EndX = 0.95 * (sEndX - sStartX) + sStartX;
+                    ctx.fillText("S₀", padding + s0EndX * graphWidth, canvas.height - padding - supplyFunction(s0EndX, 0) * graphHeight - 5);
+                }
+                
+                if (demandShift !== 0) {
+                    ctx.strokeStyle = "#f00";
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    dStartX = 0;
+                    while (demandFunction(dStartX, demandShift) <= 0 && dStartX < 1) dStartX += 0.01;
+                    dEndX = 1;
+                    while (demandFunction(dEndX, demandShift) <= 0 && dEndX > 0) dEndX -= 0.01;
+                    if (dStartX < dEndX) {
+                        let firstPoint = true;
+                        for (let i = Math.floor(dStartX * graphWidth); i <= Math.floor(dEndX * graphWidth); i++) {
+                            const x = i / graphWidth;
+                            const y = demandFunction(x, demandShift);
+                            if (y >= maxPrice) continue;
+                            if (firstPoint) { ctx.moveTo(padding + i, canvas.height - padding - y * graphHeight); firstPoint = false; }
+                            else { ctx.lineTo(padding + i, canvas.height - padding - y * graphHeight); }
+                        }
+                        ctx.stroke();
+                        ctx.fillStyle = "#f00";
+                        ctx.fillText("D₁", padding + dStartX * graphWidth + 20, canvas.height - padding - demandFunction(dStartX + 0.05, demandShift) * graphHeight + 15);
+                    }
+                }
+                
+                if (supplyShift !== 0) {
+                    ctx.strokeStyle = "#00f";
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    sStartX = 0;
+                    while (supplyFunction(sStartX, supplyShift) <= 0 && sStartX < 1) sStartX += 0.01;
+                    sEndX = 1;
+                    while (supplyFunction(sEndX, supplyShift) >= maxPrice && sEndX > 0) sEndX -= 0.01;
+                    if (sStartX < sEndX) {
+                        for (let i = Math.floor(sStartX * graphWidth); i <= Math.floor(sEndX * graphWidth); i++) {
+                            const x = i / graphWidth;
+                            const y = supplyFunction(x, supplyShift);
+                            if (i === Math.floor(sStartX * graphWidth)) { ctx.moveTo(padding + i, canvas.height - padding - y * graphHeight); }
+                            else { ctx.lineTo(padding + i, canvas.height - padding - y * graphHeight); }
+                        }
+                        ctx.stroke();
+                        ctx.fillStyle = "#00f";
+                        const s1EndX = 0.95 * (sEndX - sStartX) + sStartX;
+                        ctx.fillText("S₁", padding + s1EndX * graphWidth, canvas.height - padding - supplyFunction(s1EndX, supplyShift) * graphHeight - 5);
+                    }
+                }
+                
+                drawPriceControls();
+                
+                ctx.strokeStyle = "#888";
+                ctx.setLineDash([5, 3]);
+                ctx.beginPath();
+                ctx.moveTo(padding, canvas.height - padding - initialEquilibrium.y * graphHeight);
+                ctx.lineTo(padding + initialEquilibrium.x * graphWidth, canvas.height - padding - initialEquilibrium.y * graphHeight);
+                ctx.moveTo(padding + initialEquilibrium.x * graphWidth, canvas.height - padding);
+                ctx.lineTo(padding + initialEquilibrium.x * graphWidth, canvas.height - padding - initialEquilibrium.y * graphHeight);
+                ctx.stroke();
+                ctx.fillStyle = "#888";
+                ctx.beginPath();
+                ctx.arc(padding + initialEquilibrium.x * graphWidth, canvas.height - padding - initialEquilibrium.y * graphHeight, 3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = "#888";
+                ctx.font = "14px Arial";
+                ctx.fillText("P₀", padding - 20, canvas.height - padding - initialEquilibrium.y * graphHeight);
+                ctx.fillText("Q₀", padding + initialEquilibrium.x * graphWidth, canvas.height - padding + 20);
+                
+                const currentEquilibrium = findEquilibrium(demandShift, supplyShift);
+                if (demandShift !== 0 || supplyShift !== 0) {
+                    ctx.strokeStyle = "#000";
+                    ctx.setLineDash([3, 3]);
+                    ctx.beginPath();
+                    ctx.moveTo(padding, canvas.height - padding - currentEquilibrium.y * graphHeight);
+                    ctx.lineTo(padding + currentEquilibrium.x * graphWidth, canvas.height - padding - currentEquilibrium.y * graphHeight);
+                    ctx.moveTo(padding + currentEquilibrium.x * graphWidth, canvas.height - padding);
+                    ctx.lineTo(padding + currentEquilibrium.x * graphWidth, canvas.height - padding - currentEquilibrium.y * graphHeight);
+                    ctx.stroke();
+                    ctx.fillStyle = "#000";
+                    ctx.beginPath();
+                    ctx.arc(padding + currentEquilibrium.x * graphWidth, canvas.height - padding - currentEquilibrium.y * graphHeight, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = "#000";
+                    ctx.font = "14px Arial";
+                    ctx.fillText("P₁", padding - 40, canvas.height - padding - currentEquilibrium.y * graphHeight);
+                    ctx.fillText("Q₁", padding + currentEquilibrium.x * graphWidth, canvas.height - padding + 40);
+                }
+                ctx.setLineDash([]);
+                
+                equilibriumInfo.textContent = 
+                    `Current Equilibrium: Price = ${currentEquilibrium.y.toFixed(2)}, Quantity = ${currentEquilibrium.x.toFixed(2)}. ` +
+                    `(Initial: P₀ = ${initialEquilibrium.y.toFixed(2)}, Q₀ = ${initialEquilibrium.x.toFixed(2)})`;
+            
+                 // Also fix the equilibrium info text in the HTML part if it was similarly broken
+                const pEquilibriumInfo = document.getElementById("equilibrium-info");
+                if (pEquilibriumInfo.innerHTML.includes("P\n")) { // Check if it needs fixing
+                     pEquilibriumInfo.innerHTML = "At the initial market equilibrium, the equilibrium price is P₀ and the equilibrium quantity is Q₀.";
+                }
+            }
+            
+            let lastMouseX = 0;
+            
+            canvas.addEventListener("mousedown", function(e) {
+                if (isAnimating) return;
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                lastMouseX = x;
+                const y = e.clientY - rect.top;
+                const demandY = canvas.height - padding - demandFunction((x - padding) / graphWidth, demandShift) * graphHeight;
+                if (Math.abs(y - demandY) < 15) { isDragging = true; activeCurve = "demand"; return; }
+                const supplyY = canvas.height - padding - supplyFunction((x - padding) / graphWidth, supplyShift) * graphHeight;
+                if (Math.abs(y - supplyY) < 15) { isDragging = true; activeCurve = "supply"; return; }
+            });
+            
+            canvas.addEventListener("mousemove", function(e) {
+                if (isAnimating) return;
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                if (!isDragging) {
+                    const demandY = canvas.height - padding - demandFunction((x - padding) / graphWidth, demandShift) * graphHeight;
+                    const supplyY = canvas.height - padding - supplyFunction((x - padding) / graphWidth, supplyShift) * graphHeight;
+                    if (Math.abs(y - demandY) < 15 || Math.abs(y - supplyY) < 15) {
+                        canvas.style.cursor = "pointer";
+                    } else {
+                        canvas.style.cursor = "move";
+                    }
+                } else { 
+                    const delta = x - lastMouseX;
+                    lastMouseX = x;
+                    if (activeCurve === "demand") {
+                        demandShift = Math.max(-maxShift, Math.min(maxShift, demandShift + delta * 0.5)); 
+                    } else if (activeCurve === "supply") {
+                        supplyShift = Math.max(-maxShift, Math.min(maxShift, supplyShift + delta * 0.5)); 
+                    }
+                    drawCurves();
+                }
+            });
+            
+            canvas.addEventListener("mouseup", function() {
+                if (isDragging) {
+                    isDragging = false;
+                    activeCurve = null;
+                    drawCurves();
+                    recordEquilibriumState(); 
+                }
+            });
+            
+            canvas.addEventListener("mouseleave", function() {
+                if (isDragging) {
+                    isDragging = false;
+                    activeCurve = null;
+                    drawCurves();
+                    recordEquilibriumState(); 
+                }
+            });
+            
+            document.getElementById("shift-demand-left").addEventListener("click", function() {
+                if (isAnimating) return;
+                demandShift = Math.max(-maxShift, demandShift - 10);
+                drawCurves(); recordEquilibriumState();
+            });
+            document.getElementById("shift-demand-right").addEventListener("click", function() {
+                if (isAnimating) return;
+                demandShift = Math.min(maxShift, demandShift + 10);
+                drawCurves(); recordEquilibriumState();
+            });
+            document.getElementById("shift-supply-left").addEventListener("click", function() {
+                if (isAnimating) return;
+                supplyShift = Math.max(-maxShift, supplyShift - 10);
+                drawCurves(); recordEquilibriumState();
+            });
+            document.getElementById("shift-supply-right").addEventListener("click", function() {
+                if (isAnimating) return;
+                supplyShift = Math.min(maxShift, supplyShift + 10);
+                drawCurves(); recordEquilibriumState();
+            });
+            
+            document.getElementById("reset").addEventListener("click", function() {
+                if (isAnimating) {
+                    clearTimeout(animationTimeout);
+                    isAnimating = false;
+                    animateBtn.disabled = false;
+                    randomAnimateBtn.disabled = false;
+                    plotTimeSeriesBtn.disabled = false;
+                    animateBtn.textContent = "Play Sequential Animation";
+                    randomAnimateBtn.textContent = "Play Random Animation";
+                    document.getElementById("reset").disabled = false;
+                    animationStatus.textContent = "Animation stopped";
+                }
+                demandShift = 0;
+                supplyShift = 0;
+                priceFloor = null;
+                priceCeiling = null;
+                marketHistory = []; 
+                timeStep = 0;
+                document.querySelectorAll(".event-item").forEach(i => i.style.backgroundColor = "white");
+                drawCurves();
+                recordEquilibriumState(); 
+                plotTimeSeries(); 
+            });
+
+            function plotTimeSeries() {
+                if (!tsCanvas || !tsCtx) return; 
+                tsCtx.clearRect(0, 0, tsCanvas.width, tsCanvas.height);
+
+                if (marketHistory.length === 0) {
+                    tsCtx.font = "16px Arial";
+                    tsCtx.textAlign = "center";
+                    tsCtx.fillStyle = "#333";
+                    tsCtx.fillText("No time series data to plot.", tsCanvas.width / 2, tsCanvas.height / 2);
+                    tsCtx.fillText("Click events or shift curves to generate data.", tsCanvas.width / 2, tsCanvas.height / 2 + 20);
+                    return;
+                }
+
+                tsCtx.strokeStyle = "#000";
+                tsCtx.lineWidth = 1;
+                tsCtx.beginPath();
+                tsCtx.moveTo(tsPadding, tsPadding);
+                tsCtx.lineTo(tsPadding, tsCanvas.height - tsPadding);
+                tsCtx.stroke();
+                tsCtx.beginPath();
+                tsCtx.moveTo(tsPadding, tsCanvas.height - tsPadding);
+                tsCtx.lineTo(tsCanvas.width - tsPadding, tsCanvas.height - tsPadding);
+                tsCtx.stroke();
+
+                tsCtx.font = "12px Arial";
+                tsCtx.fillStyle = "#000";
+                tsCtx.textAlign = "center";
+                tsCtx.fillText("Value", tsPadding - 30, tsPadding - 10);
+                tsCtx.fillText("Time Step", tsCanvas.width / 2, tsCanvas.height - tsPadding + 35);
+
+                const maxTime = marketHistory.length - 1;
+                const xStep = maxTime > 0 ? tsGraphWidth / maxTime : tsGraphWidth;
+                const yAxisMax = 1.0; 
+
+                tsCtx.strokeStyle = "red";
+                tsCtx.fillStyle = "red";
+                tsCtx.lineWidth = 2;
+                tsCtx.beginPath();
+                marketHistory.forEach((point, index) => {
+                    const xPos = tsPadding + (maxTime === 0 ? tsGraphWidth / 2 : point.time * xStep);
+                    const yPos = tsCanvas.height - tsPadding - (point.price / yAxisMax) * tsGraphHeight;
+                    if (index === 0) tsCtx.moveTo(xPos, yPos);
+                    else tsCtx.lineTo(xPos, yPos);
+                    tsCtx.fillRect(xPos - 2, yPos - 2, 4, 4); 
+                });
+                tsCtx.stroke();
+
+                tsCtx.strokeStyle = "blue";
+                tsCtx.fillStyle = "blue";
+                tsCtx.lineWidth = 2;
+                tsCtx.beginPath();
+                marketHistory.forEach((point, index) => {
+                    const xPos = tsPadding + (maxTime === 0 ? tsGraphWidth / 2 : point.time * xStep);
+                    const yPos = tsCanvas.height - tsPadding - (point.quantity / yAxisMax) * tsGraphHeight;
+                    if (index === 0) tsCtx.moveTo(xPos, yPos);
+                    else tsCtx.lineTo(xPos, yPos);
+                    tsCtx.fillRect(xPos - 2, yPos - 2, 4, 4); 
+                });
+                tsCtx.stroke();
+
+                tsCtx.fillStyle = "red";
+                tsCtx.fillRect(tsPadding + 10, tsPadding - 20, 10, 10);
+                tsCtx.fillText("Price", tsPadding + 50, tsPadding - 10);
+                tsCtx.fillStyle = "blue";
+                tsCtx.fillRect(tsPadding + 100, tsPadding - 20, 10, 10);
+                tsCtx.fillText("Quantity", tsPadding + 150, tsPadding - 10);
+                
+                tsCtx.textAlign = "right";
+                tsCtx.fillStyle = "#333";
+                for (let i = 0; i <= 10; i++) {
+                    const val = i / 10.0;
+                    const yPosTick = tsCanvas.height - tsPadding - val * tsGraphHeight;
+                    tsCtx.fillText(val.toFixed(1), tsPadding - 8, yPosTick + 4);
+                    tsCtx.beginPath(); tsCtx.moveTo(tsPadding - 4, yPosTick); tsCtx.lineTo(tsPadding, yPosTick); tsCtx.stroke();
+                }
+                tsCtx.textAlign = "center";
+                if (marketHistory.length > 0) {
+                    for (let i = 0; i <= maxTime; i++) {
+                         if (marketHistory.length < 15 || i % Math.ceil(maxTime/10) === 0) { 
+                            const xPosTick = tsPadding + (maxTime === 0 ? tsGraphWidth / 2 : i * xStep);
+                            tsCtx.fillText(i, xPosTick, tsCanvas.height - tsPadding + 20);
+                            tsCtx.beginPath(); tsCtx.moveTo(xPosTick, tsCanvas.height - tsPadding); tsCtx.lineTo(xPosTick, tsCanvas.height - tsPadding + 4); tsCtx.stroke();
+                         }
+                    }
+                }
+            }
+            
+            plotTimeSeriesBtn.addEventListener("click", plotTimeSeries);
+            
+            drawCurves();
+            recordEquilibriumState(); 
+            plotTimeSeries(); 
+        });
+    </script>
+</body>
+</html>
