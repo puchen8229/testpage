@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interactive Demand and Supply Diagram</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #canvas-container {
+            margin: 20px 0;
+        }
+        canvas {
+            border: 1px solid #ccc;
+            cursor: move;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+        button {
+            padding: 8px 12px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        .info {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Interactive Demand and Supply Diagram</h1>
+    
+    <div id="canvas-container">
+        <canvas id="graph" width="600" height="400"></canvas>
+    </div>
+    
+    <div class="controls">
+        <button id="reset">Reset</button>
+        <div>Click and drag horizontally to shift curves</div>
+    </div>
+    
+    <div class="info">
+        <p id="equilibrium-info">At the initial market equilibrium, the equilibrium price is P₀ and the equilibrium quantity is Q₀.</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('graph');
+            const ctx = canvas.getContext('2d');
+            const equilibriumInfo = document.getElementById('equilibrium-info');
+            
+            // Graph dimensions and padding
+            const padding = 50;
+            const graphWidth = canvas.width - padding * 2;
+            const graphHeight = canvas.height - padding * 2;
+            
+            // Initial curve parameters
+            let demandShift = 0;
+            let supplyShift = 0;
+            let isDragging = false;
+            let activeCurve = null;
+            const maxShift = 100;
+            const maxPrice = 1; // Maximum price level where we cut both curves
+            
+            // Draw axes (always in black)
+            function drawAxes() {
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1;
+                
+                // Y-axis (Price)
+                ctx.beginPath();
+                ctx.moveTo(padding, padding);
+                ctx.lineTo(padding, canvas.height - padding);
+                ctx.stroke();
+                
+                // X-axis (Quantity)
+                ctx.beginPath();
+                ctx.moveTo(padding, canvas.height - padding);
+                ctx.lineTo(canvas.width - padding, canvas.height - padding);
+                ctx.stroke();
+                
+                // Labels
+                ctx.font = '14px Arial';
+                ctx.fillStyle = '#000';
+                ctx.textAlign = 'center';
+                ctx.fillText('Price (P)', padding - 10, padding - 10);
+                ctx.fillText('Quantity (Q)', canvas.width - padding + 10, canvas.height - padding + 20);
+            }
+            
+            // Demand curve function (downward sloping only, no horizontal part)
+            function demandFunction(x, shift = 0) {
+                const shiftedX = x - shift / maxShift * 0.2;
+                return (maxPrice - shiftedX * 1.5); // Pure downward slope
+                
+            }
+            
+            // Supply curve function (upward sloping, cut at maxPrice)
+            function supplyFunction(x, shift = 0) {
+                const shiftedX = x - shift / maxShift * 0.2;
+                return Math.min(maxPrice, shiftedX * 1.5); // Upward slope capped at maxPrice
+            }
+            
+            // Find equilibrium point between two curves
+            function findEquilibrium(dShift, sShift) {
+                const steps = 100;
+                let equilibrium = {x: 0.5, y: 0.5};
+                
+                for (let i = 0; i <= steps; i++) {
+                    const x = i / steps;
+                    const demandY = demandFunction(x, dShift);
+                    const supplyY = supplyFunction(x, sShift);
+                    
+                    // Only consider points where both curves have positive values
+                    if (demandY > 0 && supplyY > 0) {
+                        if (Math.abs(demandY - supplyY) < 0.01) {
+                            equilibrium = {x: x, y: (demandY + supplyY) / 2};
+                            break;
+                        }
+                        
+                        if (demandY < supplyY) {
+                            equilibrium = {
+                                x: x,
+                                y: (demandFunction(x-0.01, dShift) + supplyFunction(x-0.01, sShift)) / 2
+                            };
+                            break;
+                        }
+                    }
+                }
+                
+                return equilibrium;
+            }
+            
+            // Initial equilibrium
+            const initialEquilibrium = findEquilibrium(0, 0);
+            
+            // Draw curves
+            function drawCurves() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawAxes();
+                
+                // Draw initial demand curve (D₀ - thin red)
+                ctx.strokeStyle = 'rgba(255, 0, 0, 0.5)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                
+                // Calculate start and end points for demand curve (only where y > 0)
+                let dStartX = 0;
+                while (demandFunction(dStartX, 0) <= 0 && dStartX < 1) {
+                    dStartX += 0.01;
+                }
+                
+                let dEndX = 1;
+                while (demandFunction(dEndX, 0) <= 0 && dEndX > 0) {
+                    dEndX -= 0.01;
+                }
+                
+                // Only draw if we have valid points
+                if (dStartX < dEndX) {
+                    for (let i = Math.floor(dStartX * graphWidth); i <= Math.floor(dEndX * graphWidth); i++) {
+                        const x = i / graphWidth;
+                        const y = demandFunction(x, 0);
+                        
+                        if (i === Math.floor(dStartX * graphWidth)) {
+                            ctx.moveTo(padding + i, canvas.height - padding - y * graphHeight);
+                        } else {
+                            ctx.lineTo(padding + i, canvas.height - padding - y * graphHeight);
+                        }
+                    }
+                    ctx.stroke();
+                    
+                    // Place D₀ label near the start of the curve
+                    ctx.fillStyle = 'rgba(255, 0, 0, 0.7)';
+                    ctx.fillText('D₀', padding + dStartX * graphWidth + 20, 
+                               canvas.height - padding - demandFunction(dStartX + 0.05, 0) * graphHeight + 15);
+                }
+                
+                // Draw initial supply curve (S₀ - thin blue)
+                ctx.strokeStyle = 'rgba(0, 0, 255, 0.5)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                
+                let sStartX = 0;
+                while (supplyFunction(sStartX, 0) <= 0 && sStartX < 1) {
+                    sStartX += 0.01;
+                }
+                
+                let sEndX = 1;
+                while (supplyFunction(sEndX, 0) >= maxPrice && sEndX > 0) {
+                    sEndX -= 0.01;
+                }
+                
+                if (sStartX < sEndX) {
+                    for (let i = Math.floor(sStartX * graphWidth); i <= Math.floor(sEndX * graphWidth); i++) {
+                        const x = i / graphWidth;
+                        const y = supplyFunction(x, 0);
+                        
+                        if (i === Math.floor(sStartX * graphWidth)) {
+                            ctx.moveTo(padding + i, canvas.height - padding - y * graphHeight);
+                        } else {
+                            ctx.lineTo(padding + i, canvas.height - padding - y * graphHeight);
+                        }
+                    }
+                    ctx.stroke();
+                    
+                    ctx.fillStyle = 'rgba(0, 0, 255, 0.7)';
+                    const s0EndX = 0.95 * (sEndX - sStartX) + sStartX;
+                    ctx.fillText('S₀', 
+                        padding + s0EndX * graphWidth, 
+                        canvas.height - padding - supplyFunction(s0EndX, 0) * graphHeight - 5);
+                }
+                
+                // Draw shifted demand curve (D₁ - thick red) if shifted
+                if (demandShift !== 0) {
+                    ctx.strokeStyle = '#f00';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    
+                    let dStartX = 0;
+                    while (demandFunction(dStartX, demandShift) <= 0 && dStartX < 1) {
+                        dStartX += 0.01;
+                    }
+                    
+                    let dEndX = 1;
+                    while (demandFunction(dEndX, demandShift) <= 0 && dEndX > 0) {
+                        dEndX -= 0.01;
+                    }
+                    
+                    if (dStartX < dEndX) {
+                        for (let i = Math.floor(dStartX * graphWidth); i <= Math.floor(dEndX * graphWidth); i++) {
+                            const x = i / graphWidth;
+                            const y = demandFunction(x, demandShift);
+                            
+                            if (i === Math.floor(dStartX * graphWidth)) {
+                                ctx.moveTo(padding + i, canvas.height - padding - y * graphHeight);
+                            } else {
+                                ctx.lineTo(padding + i, canvas.height - padding - y * graphHeight);
+                            }
+                        }
+                        ctx.stroke();
+                        
+                        ctx.fillStyle = '#f00';
+                        ctx.fillText('D₁', padding + dStartX * graphWidth + 20, 
+                                   canvas.height - padding - demandFunction(dStartX + 0.05, demandShift) * graphHeight + 15);
+                    }
+                }
+                
+                // Draw shifted supply curve (S₁ - thick blue) if shifted
+                if (supplyShift !== 0) {
+                    ctx.strokeStyle = '#00f';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    
+                    let sStartX = 0;
+                    while (supplyFunction(sStartX, supplyShift) <= 0 && sStartX < 1) {
+                        sStartX += 0.01;
+                    }
+                    
+                    let sEndX = 1;
+                    while (supplyFunction(sEndX, supplyShift) >= maxPrice && sEndX > 0) {
+                        sEndX -= 0.01;
+                    }
+                    
+                    if (sStartX < sEndX) {
+                        for (let i = Math.floor(sStartX * graphWidth); i <= Math.floor(sEndX * graphWidth); i++) {
+                            const x = i / graphWidth;
+                            const y = supplyFunction(x, supplyShift);
+                            
+                            if (i === Math.floor(sStartX * graphWidth)) {
+                                ctx.moveTo(padding + i, canvas.height - padding - y * graphHeight);
+                            } else {
+                                ctx.lineTo(padding + i, canvas.height - padding - y * graphHeight);
+                            }
+                        }
+                        ctx.stroke();
+                        
+                        ctx.fillStyle = '#00f';
+                        const s1EndX = 0.95 * (sEndX - sStartX) + sStartX;
+                        ctx.fillText('S₁', 
+                            padding + s1EndX * graphWidth, 
+                            canvas.height - padding - supplyFunction(s1EndX, supplyShift) * graphHeight - 5);
+                    }
+                }
+                
+                // Equilibrium lines and points
+                ctx.strokeStyle = '#888';
+                ctx.setLineDash([5, 3]);
+                ctx.beginPath();
+                ctx.moveTo(padding, canvas.height - padding - initialEquilibrium.y * graphHeight);
+                ctx.lineTo(padding + initialEquilibrium.x * graphWidth, canvas.height - padding - initialEquilibrium.y * graphHeight);
+                ctx.moveTo(padding + initialEquilibrium.x * graphWidth, canvas.height - padding);
+                ctx.lineTo(padding + initialEquilibrium.x * graphWidth, canvas.height - padding - initialEquilibrium.y * graphHeight);
+                ctx.stroke();
+                
+                ctx.fillStyle = '#888';
+                ctx.beginPath();
+                ctx.arc(
+                    padding + initialEquilibrium.x * graphWidth, 
+                    canvas.height - padding - initialEquilibrium.y * graphHeight, 
+                    3, 0, Math.PI * 2
+                );
+                ctx.fill();
+                
+                ctx.fillStyle = '#888';
+                ctx.font = '14px Arial';
+                ctx.fillText('P₀', padding - 20, canvas.height - padding - initialEquilibrium.y * graphHeight);
+                ctx.fillText('Q₀', padding + initialEquilibrium.x * graphWidth, canvas.height - padding + 20);
+                
+                if (demandShift !== 0 || supplyShift !== 0) {
+                    const currentEquilibrium = findEquilibrium(demandShift, supplyShift);
+                    
+                    ctx.strokeStyle = '#000';
+                    ctx.setLineDash([3, 3]);
+                    ctx.beginPath();
+                    ctx.moveTo(padding, canvas.height - padding - currentEquilibrium.y * graphHeight);
+                    ctx.lineTo(padding + currentEquilibrium.x * graphWidth, canvas.height - padding - currentEquilibrium.y * graphHeight);
+                    ctx.moveTo(padding + currentEquilibrium.x * graphWidth, canvas.height - padding);
+                    ctx.lineTo(padding + currentEquilibrium.x * graphWidth, canvas.height - padding - currentEquilibrium.y * graphHeight);
+                    ctx.stroke();
+                    
+                    ctx.fillStyle = '#000';
+                    ctx.beginPath();
+                    ctx.arc(
+                        padding + currentEquilibrium.x * graphWidth, 
+                        canvas.height - padding - currentEquilibrium.y * graphHeight, 
+                        4, 0, Math.PI * 2
+                    );
+                    ctx.fill();
+                    
+                    ctx.fillStyle = '#000';
+                    ctx.font = '14px Arial';
+                    ctx.fillText('P₁', padding - 40, canvas.height - padding - currentEquilibrium.y * graphHeight);
+                    ctx.fillText('Q₁', padding + currentEquilibrium.x * graphWidth, canvas.height - padding + 40);
+                }
+                
+                ctx.setLineDash([]);
+                
+                // Update equilibrium info
+                if (demandShift === 0 && supplyShift === 0) {
+                    equilibriumInfo.textContent = 
+                        `At the initial market equilibrium, the equilibrium price is P₀ = ${initialEquilibrium.y.toFixed(2)} and the equilibrium quantity is Q₀ = ${initialEquilibrium.x.toFixed(2)}.`;
+                } else {
+                    const currentEquilibrium = findEquilibrium(demandShift, supplyShift);
+                    equilibriumInfo.textContent = 
+                        `New market equilibrium: Price is P₁ = ${currentEquilibrium.y.toFixed(2)} (was P₀ = ${initialEquilibrium.y.toFixed(2)}) ` +
+                        `and Quantity is Q₁ = ${currentEquilibrium.x.toFixed(2)} (was Q₀ = ${initialEquilibrium.x.toFixed(2)}). ` +
+                        `Demand shift: ${demandShift}, Supply shift: ${supplyShift}.`;
+                }
+            }
+            
+            // Mouse event handlers
+            canvas.addEventListener('mousedown', function(e) {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const demandY = canvas.height - padding - demandFunction((x - padding) / graphWidth, demandShift) * graphHeight;
+                if (Math.abs(y - demandY) < 15) {
+                    isDragging = true;
+                    activeCurve = 'demand';
+                    return;
+                }
+                
+                const supplyY = canvas.height - padding - supplyFunction((x - padding) / graphWidth, supplyShift) * graphHeight;
+                if (Math.abs(y - supplyY) < 15) {
+                    isDragging = true;
+                    activeCurve = 'supply';
+                    return;
+                }
+            });
+            
+            canvas.addEventListener('mousemove', function(e) {
+                if (!isDragging) return;
+                
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const prevX = x - e.movementX;
+                
+                const delta = x - prevX;
+                
+                if (activeCurve === 'demand') {
+                    demandShift = Math.max(-maxShift, Math.min(maxShift, demandShift + delta));
+                } else if (activeCurve === 'supply') {
+                    supplyShift = Math.max(-maxShift, Math.min(maxShift, supplyShift + delta));
+                }
+                
+                drawCurves();
+            });
+            
+            canvas.addEventListener('mouseup', function() {
+                isDragging = false;
+                activeCurve = null;
+            });
+            
+            canvas.addEventListener('mouseleave', function() {
+                isDragging = false;
+                activeCurve = null;
+            });
+            
+            document.getElementById('reset').addEventListener('click', function() {
+                demandShift = 0;
+                supplyShift = 0;
+                drawCurves();
+            });
+            
+            drawCurves();
+        });
+    </script>
+</body>
+</html>
