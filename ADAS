@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AD-AS Model: Interactive (Reset + Centered Intersection)</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    button {
+      margin: 15px;
+      font-size: 16px;
+      padding: 6px 12px;
+    }
+  </style>
+</head>
+<body>
+<svg id="chart" width="700" height="500"></svg>
+<div style="text-align:center;">
+  <button id="resetButton">Reset Curves</button>
+</div>
+
+<script>
+const svg = d3.select("#chart");
+const width = +svg.attr("width");
+const height = +svg.attr("height");
+const margin = { top: 50, right: 50, bottom: 50, left: 70 };
+const innerWidth = width - margin.left - margin.right;
+const innerHeight = height - margin.top - margin.bottom;
+
+const x = d3.scaleLinear().domain([40, 160]).range([0, innerWidth]); // Real GDP
+const y = d3.scaleLinear().domain([0, 10]).range([innerHeight, 0]);  // Inflation
+
+const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+g.append("g").attr("transform", `translate(0,${innerHeight})`).call(d3.axisBottom(x));
+g.append("g").call(d3.axisLeft(y));
+
+svg.append("text")
+  .attr("x", margin.left + innerWidth / 2)
+  .attr("y", height - 10)
+  .attr("text-anchor", "middle")
+  .text("Real GDP (Y)");
+
+svg.append("text")
+  .attr("transform", "rotate(-90)")
+  .attr("x", -height / 2)
+  .attr("y", 20)
+  .attr("text-anchor", "middle")
+  .text("Inflation (π)");
+
+let adOffset = 0;
+let sras1Offset = 0;
+
+// AD and SRAS both pass through (100, 5)
+function generateAD(offset = 0) {
+  return d3.range(50, 151).map(xVal => ({ x: xVal, y: 10 - 0.05 * xVal + offset }));
+}
+
+function generateSRAS1(offset = 0) {
+  return d3.range(50, 151).map(xVal => ({ x: xVal, y: 1 + 0.04 * xVal + offset }));
+}
+
+const Y_star = 100;
+g.append("line")
+  .attr("x1", x(Y_star))
+  .attr("x2", x(Y_star))
+  .attr("y1", 0)
+  .attr("y2", innerHeight)
+  .attr("stroke", "black")
+  .attr("stroke-width", 2)
+  .attr("stroke-dasharray", "4,2");
+
+g.append("text")
+  .attr("x", x(Y_star) + 5)
+  .attr("y", y(10) - 5)
+  .text("LRAS")
+  .style("fill", "black");
+
+let adPath = g.append("path")
+  .datum(generateAD())
+  .attr("stroke", "blue")
+  .attr("stroke-width", 2)
+  .attr("fill", "none");
+
+let adLabel = g.append("text").style("fill", "blue");
+
+let sras1Path = g.append("path")
+  .datum(generateSRAS1())
+  .attr("stroke", "red")
+  .attr("stroke-width", 2)
+  .attr("fill", "none");
+
+let sras1Label = g.append("text").style("fill", "red");
+
+function updateCurves() {
+  const adData = generateAD(adOffset);
+  const sras1Data = generateSRAS1(sras1Offset);
+
+  adPath.datum(adData).attr("d", d3.line().x(d => x(d.x)).y(d => y(d.y)));
+  adLabel
+    .attr("x", x(adData[adData.length - 1].x) + 5)
+    .attr("y", y(adData[adData.length - 1].y))
+    .text("AD");
+
+  sras1Path.datum(sras1Data).attr("d", d3.line().x(d => x(d.x)).y(d => y(d.y)));
+  sras1Label
+    .attr("x", x(sras1Data[sras1Data.length - 1].x) + 5)
+    .attr("y", y(sras1Data[sras1Data.length - 1].y))
+    .text("SRAS₁");
+}
+
+updateCurves();
+
+// Add drag behavior to AD label
+adLabel
+  .style("cursor", "ns-resize")
+  .call(
+    d3.drag().on("drag", function (event) {
+      adOffset -= event.dy / 40;
+      updateCurves();
+    })
+  );
+
+// Add drag behavior to SRAS₁ label
+sras1Label
+  .style("cursor", "ns-resize")
+  .call(
+    d3.drag().on("drag", function (event) {
+      sras1Offset -= event.dy / 40;
+      updateCurves();
+    })
+  );
+
+
+// Reset button
+document.getElementById("resetButton").addEventListener("click", function() {
+  adOffset = 0;
+  sras1Offset = 0;
+  updateCurves();
+});
+</script>
+</body>
+</html>
