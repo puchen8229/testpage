@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newton's Method Interactive Visualization</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.2em;
+            font-weight: 300;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .controls {
+            background: #e3f2fd;
+            border: 2px solid #0984e3;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #0984e3;
+        }
+        
+        .control-group input, .control-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .control-group input[type="range"] {
+            padding: 0;
+            height: 8px;
+            background: #ddd;
+            outline: none;
+            border-radius: 4px;
+        }
+        
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #0984e3;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .control-group input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #0984e3;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .slider-container input[type="range"] {
+            flex: 1;
+        }
+        
+        .slider-container span {
+            min-width: 40px;
+            text-align: center;
+            font-weight: 600;
+            color: #0984e3;
+            background: #e3f2fd;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .control-group input:focus, .control-group select:focus {
+            outline: none;
+            border-color: #0984e3;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .btn-primary {
+            background-color: #0984e3;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #74b9ff;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+        
+        .visualization-area {
+            margin-top: 20px;
+        }
+        
+        .info-panel {
+            background: #e3f2fd;
+            border: 2px solid #0984e3;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .info-panel h3 {
+            margin-top: 0;
+            color: #0984e3;
+        }
+        
+        .iteration-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .iteration-table th, .iteration-table td {
+            border: 1px solid #0984e3;
+            padding: 8px 12px;
+            text-align: center;
+        }
+        
+        .iteration-table th {
+            background-color: #0984e3;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .iteration-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .formula-display {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.1em;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            color: #721c24;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            color: #155724;
+        }
+        
+        @media (max-width: 768px) {
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Newton's Method Interactive Visualization</h1>
+            <p>Explore how Newton's Method finds roots of equations using derivatives</p>
+        </div>
+        
+        <div class="content">
+            <div class="formula-display">
+                <strong>Newton's Method Formula:</strong> x<sub>n+1</sub> = x<sub>n</sub> - f(x<sub>n</sub>)/f'(x<sub>n</sub>)
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <label for="functionSelect">Choose a Function or Enter Custom:</label>
+                    <select id="functionSelect">
+                        <option value="x^2 - 3*x + 1">x² - 3x + 1 = 0 (Default)</option>
+                        <option value="x^3 - 2*x - 5">x³ - 2x - 5 = 0</option>
+                        <option value="x^2 - 2">x² - 2 = 0 (Find √2)</option>
+                        <option value="Math.cos(x) - x">cos(x) - x = 0</option>
+                        <option value="Math.exp(x) - 2">e^x - 2 = 0</option>
+                        <option value="custom">Custom Function</option>
+                    </select>
+                </div>
+                
+                <div class="control-group" id="customFunctionGroup" style="display: none;">
+                    <label for="customFunction">Custom Function f(x) = 0:</label>
+                    <input type="text" id="customFunction" placeholder="e.g., x^3 - x - 1" />
+                    <small style="color: #666;">Use JavaScript syntax: x^2 as x*x, sqrt(x) as Math.sqrt(x), etc.</small>
+                </div>
+                
+                <div class="control-group">
+                    <label for="initialGuess">Initial Guess (x₀):</label>
+                    <input type="number" id="initialGuess" value="3" step="0.1" />
+                </div>
+                
+                <div class="control-group">
+                    <label for="tolerance">Tolerance (stopping criterion):</label>
+                    <input type="number" id="tolerance" value="0.0001" step="0.0001" min="0.0001" />
+                </div>
+                
+                <div class="control-group">
+                    <label for="maxIterations">Maximum Iterations:</label>
+                    <input type="number" id="maxIterations" value="20" min="1" max="50" />
+                </div>
+                
+                <div class="control-group">
+                    <label for="xMin">X-axis Left Border:</label>
+                    <div class="slider-container">
+                        <input type="range" id="xMin" min="-20" max="0" value="-5" step="0.5" />
+                        <span id="xMinValue">-5</span>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <label for="xMax">X-axis Right Border:</label>
+                    <div class="slider-container">
+                        <input type="range" id="xMax" min="0" max="20" value="5" step="0.5" />
+                        <span id="xMaxValue">5</span>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="runNewtonMethod()">Run Newton's Method</button>
+                    <button class="btn btn-secondary" onclick="resetVisualization()">Reset</button>
+                    <button class="btn btn-primary" onclick="startAnimation()" id="animateBtn">Animate Steps</button>
+                    <button class="btn btn-primary" id="nextStepBtn" onclick="manualNextStep()" disabled>Next Step</button>
+                    <button class="btn btn-primary" id="pauseBtn" onclick="togglePause()" disabled>Pause</button>
+                </div>
+            </div>
+            
+            <div class="visualization-area">
+                <div id="plotDiv" style="width: 100%; height: 500px;"></div>
+            </div>
+            
+            <div class="info-panel" id="resultsPanel" style="display: none;">
+                <h3>Newton's Method Results</h3>
+                <div id="convergenceInfo"></div>
+                <table class="iteration-table" id="iterationTable">
+                    <thead>
+                        <tr>
+                            <th>Iteration (n)</th>
+                            <th>x<sub>n</sub></th>
+                            <th>f(x<sub>n</sub>)</th>
+                            <th>f'(x<sub>n</sub>)</th>
+                            <th>x<sub>n+1</sub></th>
+                            <th>|x<sub>n+1</sub> - x<sub>n</sub>|</th>
+                        </tr>
+                    </thead>
+                    <tbody id="iterationTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentFunction = null;
+        let currentDerivative = null;
+        let iterations = [];
+        let animationIndex = 0;
+        let animationTimer = null;
+        let isPaused = false;
+        let isAnimating = false;
+
+        // Function definitions
+        const functions = {
+            'x^2 - 3*x + 1': {
+                f: x => x*x - 3*x + 1,
+                df: x => 2*x - 3,
+                name: 'f(x) = x² - 3x + 1'
+            },
+            'x^3 - 2*x - 5': {
+                f: x => x*x*x - 2*x - 5,
+                df: x => 3*x*x - 2,
+                name: 'f(x) = x³ - 2x - 5'
+            },
+            'x^2 - 2': {
+                f: x => x*x - 2,
+                df: x => 2*x,
+                name: 'f(x) = x² - 2'
+            },
+            'Math.cos(x) - x': {
+                f: x => Math.cos(x) - x,
+                df: x => -Math.sin(x) - 1,
+                name: 'f(x) = cos(x) - x'
+            },
+            'Math.exp(x) - 2': {
+                f: x => Math.exp(x) - 2,
+                df: x => Math.exp(x),
+                name: 'f(x) = e^x - 2'
+            }
+        };
+
+        // Event listeners
+        document.getElementById('functionSelect').addEventListener('change', function() {
+            const customGroup = document.getElementById('customFunctionGroup');
+            if (this.value === 'custom') {
+                customGroup.style.display = 'block';
+            } else {
+                customGroup.style.display = 'none';
+                setFunction(this.value);
+            }
+        });
+
+        // Slider event listeners
+        document.getElementById('xMin').addEventListener('input', function() {
+            document.getElementById('xMinValue').textContent = this.value;
+            plotFunction();
+        });
+
+        document.getElementById('xMax').addEventListener('input', function() {
+            document.getElementById('xMaxValue').textContent = this.value;
+            plotFunction();
+        });
+
+        // Initialize with default function
+        setFunction('x^2 - 3*x + 1');
+
+        function setFunction(funcKey) {
+            if (functions[funcKey]) {
+                currentFunction = functions[funcKey].f;
+                currentDerivative = functions[funcKey].df;
+                plotFunction();
+            }
+        }
+
+        function parseCustomFunction() {
+            const funcStr = document.getElementById('customFunction').value.trim();
+            if (!funcStr) return false;
+
+            try {
+                // Create function from string (basic security: only allow mathematical operations)
+                const allowedChars = /^[x\d\+\-\*\/\^\(\)\.\s\w]*$/;
+                if (!allowedChars.test(funcStr)) {
+                    throw new Error('Invalid characters in function');
+                }
+
+                // Replace x^n with Math.pow(x,n) for proper evaluation
+                let processedFunc = funcStr.replace(/x\^(\d+)/g, 'Math.pow(x,$1)');
+                processedFunc = processedFunc.replace(/x\^/g, 'Math.pow(x,');
+                
+                currentFunction = new Function('x', `return ${processedFunc}`);
+                
+                // Numerical derivative (simple finite difference)
+                currentDerivative = function(x) {
+                    const h = 1e-8;
+                    return (currentFunction(x + h) - currentFunction(x - h)) / (2 * h);
+                };
+
+                return true;
+            } catch (error) {
+                showError('Invalid function syntax. Please use JavaScript syntax (e.g., x*x for x², Math.sqrt(x) for √x)');
+                return false;
+            }
+        }
+
+        function plotFunction() {
+            if (!currentFunction) return;
+
+            const xMin = parseFloat(document.getElementById('xMin').value);
+            const xMax = parseFloat(document.getElementById('xMax').value);
+            const xValues = [];
+            const yValues = [];
+
+            for (let x = xMin; x <= xMax; x += (xMax - xMin) / 200) {
+                xValues.push(x);
+                try {
+                    yValues.push(currentFunction(x));
+                } catch (error) {
+                    yValues.push(null);
+                }
+            }
+
+            const trace = {
+                x: xValues,
+                y: yValues,
+                type: 'scatter',
+                mode: 'lines',
+                name: 'f(x)',
+                line: { color: '#0984e3', width: 3 }
+            };
+
+            const zeroLine = {
+                x: [xMin, xMax],
+                y: [0, 0],
+                type: 'scatter',
+                mode: 'lines',
+                name: 'y = 0',
+                line: { color: '#666', width: 1, dash: 'dash' }
+            };
+
+            const layout = {
+                title: 'Function Plot',
+                xaxis: { title: 'x', gridcolor: '#e0e0e0', range: [xMin, xMax] },
+                yaxis: { title: 'f(x)', gridcolor: '#e0e0e0' },
+                plot_bgcolor: '#f8f9fa',
+                paper_bgcolor: 'white',
+                showlegend: true
+            };
+
+            Plotly.newPlot('plotDiv', [trace, zeroLine], layout);
+        }
+
+        function runNewtonMethod() {
+            // Clear previous results
+            clearMessages();
+            
+            // Get parameters
+            const funcSelect = document.getElementById('functionSelect').value;
+            if (funcSelect === 'custom') {
+                if (!parseCustomFunction()) return;
+            } else {
+                setFunction(funcSelect);
+            }
+
+            const x0 = parseFloat(document.getElementById('initialGuess').value);
+            const tolerance = parseFloat(document.getElementById('tolerance').value);
+            const maxIter = parseInt(document.getElementById('maxIterations').value);
+
+            if (isNaN(x0) || isNaN(tolerance) || isNaN(maxIter)) {
+                showError('Please enter valid numerical values for all parameters.');
+                return;
+            }
+
+            // Run Newton's method
+            iterations = [];
+            let x = x0;
+            let converged = false;
+
+            for (let i = 0; i < maxIter; i++) {
+                try {
+                    const fx = currentFunction(x);
+                    const dfx = currentDerivative(x);
+
+                    if (Math.abs(dfx) < 1e-12) {
+                        showError(`Derivative is zero at x = ${x.toFixed(6)}. Cannot continue.`);
+                        break;
+                    }
+
+                    const xNext = x - fx / dfx;
+                    const error = Math.abs(xNext - x);
+
+                    iterations.push({
+                        n: i,
+                        x: x,
+                        fx: fx,
+                        dfx: dfx,
+                        xNext: xNext,
+                        error: error
+                    });
+
+                    if (error < tolerance) {
+                        converged = true;
+                        showSuccess(`Converged to x = ${xNext.toFixed(8)} in ${i + 1} iterations.`);
+                        break;
+                    }
+
+                    x = xNext;
+                } catch (error) {
+                    showError(`Error in iteration ${i}: ${error.message}`);
+                    break;
+                }
+            }
+
+            if (!converged && iterations.length === maxIter) {
+                showError(`Did not converge within ${maxIter} iterations. Try a different initial guess or increase tolerance.`);
+            }
+
+            displayResults();
+            plotWithIterations();
+        }
+
+        function displayResults() {
+            const resultsPanel = document.getElementById('resultsPanel');
+            const tableBody = document.getElementById('iterationTableBody');
+            
+            resultsPanel.style.display = 'block';
+            tableBody.innerHTML = '';
+
+            iterations.forEach(iter => {
+                const row = tableBody.insertRow();
+                row.insertCell(0).textContent = iter.n;
+                row.insertCell(1).textContent = iter.x.toFixed(6);
+                row.insertCell(2).textContent = iter.fx.toFixed(6);
+                row.insertCell(3).textContent = iter.dfx.toFixed(6);
+                row.insertCell(4).textContent = iter.xNext.toFixed(6);
+                row.insertCell(5).textContent = iter.error.toFixed(8);
+            });
+        }
+
+        function plotWithIterations() {
+            if (!currentFunction || iterations.length === 0) return;
+
+            const sliderXMin = parseFloat(document.getElementById('xMin').value);
+            const sliderXMax = parseFloat(document.getElementById('xMax').value);
+            const iterationRange = Math.max(...iterations.map(i => Math.abs(i.x))) + 1;
+            
+            const xMin = Math.min(sliderXMin, Math.min(...iterations.map(i => i.x)) - 1);
+            const xMax = Math.max(sliderXMax, Math.max(...iterations.map(i => i.x)) + 1);
+            
+            const xValues = [];
+            const yValues = [];
+
+            for (let x = xMin; x <= xMax; x += (xMax - xMin) / 200) {
+                xValues.push(x);
+                try {
+                    yValues.push(currentFunction(x));
+                } catch (error) {
+                    yValues.push(null);
+                }
+            }
+
+            const traces = [];
+
+            // Function plot
+            traces.push({
+                x: xValues,
+                y: yValues,
+                type: 'scatter',
+                mode: 'lines',
+                name: 'f(x)',
+                line: { color: '#0984e3', width: 3 }
+            });
+
+            // Zero line
+            traces.push({
+                x: [xMin, xMax],
+                y: [0, 0],
+                type: 'scatter',
+                mode: 'lines',
+                name: 'y = 0',
+                line: { color: '#666', width: 1, dash: 'dash' }
+            });
+
+            // Iteration points
+            const iterX = iterations.map(i => i.x);
+            const iterY = iterations.map(i => i.fx);
+            traces.push({
+                x: iterX,
+                y: iterY,
+                type: 'scatter',
+                mode: 'markers',
+                name: 'Iterations',
+                marker: { color: '#dc3545', size: 8 }
+            });
+
+            // Vertical dotted lines from x_n to f(x_n)
+            iterations.forEach((iter, index) => {
+                traces.push({
+                    x: [iter.x, iter.x],
+                    y: [0, iter.fx],
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: index === 0 ? 'f(x_n) progression' : '',
+                    line: { color: '#dc3545', width: 2, dash: 'dot' },
+                    showlegend: index === 0
+                });
+            });
+
+            // Tangent lines
+            iterations.forEach((iter, index) => {
+                if (index < 5) { // Show only first 5 tangent lines to avoid clutter
+                    const targetLength = Math.max(
+                        Math.abs(iter.fx / iter.dfx) * 3, // Ensure crosses x-axis
+                        2.0 // Minimum length
+                    );
+                    
+                    const x1 = iter.x - targetLength;
+                    const x2 = iter.x + targetLength;
+                    const y1 = iter.fx + iter.dfx * (x1 - iter.x);
+                    const y2 = iter.fx + iter.dfx * (x2 - iter.x);
+                    
+                    traces.push({
+                        x: [x1, x2],
+                        y: [y1, y2],
+                        type: 'scatter',
+                        mode: 'lines',
+                        name: `Tangent ${index + 1}`,
+                        line: { color: '#28a745', width: 2, dash: 'dot' },
+                        showlegend: index < 3
+                    });
+                }
+            });
+
+            const layout = {
+                title: 'Newton\'s Method Visualization',
+                xaxis: { title: 'x', gridcolor: '#e0e0e0', range: [xMin, xMax] },
+                yaxis: { title: 'f(x)', gridcolor: '#e0e0e0' },
+                plot_bgcolor: '#f8f9fa',
+                paper_bgcolor: 'white',
+                showlegend: true
+            };
+
+            Plotly.newPlot('plotDiv', traces, layout);
+        }
+
+        function startAnimation() {
+            if (iterations.length === 0) {
+                showError('Please run Newton\'s Method first.');
+                return;
+            }
+
+            if (isAnimating) {
+                // If already animating, restart the animation
+                if (animationTimer) {
+                    clearTimeout(animationTimer);
+                    animationTimer = null;
+                }
+                animationIndex = 0;
+            }
+
+            isAnimating = true;
+            isPaused = false;
+            document.getElementById('animateBtn').textContent = 'Restart Animation';
+            document.getElementById('pauseBtn').disabled = false;
+            document.getElementById('nextStepBtn').disabled = true;
+            document.getElementById('pauseBtn').textContent = 'Pause';
+            animateStep();
+        }
+
+        function togglePause() {
+            isPaused = !isPaused;
+            document.getElementById('pauseBtn').textContent = isPaused ? 'Resume' : 'Pause';
+            
+            if (!isPaused && isAnimating) {
+                // If resuming, continue the animation
+                animateStep();
+            }
+        }
+
+        function animateStep() {
+            if (!isAnimating || isPaused || animationIndex >= iterations.length) {
+                if (animationIndex >= iterations.length) {
+                    animationComplete();
+                }
+                return;
+            }
+
+            const currentIter = iterations.slice(0, animationIndex + 1);
+            plotAnimationFrame(currentIter);
+            
+            animationIndex++;
+            if (animationIndex <= iterations.length) {
+                animationTimer = setTimeout(animateStep, 1500);
+            } else {
+                animationComplete();
+            }
+        }
+
+        function plotAnimationFrame(currentIterations) {
+            if (!currentFunction) return;
+
+            const sliderXMin = parseFloat(document.getElementById('xMin').value);
+            const sliderXMax = parseFloat(document.getElementById('xMax').value);
+            
+            const xMin = Math.min(sliderXMin, Math.min(...iterations.map(i => i.x)) - 1);
+            const xMax = Math.max(sliderXMax, Math.max(...iterations.map(i => i.x)) + 1);
+            
+            const xValues = [];
+            const yValues = [];
+
+            for (let x = xMin; x <= xMax; x += (xMax - xMin) / 200) {
+                xValues.push(x);
+                try {
+                    yValues.push(currentFunction(x));
+                } catch (error) {
+                    yValues.push(null);
+                }
+            }
+
+            const traces = [];
+
+            // Function plot
+            traces.push({
+                x: xValues,
+                y: yValues,
+                type: 'scatter',
+                mode: 'lines',
+                name: 'f(x)',
+                line: { color: '#0984e3', width: 3 }
+            });
+
+            // Zero line
+            traces.push({
+                x: [xMin, xMax],
+                y: [0, 0],
+                type: 'scatter',
+                mode: 'lines',
+                name: 'y = 0',
+                line: { color: '#666', width: 1, dash: 'dash' }
+            });
+
+            // Current iteration points
+            if (currentIterations.length > 0) {
+                const iterX = currentIterations.map(i => i.x);
+                const iterY = currentIterations.map(i => i.fx);
+                traces.push({
+                    x: iterX,
+                    y: iterY,
+                    type: 'scatter',
+                    mode: 'markers',
+                    name: 'Iterations',
+                    marker: { color: '#dc3545', size: 8 }
+                });
+
+                // Vertical dotted lines from x_n to f(x_n) for current iterations
+                currentIterations.forEach((iter, index) => {
+                    traces.push({
+                        x: [iter.x, iter.x],
+                        y: [0, iter.fx],
+                        type: 'scatter',
+                        mode: 'lines',
+                        name: index === 0 ? 'f(x_n) progression' : '',
+                        line: { color: '#dc3545', width: 2, dash: 'dot' },
+                        showlegend: index === 0
+                    });
+                });
+
+                // Current tangent line
+                const lastIter = currentIterations[currentIterations.length - 1];
+                const targetLength = Math.max(
+                    Math.abs(lastIter.fx / lastIter.dfx) * 3, // Ensure crosses x-axis
+                    2.0 // Minimum length
+                );
+                
+                const x1 = lastIter.x - targetLength;
+                const x2 = lastIter.x + targetLength;
+                const y1 = lastIter.fx + lastIter.dfx * (x1 - lastIter.x);
+                const y2 = lastIter.fx + lastIter.dfx * (x2 - lastIter.x);
+                
+                traces.push({
+                    x: [x1, x2],
+                    y: [y1, y2],
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: 'Current Tangent',
+                    line: { color: '#28a745', width: 3 }
+                });
+
+                // Next point indicator
+                if (currentIterations.length < iterations.length) {
+                    traces.push({
+                        x: [lastIter.xNext],
+                        y: [0],
+                        type: 'scatter',
+                        mode: 'markers',
+                        name: 'Next Point',
+                        marker: { color: '#ffc107', size: 12, symbol: 'star' }
+                    });
+                }
+            }
+
+            const layout = {
+                title: `Newton's Method Animation - Step ${currentIterations.length}`,
+                xaxis: { title: 'x', gridcolor: '#e0e0e0', range: [xMin, xMax] },
+                yaxis: { title: 'f(x)', gridcolor: '#e0e0e0' },
+                plot_bgcolor: '#f8f9fa',
+                paper_bgcolor: 'white',
+                showlegend: true
+            };
+
+            Plotly.newPlot('plotDiv', traces, layout);
+        }
+
+        function manualNextStep() {
+            if (animationIndex >= iterations.length) {
+                document.getElementById('nextStepBtn').disabled = true;
+                return;
+            }
+            
+            const currentIter = iterations.slice(0, animationIndex + 1);
+            plotAnimationFrame(currentIter);
+            animationIndex++;
+            
+            if (animationIndex >= iterations.length) {
+                document.getElementById('nextStepBtn').disabled = true;
+            }
+        }
+
+        function animationComplete() {
+            isAnimating = false;
+            document.getElementById('pauseBtn').disabled = true;
+            document.getElementById('nextStepBtn').disabled = false;
+        }
+
+        function resetVisualization() {
+            iterations = [];
+            animationIndex = 0;
+            isAnimating = false;
+            isPaused = false;
+            
+            if (animationTimer) {
+                clearTimeout(animationTimer);
+                animationTimer = null;
+            }
+            
+            document.getElementById('resultsPanel').style.display = 'none';
+            document.getElementById('nextStepBtn').disabled = true;
+            document.getElementById('pauseBtn').disabled = true;
+            document.getElementById('animateBtn').textContent = 'Animate Steps';
+            document.getElementById('pauseBtn').textContent = 'Pause';
+            clearMessages();
+            plotFunction();
+        }
+
+        function showError(message) {
+            clearMessages();
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            document.querySelector('.controls').appendChild(errorDiv);
+        }
+
+        function showSuccess(message) {
+            clearMessages();
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.textContent = message;
+            document.querySelector('.controls').appendChild(successDiv);
+        }
+
+        function clearMessages() {
+            const messages = document.querySelectorAll('.error-message, .success-message');
+            messages.forEach(msg => msg.remove());
+        }
+
+        // Initialize the plot
+        plotFunction();
+    </script>
+</body>
+</html>
