@@ -1,0 +1,804 @@
+[file name]: vocal-ai-assistant-fixed.html
+[file content begin]
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocal Calculus Assistant - Fixed Permissions</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #2563eb;
+            --accent-color: #dc2626;
+            --stop-color: #ef4444;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --bg-color: #f8fafc;
+            --text-color: #1f2937;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            margin: 10px 0 0;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            padding: 25px;
+        }
+        
+        .voice-controls {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .voice-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .voice-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            background: var(--primary-color);
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .stop-btn {
+            background: var(--stop-color);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+        
+        .voice-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: scale(1);
+        }
+        
+        .voice-btn.listening {
+            background: var(--accent-color);
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.4);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .stop-btn.active {
+            background: #b91c1c;
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(185, 28, 28, 0.4);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1.1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1.1); }
+        }
+        
+        .voice-status {
+            margin-top: 15px;
+            font-size: 16px;
+            color: var(--text-color);
+            min-height: 24px;
+        }
+        
+        .permission-guide {
+            background: #fffbeb;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid var(--warning-color);
+            margin: 15px 0;
+            text-align: left;
+        }
+        
+        .permission-guide h3 {
+            color: #b45309;
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .permission-steps {
+            padding-left: 20px;
+        }
+        
+        .permission-steps li {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .conversation {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            max-width: 80%;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .user-message {
+            background: var(--primary-color);
+            color: white;
+            margin-left: auto;
+            text-align: right;
+        }
+        
+        .ai-message {
+            background: #e5e7eb;
+            color: var(--text-color);
+            margin-right: auto;
+        }
+        
+        .error-message {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            margin-right: auto;
+        }
+        
+        .ai-message.speaking {
+            background: #dbeafe;
+            border: 2px solid var(--primary-color);
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .control-group {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .control-group h3 {
+            margin: 0 0 12px 0;
+            font-size: 16px;
+            color: var(--primary-color);
+        }
+        
+        select, button.control-btn {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        
+        button.control-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button.control-btn:hover {
+            background: var(--secondary-color);
+        }
+        
+        .test-panel {
+            background: #f0f9ff;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #0ea5e9;
+            margin-top: 25px;
+        }
+        
+        .test-panel h3 {
+            color: #0369a1;
+            margin-top: 0;
+        }
+        
+        .test-text {
+            line-height: 1.8;
+            font-size: 16px;
+            user-select: text;
+            cursor: text;
+        }
+        
+        .voice-command-guide {
+            background: #ecfdf5;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--success-color);
+            margin-top: 15px;
+        }
+        
+        .voice-command-guide h4 {
+            color: #047857;
+            margin: 0 0 10px 0;
+        }
+        
+        .command-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            font-size: 14px;
+        }
+        
+        .command-item {
+            padding: 8px;
+            background: #d1fae5;
+            border-radius: 6px;
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #6b7280;
+            font-size: 14px;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        @media (max-width: 600px) {
+            .controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .voice-btn {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .voice-buttons {
+                gap: 10px;
+            }
+            
+            .command-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎤 Fixed Vocal Assistant</h1>
+            <p>Microphone permissions resolved • Better error handling</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="voice-controls">
+                <div class="voice-buttons">
+                    <button class="voice-btn" id="voiceButton">🎤</button>
+                    <button class="voice-btn stop-btn" id="stopButton" disabled>⏹️</button>
+                </div>
+                <div class="voice-status" id="voiceStatus">Click microphone to ask a question</div>
+            </div>
+
+            <div class="permission-guide" id="permissionGuide">
+                <h3>🔒 Microphone Permission Required</h3>
+                <p>To use voice features, please allow microphone access:</p>
+                <ol class="permission-steps">
+                    <li><strong>Click the microphone button</strong> above</li>
+                    <li>When the browser asks for permission, click <strong>"Allow"</strong> or <strong>"Allow microphone access"</strong></li>
+                    <li>If you accidentally clicked "Block", refresh the page and try again</li>
+                    <li>Make sure you're using <strong>Chrome, Edge, or Safari</strong> (best support)</li>
+                    <li>Ensure your microphone is connected and not muted</li>
+                </ol>
+            </div>
+            
+            <div class="conversation" id="conversation">
+                <div class="message ai-message">
+                    Welcome! I'm ready to help with calculus concepts. <br><br>
+                    <strong>First:</strong> Please allow microphone access when prompted so we can use voice features.<br>
+                    <strong>Then try:</strong> "What is a derivative?" or select text to explore concepts.
+                </div>
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <h3>🎵 Voice Personality</h3>
+                    <select id="voicePersonality">
+                        <option value="natural">Natural & Clear</option>
+                        <option value="friendly">Friendly & Warm</option>
+                        <option value="professional">Professional & Precise</option>
+                    </select>
+                </div>
+                
+                <div class="control-group">
+                    <h3>⚡ Voice Settings</h3>
+                    <select id="voiceSpeed">
+                        <option value="0.9">Slow & Clear</option>
+                        <option value="1.0" selected>Normal Pace</option>
+                        <option value="1.1">Conversational</option>
+                    </select>
+                    <button class="control-btn" id="testVoiceBtn">Test Voice Output</button>
+                </div>
+            </div>
+            
+            <div class="voice-command-guide">
+                <h4>🎯 Try These Voice Commands:</h4>
+                <div class="command-list">
+                    <div class="command-item">"What is a derivative?"</div>
+                    <div class="command-item">"Explain integrals to me"</div>
+                    <div class="command-item">"Tell me about limits"</div>
+                    <div class="command-item">"What are functions?"</div>
+                    <div class="command-item">"Stop" or "Enough"</div>
+                </div>
+            </div>
+            
+            <div class="test-panel">
+                <h3>📝 Practice Text - Select Concepts to Explore:</h3>
+                <div class="test-text" id="testText">
+                    In calculus, the derivative measures how a function changes as its input changes. 
+                    It represents the instantaneous rate of change. The integral is essentially the 
+                    reverse operation of the derivative and represents accumulation. Limits help us 
+                    understand function behavior near specific points. Linear functions have constant 
+                    rates of change, while exponential functions grow at rates proportional to their 
+                    current value. Variables are symbols that represent mathematical objects, and 
+                    composite functions combine multiple functions together.
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Fixed Microphone Permissions • Better Error Handling • Chrome/Edge Recommended</p>
+        </div>
+    </div>
+
+    <script>
+        class FixedVocalAssistant {
+            constructor() {
+                this.isListening = false;
+                this.isSpeaking = false;
+                this.currentUtterance = null;
+                this.recognition = null;
+                this.microphoneAccess = false;
+                this.initializeElements();
+                this.setupEventListeners();
+                this.checkBrowserSupport();
+                this.setupTextSelection();
+            }
+            
+            initializeElements() {
+                this.voiceButton = document.getElementById('voiceButton');
+                this.stopButton = document.getElementById('stopButton');
+                this.voiceStatus = document.getElementById('voiceStatus');
+                this.conversationElement = document.getElementById('conversation');
+                this.voicePersonality = document.getElementById('voicePersonality');
+                this.voiceSpeed = document.getElementById('voiceSpeed');
+                this.testVoiceBtn = document.getElementById('testVoiceBtn');
+                this.testText = document.getElementById('testText');
+                this.permissionGuide = document.getElementById('permissionGuide');
+                this.lastAiMessage = null;
+                this.lastSelection = '';
+                this.selectionTimeout = null;
+            }
+            
+            setupTextSelection() {
+                this.testText.addEventListener('mouseup', () => {
+                    this.handleTextSelection();
+                });
+                
+                document.addEventListener('selectionchange', () => {
+                    this.handleTextSelection();
+                });
+            }
+            
+            handleTextSelection() {
+                clearTimeout(this.selectionTimeout);
+                
+                this.selectionTimeout = setTimeout(() => {
+                    const selection = window.getSelection().toString().trim();
+                    
+                    if (selection && selection !== this.lastSelection && 
+                        selection.length > 2 && selection.length < 100) {
+                        this.lastSelection = selection;
+                        this.explainSelectedText(selection);
+                    }
+                }, 500);
+            }
+            
+            checkBrowserSupport() {
+                const hasSpeechRecognition = 'SpeechRecognition' in window || 'webkitSpeechRecognition' in window;
+                const hasSpeechSynthesis = 'speechSynthesis' in window;
+                
+                if (!hasSpeechRecognition) {
+                    this.showMessage('error', '⚠️ Voice input not supported in this browser. Please use Chrome, Edge, or Safari for full functionality.');
+                    this.voiceButton.disabled = true;
+                    this.permissionGuide.innerHTML = `
+                        <h3>❌ Browser Not Supported</h3>
+                        <p>Voice input requires Chrome, Edge, or Safari. Please switch browsers to use voice features.</p>
+                        <p>You can still select text to get explanations without voice input.</p>
+                    `;
+                }
+                
+                if (!hasSpeechSynthesis) {
+                    this.showMessage('error', '⚠️ Voice output not supported in this browser.');
+                }
+                
+                // Check if we're on HTTPS (required for microphone in most browsers)
+                if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+                    this.showMessage('error', '⚠️ Microphone access requires HTTPS. Please load this page over HTTPS for voice features.');
+                }
+            }
+            
+            setupEventListeners() {
+                this.voiceButton.addEventListener('click', () => this.toggleListening());
+                this.stopButton.addEventListener('click', () => this.stopSpeaking());
+                this.testVoiceBtn.addEventListener('click', () => this.testVoice());
+            }
+            
+            async toggleListening() {
+                if (this.isSpeaking) {
+                    this.stopSpeaking();
+                    return;
+                }
+                
+                if (!this.recognition) {
+                    await this.initializeSpeechRecognition();
+                }
+                
+                if (this.isListening) {
+                    this.stopListening();
+                } else {
+                    await this.startListening();
+                }
+            }
+            
+            async initializeSpeechRecognition() {
+                try {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    this.recognition = new SpeechRecognition();
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = false;
+                    this.recognition.lang = 'en-US';
+                    
+                    this.recognition.onstart = () => {
+                        this.isListening = true;
+                        this.voiceButton.classList.add('listening');
+                        this.voiceStatus.textContent = '🎤 Listening... Ask your question';
+                        this.showMessage('ai', 'I\'m listening... Please ask your question.');
+                    };
+                    
+                    this.recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript;
+                        this.processVoiceCommand(transcript);
+                    };
+                    
+                    this.recognition.onend = () => {
+                        this.stopListening();
+                    };
+                    
+                    this.recognition.onerror = (event) => {
+                        this.handleRecognitionError(event.error);
+                    };
+                    
+                } catch (error) {
+                    this.showMessage('error', `Failed to initialize speech recognition: ${error.message}`);
+                }
+            }
+            
+            async startListening() {
+                try {
+                    // First, check microphone permissions
+                    const permission = await navigator.permissions.query({ name: 'microphone' });
+                    
+                    if (permission.state === 'denied') {
+                        this.showMessage('error', '❌ Microphone access was denied. Please refresh the page and allow microphone access when prompted.');
+                        return;
+                    }
+                    
+                    // Try to get microphone access
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    stream.getTracks().forEach(track => track.stop()); // Close immediately after check
+                    
+                    this.microphoneAccess = true;
+                    this.permissionGuide.style.display = 'none';
+                    this.recognition.start();
+                    
+                } catch (error) {
+                    this.handleMicrophoneError(error);
+                }
+            }
+            
+            handleMicrophoneError(error) {
+                console.error('Microphone error:', error);
+                
+                switch (error.name) {
+                    case 'NotAllowedError':
+                    case 'PermissionDeniedError':
+                        this.showMessage('error', '❌ Microphone access denied. Please refresh the page and click "Allow" when prompted for microphone access.');
+                        break;
+                    case 'NotFoundError':
+                    case 'DevicesNotFoundError':
+                        this.showMessage('error', '❌ No microphone found. Please connect a microphone and try again.');
+                        break;
+                    case 'NotReadableError':
+                        this.showMessage('error', '❌ Microphone is already in use by another application. Please close other applications using the microphone.');
+                        break;
+                    default:
+                        this.showMessage('error', `❌ Microphone error: ${error.message || 'Unknown error'}`);
+                }
+            }
+            
+            handleRecognitionError(error) {
+                console.error('Recognition error:', error);
+                
+                switch (error) {
+                    case 'not-allowed':
+                    case 'service-not-allowed':
+                        this.showMessage('error', '❌ Microphone access not allowed. Please allow microphone access in your browser settings.');
+                        break;
+                    case 'no-speech':
+                        this.showMessage('ai', 'I didn\'t hear anything. Please try speaking again.');
+                        break;
+                    case 'audio-capture':
+                        this.showMessage('error', '❌ No microphone detected. Please connect a microphone.');
+                        break;
+                    case 'network':
+                        this.showMessage('error', '❌ Network error occurred. Please check your connection.');
+                        break;
+                    default:
+                        this.showMessage('error', `❌ Recognition error: ${error}`);
+                }
+                
+                this.stopListening();
+            }
+            
+            stopListening() {
+                this.isListening = false;
+                this.voiceButton.classList.remove('listening');
+                this.voiceStatus.textContent = 'Click microphone to ask a question';
+                
+                if (this.recognition) {
+                    this.recognition.stop();
+                }
+            }
+            
+            stopSpeaking() {
+                if (this.isSpeaking && window.speechSynthesis.speaking) {
+                    window.speechSynthesis.cancel();
+                    this.handleSpeechEnd();
+                    this.showMessage('ai', 'Voice stopped.');
+                }
+            }
+            
+            handleSpeechStart() {
+                this.isSpeaking = true;
+                this.stopButton.disabled = false;
+                this.stopButton.classList.add('active');
+                this.voiceStatus.textContent = 'Speaking... Say "stop" to interrupt';
+                
+                if (this.lastAiMessage) {
+                    this.lastAiMessage.classList.add('speaking');
+                }
+            }
+            
+            handleSpeechEnd() {
+                this.isSpeaking = false;
+                this.stopButton.disabled = true;
+                this.stopButton.classList.remove('active');
+                this.voiceStatus.textContent = 'Click microphone to ask a question';
+                
+                if (this.lastAiMessage) {
+                    this.lastAiMessage.classList.remove('speaking');
+                }
+            }
+            
+            processVoiceCommand(transcript) {
+                this.showMessage('user', transcript);
+                
+                const lowerTranscript = transcript.toLowerCase();
+                const stopCommands = ['stop', 'quiet', 'shut up', 'enough', 'listen to me', 'wait', 'pause'];
+                
+                if (stopCommands.some(cmd => lowerTranscript.includes(cmd))) {
+                    this.stopSpeaking();
+                    if (lowerTranscript.includes('listen to me')) {
+                        setTimeout(() => this.startListening(), 1000);
+                    }
+                    return;
+                }
+                
+                const response = this.understandAndRespond(transcript);
+                
+                setTimeout(() => {
+                    this.showMessage('ai', response);
+                    this.speakResponse(response);
+                }, 1000);
+            }
+            
+            understandAndRespond(question) {
+                const lowerQuestion = question.toLowerCase();
+                
+                const questionPatterns = [
+                    { patterns: ['what.*derivative', 'explain.*derivative', 'tell me.*derivative'], response: this.getDerivativeExplanation() },
+                    { patterns: ['what.*integral', 'explain.*integral', 'tell me.*integral'], response: this.getIntegralExplanation() },
+                    { patterns: ['what.*limit', 'explain.*limit', 'tell me.*limit'], response: this.getLimitExplanation() },
+                    { patterns: ['what.*function', 'explain.*function', 'tell me.*function'], response: this.getFunctionExplanation() },
+                    { patterns: ['what.*variable', 'explain.*variable', 'tell me.*variable'], response: this.getVariableExplanation() },
+                    { patterns: ['what.*composite', 'explain.*composite', 'composite function'], response: this.getCompositeExplanation() },
+                    { patterns: ['what.*exponential', 'explain.*exponential', 'exponential function'], response: this.getExponentialExplanation() },
+                    { patterns: ['hello', 'hi', 'hey'], response: "Hello! I'm your calculus assistant. Ask me about derivatives, integrals, limits, or other calculus concepts!" },
+                    { patterns: ['thank', 'thanks'], response: "You're welcome! I'm happy to help with your calculus questions." }
+                ];
+                
+                for (const pattern of questionPatterns) {
+                    for (const regexPattern of pattern.patterns) {
+                        const regex = new RegExp(regexPattern);
+                        if (regex.test(lowerQuestion)) {
+                            return pattern.response;
+                        }
+                    }
+                }
+                
+                return "I'd be happy to help with calculus concepts! Try asking about derivatives, integrals, limits, functions, or variables. For example: 'What is a derivative?' or 'Explain integrals to me.'";
+            }
+            
+            explainSelectedText(selectedText) {
+                this.showMessage('user', `Explain: "${selectedText}"`);
+                const response = this.understandAndRespond(selectedText);
+                
+                setTimeout(() => {
+                    this.showMessage('ai', response);
+                    this.speakResponse(response);
+                }, 800);
+            }
+            
+            getDerivativeExplanation() {
+                return "The derivative measures how a function changes as its input changes. It's like a mathematical speedometer that tells you the instantaneous rate of change at any point. For example, if you have a position function, its derivative gives you velocity!";
+            }
+            
+            getIntegralExplanation() {
+                return "The integral is the reverse operation of the derivative. It represents accumulation - like adding up tiny pieces to find the total. If derivative is about rates of change, integral is about totals and areas. Think of it as sophisticated addition!";
+            }
+            
+            getLimitExplanation() {
+                return "Limits help us understand what happens as we approach a point, without necessarily reaching it. They're fundamental to calculus because they let us define derivatives and integrals precisely. Limits handle tricky situations like division by zero or infinite processes.";
+            }
+            
+            getFunctionExplanation() {
+                return "A function is a special relationship where each input has exactly one output. Think of it like a machine: you put something in, you get something predictable out. In your coffee shop example, revenue is a function of cups sold: R(Q) = 3.50Q.";
+            }
+            
+            getVariableExplanation() {
+                return "A variable is a symbol that represents a value that can change. It's like a placeholder or a container. In mathematics, variables allow us to write general rules and formulas. For example, in the equation y = 2x + 3, both x and y are variables.";
+            }
+            
+            getCompositeExplanation() {
+                return "A composite function combines two or more functions. It's like putting one function inside another. For example, if f(x) = x² and g(x) = x + 1, then the composite function f(g(x)) means you first add 1, then square the result: (x + 1)².";
+            }
+            
+            getExponentialExplanation() {
+                return "Exponential functions have the form f(x) = aˣ, where the variable is in the exponent. They model rapid growth or decay, like population growth, radioactive decay, or compound interest. These functions change at rates proportional to their current value.";
+            }
+            
+            showMessage(type, text) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}-message`;
+                messageDiv.textContent = text;
+                
+                this.conversationElement.appendChild(messageDiv);
+                this.conversationElement.scrollTop = this.conversationElement.scrollHeight;
+                
+                const messages = this.conversationElement.querySelectorAll('.message');
+                if (messages.length > 10) {
+                    messages[0].remove();
+                }
+                
+                if (type === 'ai') {
+                    this.lastAiMessage = messageDiv;
+                }
+            }
+            
+            speakResponse(text) {
+                if (!('speechSynthesis' in window)) return;
+                
+                this.stopSpeaking();
+                
+                this.currentUtterance = new SpeechSynthesisUtterance(text);
+                this.applyVoiceSettings();
+                
+                this.currentUtterance.onstart = () => this.handleSpeechStart();
+                this.currentUtterance.onend = () => this.handleSpeechEnd();
+                this.currentUtterance.onerror = () => this.handleSpeechEnd();
+                
+                window.speechSynthesis.speak(this.currentUtterance);
+            }
+            
+            applyVoiceSettings() {
+                const personality = this.voicePersonality.value;
+                const speed = parseFloat(this.voiceSpeed.value);
+                
+                this.currentUtterance.rate = speed;
+                this.currentUtterance.volume = 0.9;
+                
+                switch (personality) {
+                    case 'natural':
+                        this.currentUtterance.pitch = 1.0;
+                        this.currentUtterance.rate = speed * 0.95;
+                        break;
+                    case 'friendly':
+                        this.currentUtterance.pitch = 1.1;
+                        this.currentUtterance.rate = speed * 0.9;
+                        break;
+                    case 'professional':
+                        this.currentUtterance.pitch = 0.9;
+                        this.currentUtterance.rate = speed * 1.0;
+                        break;
+                }
+            }
+            
+            testVoice() {
+                const testText = "This is a voice test. If you can hear this, voice output is working properly. You can adjust the voice settings using the controls above.";
+                this.speakResponse(testText);
+                this.showMessage('ai', "Testing voice output... Adjust settings if needed.");
+            }
+        }
+        
+        // Initialize the fixed assistant
+        document.addEventListener('DOMContentLoaded', () => {
+            window.vocalAssistant = new FixedVocalAssistant();
+        });
+    </script>
+</body>
+</html>
+[file content end]
