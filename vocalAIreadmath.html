@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vocal Assistant — Human Voices + Math Reading</title>
+  <style>
+    :root {
+      --primary-color: #3b82f6;
+      --secondary-color: #2563eb;
+      --accent-color: #dc2626;
+      --stop-color: #ef4444;
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --bg-color: #f8fafc;
+      --text-color: #1f2937;
+      --card-bg: #ffffff;
+      --border-color: #e5e7eb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: #fff;
+      padding: 24px;
+      text-align: center;
+    }
+    .header h1 { margin: 0; font-size: 26px; font-weight: 600; }
+    .header p  { margin: 8px 0 0; opacity: .9; }
+    .main-content { padding: 24px; }
+    .voice-controls { text-align:center; margin-bottom: 22px; }
+    .voice-buttons { display:flex; justify-content:center; gap:14px; margin-bottom: 12px; }
+    .voice-btn {
+      width:80px; height:80px; border-radius:50%; border:none;
+      background: var(--primary-color); color:#fff; font-size:24px; cursor:pointer;
+      transition: all .25s ease; box-shadow: 0 4px 15px rgba(59,130,246,.3);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .stop-btn { background: var(--stop-color); box-shadow: 0 4px 15px rgba(239, 68, 68, .3); }
+    .voice-btn:disabled { opacity:.55; cursor:not-allowed; transform: scale(1); }
+    .voice-btn.listening {
+      background: var(--accent-color); transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(220,38,38,.4); animation: pulse 1.5s infinite;
+    }
+    .stop-btn.active {
+      background: #b91c1c; transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(185,28,28,.4); animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse { 0% {transform:scale(1.1);} 50% {transform:scale(1.15);} 100% {transform:scale(1.1);} }
+    .voice-status { margin-top: 8px; font-size: 15px; min-height: 24px; }
+    .permission-guide {
+      background:#fffbeb; padding: 14px; border-radius: 10px; border: 2px solid var(--warning-color);
+      margin: 14px 0; text-align:left;
+    }
+    .permission-guide h3 { color:#b45309; margin:0 0 8px 0; display:flex; align-items:center; gap:8px; }
+    .permission-steps { padding-left: 18px; }
+    .permission-steps li { margin-bottom: 6px; line-height: 1.4; }
+    .conversation {
+      background:#f9fafb; border-radius: 12px; padding: 18px; height: 320px; overflow-y: auto;
+      margin-bottom: 18px; border: 1px solid var(--border-color);
+    }
+    .message { margin-bottom: 14px; padding: 12px 14px; border-radius: 12px; max-width: 80%;
+      animation: fadeIn .25s ease; }
+    @keyframes fadeIn { from {opacity:0; transform: translateY(8px);} to {opacity:1; transform:translateY(0);} }
+    .user-message { background: var(--primary-color); color:#fff; margin-left:auto; text-align:right; }
+    .ai-message { background:#e5e7eb; color: var(--text-color); margin-right:auto; }
+    .error-message { background:#fee2e2; color:#b91c1c; border:1px solid #fecaca; margin-right:auto; }
+    .ai-message.speaking { background: #dbeafe; border: 2px solid var(--primary-color); }
+    .controls { display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+    .control-group {
+      background: #f1f5f9; padding: 14px; border-radius: 10px; border: 1px solid var(--border-color);
+    }
+    .control-group h3 { margin:0 0 8px 0; font-size: 15px; color: var(--primary-color); }
+    select, button.control-btn, label.toggle { width: 100%; padding: 9px; border: 1px solid var(--border-color);
+      border-radius: 8px; background:#fff; font-size:14px; margin-bottom: 8px; display:block; }
+    button.control-btn { background: var(--primary-color); color:#fff; border:none; cursor:pointer; transition: background .2s; }
+    button.control-btn:hover { background: var(--secondary-color); }
+    label.toggle { display:flex; align-items:center; gap:8px; border:none; padding:0; }
+    label.toggle input { margin: 0 6px 0 0; }
+    .test-panel {
+      background:#f0f9ff; padding: 18px; border-radius: 10px; border: 2px solid #0ea5e9; margin-top: 16px;
+    }
+    .test-panel h3 { color:#0369a1; margin-top:0; }
+    .test-text { line-height:1.8; font-size: 16px; user-select:text; cursor:text; }
+    .voice-command-guide { background:#ecfdf5; padding: 14px; border-radius: 8px; border: 1px solid var(--success-color); margin-top: 12px; }
+    .voice-command-guide h4 { color:#047857; margin:0 0 8px 0; }
+    .command-list { display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px; font-size:14px; }
+    .command-item { padding: 8px; background:#d1fae5; border-radius: 6px; border-left: 4px solid var(--success-color); }
+    .footer { text-align:center; padding: 18px; color:#6b7280; font-size: 14px; border-top: 1px solid var(--border-color); }
+    @media (max-width: 800px) { .controls { grid-template-columns: 1fr; } .voice-btn { width:70px; height:70px; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🎤 Vocal Assistant — Human Voices</h1>
+      <p>Male/Female + Young/Adult/Senior • Expressive prosody • Math reading</p>
+    </div>
+
+    <div class="main-content">
+      <div class="voice-controls">
+        <div class="voice-buttons">
+          <button class="voice-btn" id="voiceButton" title="Start/stop listening">🎤</button>
+          <button class="voice-btn stop-btn" id="stopButton" disabled title="Stop speaking">⏹️</button>
+        </div>
+        <div class="voice-status" id="voiceStatus">Click microphone to ask a question</div>
+      </div>
+
+      <div class="permission-guide" id="permissionGuide">
+        <h3>🔒 Microphone Permission Required</h3>
+        <p>To use voice features, please allow microphone access:</p>
+        <ol class="permission-steps">
+          <li><strong>Click the microphone button</strong> above</li>
+          <li>When the browser asks for permission, click <strong>"Allow"</strong></li>
+          <li>If you accidentally clicked "Block", refresh the page and try again</li>
+          <li>Make sure you're using <strong>Chrome, Edge, or Safari</strong></li>
+        </ol>
+      </div>
+
+      <div class="conversation" id="conversation">
+        <div class="message ai-message">
+          Welcome! Select any concept (e.g., derivative, integral, limit), or say: “What is a derivative?”
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="control-group">
+          <h3>🎵 Voice Personality</h3>
+          <select id="voicePersonality">
+            <option value="natural">Natural &amp; Clear</option>
+            <option value="friendly">Friendly &amp; Warm</option>
+            <option value="professional">Professional &amp; Precise</option>
+          </select>
+          <label class="toggle small">
+            <input type="checkbox" id="expressiveMode"/>
+            Expressive prosody (add natural pauses)
+          </label>
+        </div>
+
+        <div class="control-group">
+          <h3>🎙️ Voice Type (Human-like)</h3>
+          <select id="voiceProfile">
+            <option value="auto" selected>Auto — best available</option>
+            <optgroup label="Female">
+              <option value="female_young">Female — young</option>
+              <option value="female_adult">Female — adult</option>
+              <option value="female_senior">Female — senior</option>
+            </optgroup>
+            <optgroup label="Male">
+              <option value="male_young">Male — young</option>
+              <option value="male_adult">Male — adult</option>
+              <option value="male_senior">Male — senior</option>
+            </optgroup>
+            <option value="neutral">Neutral</option>
+          </select>
+          <select id="voiceSpeed">
+            <option value="0.8">Extra Slow (ESL)</option>
+            <option value="0.9">Slow &amp; Clear</option>
+            <option value="1.0" selected>Normal Pace</option>
+            <option value="1.1">Conversational</option>
+            <option value="1.2">Lively</option>
+          </select>
+          <button class="control-btn" id="testVoiceBtn">Test Voice Output</button>
+        </div>
+
+        <div class="control-group">
+          <h3>🗣️ Voice Engine (Advanced)</h3>
+          <select id="voiceEngine">
+            <option value="auto" selected>Auto pick by profile</option>
+          </select>
+          <button class="control-btn" id="refreshVoicesBtn">Refresh Available Voices</button>
+          <div class="small" style="font-size:12px; color:#555; margin-top:6px;">
+            Tip: On macOS/Safari you’ll see voices like “Samantha/Alex”. On Chrome you’ll see “Google US/UK English Male/Female”.
+          </div>
+        </div>
+      </div>
+
+      <div class="voice-command-guide">
+        <h4>🎯 Try These Voice Commands:</h4>
+        <div class="command-list">
+          <div class="command-item">"What is a derivative?"</div>
+          <div class="command-item">"Explain integrals to me"</div>
+          <div class="command-item">"Tell me about limits"</div>
+          <div class="command-item">"What are functions?"</div>
+          <div class="command-item">Say "stop" or "enough"</div>
+        </div>
+      </div>
+
+      <div class="test-panel">
+        <h3>📝 Practice Text — Select Concepts to Explore:</h3>
+        <div class="test-text" id="testText">
+          In calculus, the derivative measures how a function changes as its input changes.
+          It represents the instantaneous rate of change. The integral is essentially the
+          reverse operation of the derivative and represents accumulation. Limits help us
+          understand function behavior near specific points. Linear functions have constant
+          rates of change, while exponential functions grow at rates proportional to their
+          current value. Variables are symbols that represent mathematical objects, and
+          composite functions combine multiple functions together. Try selecting x^2, x²,
+          sqrt(x^2 + 1), ∫_{0}^{1} x^2 dx, or \frac{a}{b}.
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Male/Female • Young/Adult/Senior • Expressive Prosody • Math‑aware reading • Chrome/Edge/Safari Recommended</p>
+    </div>
+  </div>
+
+  <script>
+    class FixedSelectionAssistant {
+      constructor() {
+        this.isListening = false;
+        this.isSpeaking = false;
+        this.currentUtterance = null;
+        this.recognition = null;
+        this.microphoneAccess = false;
+        this.pendingUtterances = 0;
+        this.voices = [];
+        this.initializeElements();
+        this.setupEventListeners();
+        this.checkBrowserSupport();
+        this.setupTextSelection();
+        this.initVoices();
+      }
+
+      initializeElements() {
+        this.voiceButton = document.getElementById('voiceButton');
+        this.stopButton = document.getElementById('stopButton');
+        this.voiceStatus = document.getElementById('voiceStatus');
+        this.conversationElement = document.getElementById('conversation');
+
+        this.voicePersonality = document.getElementById('voicePersonality');
+        this.voiceProfile = document.getElementById('voiceProfile');
+        this.voiceEngine = document.getElementById('voiceEngine');
+        this.voiceSpeed = document.getElementById('voiceSpeed');
+        this.expressiveMode = document.getElementById('expressiveMode');
+        this.refreshVoicesBtn = document.getElementById('refreshVoicesBtn');
+
+        this.testVoiceBtn = document.getElementById('testVoiceBtn');
+        this.testText = document.getElementById('testText');
+        this.permissionGuide = document.getElementById('permissionGuide');
+        this.lastAiMessage = null;
+        this.lastSelection = '';
+        this.selectionTimeout = null;
+      }
+
+      // ---------------- Text selection ----------------
+      setupTextSelection() {
+        this.testText.addEventListener('mouseup', () => { this.handleTextSelection(); });
+        document.addEventListener('selectionchange', () => { this.handleTextSelection(); });
+      }
+
+      handleTextSelection() {
+        clearTimeout(this.selectionTimeout);
+        this.selectionTimeout = setTimeout(() => {
+          const selection = window.getSelection().toString().trim();
+          if (selection && selection !== this.lastSelection && selection.length > 1 && selection.length < 300) {
+            this.lastSelection = selection;
+            this.explainSelectedText(selection);
+          }
+        }, 450);
+      }
+
+      // ---------------- Browser support ----------------
+      checkBrowserSupport() {
+        const hasSpeechRecognition = 'SpeechRecognition' in window || 'webkitSpeechRecognition' in window;
+        const hasSpeechSynthesis = 'speechSynthesis' in window;
+
+        if (!hasSpeechRecognition) {
+          this.showMessage('error', '⚠️ Voice input not supported. Please use Chrome, Edge, or Safari.');
+          this.voiceButton.disabled = true;
+          this.permissionGuide.innerHTML = `
+            <h3>❌ Browser Not Supported</h3>
+            <p>Voice input requires Chrome, Edge, or Safari. Please switch browsers.</p>
+          `;
+        }
+        if (!hasSpeechSynthesis) {
+          this.showMessage('error', '⚠️ Voice output not supported in this browser.');
+        }
+      }
+
+      // ---------------- UI & events ----------------
+      setupEventListeners() {
+        this.voiceButton.addEventListener('click', () => this.toggleListening());
+        this.stopButton.addEventListener('click', () => this.stopSpeaking());
+        this.testVoiceBtn.addEventListener('click', () => this.testVoice());
+        this.refreshVoicesBtn.addEventListener('click', () => this.populateVoiceList());
+      }
+
+      // ---------------- Voice registry ----------------
+      initVoices() {
+        const load = () => {
+          this.voices = window.speechSynthesis.getVoices() || [];
+          this.populateVoiceList();
+        };
+        load();
+        if (window.speechSynthesis && 'onvoiceschanged' in window.speechSynthesis) {
+          window.speechSynthesis.onvoiceschanged = load;
+        } else {
+          setTimeout(load, 800);
+        }
+      }
+
+      populateVoiceList() {
+        const select = this.voiceEngine;
+        const prev = select.value;
+        select.innerHTML = '';
+        const optAuto = document.createElement('option');
+        optAuto.value = 'auto'; optAuto.textContent = 'Auto pick by profile';
+        select.appendChild(optAuto);
+
+        const list = (this.voices || []).slice().sort((a,b) => {
+          const la = (a.lang||'').toLowerCase(), lb = (b.lang||'').toLowerCase();
+          if (la.startsWith('en') && !lb.startsWith('en')) return -1;
+          if (!la.startsWith('en') && lb.startsWith('en')) return 1;
+          return (a.name||'').localeCompare(b.name||'');
+        });
+
+        const groupEn = document.createElement('optgroup'); groupEn.label = 'Recommended (English)';
+        const groupOther = document.createElement('optgroup'); groupOther.label = 'Other languages';
+        list.forEach(v => {
+          const opt = document.createElement('option');
+          opt.value = v.name;
+          opt.textContent = `${v.name} (${v.lang}${v.localService ? ', local' : ''})`;
+          if ((v.lang||'').toLowerCase().startsWith('en')) groupEn.appendChild(opt);
+          else groupOther.appendChild(opt);
+        });
+        if (groupEn.children.length) select.appendChild(groupEn);
+        if (groupOther.children.length) select.appendChild(groupOther);
+
+        if ([...select.options].some(o => o.value === prev)) select.value = prev;
+      }
+
+      // ---------------- Listening ----------------
+      async toggleListening() {
+        if (this.isSpeaking) {
+          this.stopSpeaking();
+          return;
+        }
+        if (!this.recognition) await this.initializeSpeechRecognition();
+        if (this.isListening) this.stopListening();
+        else await this.startListening();
+      }
+
+      async initializeSpeechRecognition() {
+        try {
+          const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+          this.recognition = new SpeechRecognition();
+          this.recognition.continuous = false;
+          this.recognition.interimResults = false;
+          this.recognition.lang = 'en-US';
+
+          this.recognition.onstart = () => {
+            this.isListening = true;
+            this.voiceButton.classList.add('listening');
+            this.voiceStatus.textContent = '🎤 Listening... Ask your question';
+            this.showMessage('ai', "I'm listening... Please ask your question.");
+          };
+
+          this.recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            this.processVoiceCommand(transcript);
+          };
+
+          this.recognition.onend = () => { this.stopListening(); };
+          this.recognition.onerror = (event) => { this.handleRecognitionError(event.error); };
+        } catch (error) {
+          this.showMessage('error', `Failed to initialize speech recognition: ${error.message}`);
+        }
+      }
+
+      async startListening() {
+        try {
+          let permissionState = 'prompt';
+          try {
+            if (navigator.permissions && navigator.permissions.query) {
+              const perm = await navigator.permissions.query({ name: 'microphone' });
+              permissionState = perm.state;
+            }
+          } catch (e) {}
+
+          if (permissionState === 'denied') {
+            this.showMessage('error', '❌ Microphone access was denied. Please refresh the page and allow access.');
+            return;
+          }
+
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          stream.getTracks().forEach(t => t.stop());
+          this.microphoneAccess = true;
+          this.permissionGuide.style.display = 'none';
+          this.recognition && this.recognition.start();
+        } catch (error) {
+          this.handleMicrophoneError(error);
+        }
+      }
+
+      handleMicrophoneError(error) {
+        switch (error && error.name) {
+          case 'NotAllowedError': this.showMessage('error', '❌ Microphone access denied. Please refresh and click "Allow".'); break;
+          case 'NotFoundError': this.showMessage('error', '❌ No microphone found. Please connect a microphone.'); break;
+          case 'NotReadableError': this.showMessage('error', '❌ Microphone is in use by another application.'); break;
+          default: this.showMessage('error', `❌ Microphone error: ${error && error.message ? error.message : error}`);
+        }
+      }
+
+      handleRecognitionError(error) {
+        switch (error) {
+          case 'not-allowed': this.showMessage('error', '❌ Microphone access not allowed. Please allow access.'); break;
+          case 'no-speech': this.showMessage('ai', "I didn't hear anything. Please try again."); break;
+          case 'audio-capture': this.showMessage('error', '❌ No microphone detected.'); break;
+          default: this.showMessage('error', `❌ Recognition error: ${error}`);
+        }
+        this.stopListening();
+      }
+
+      stopListening() {
+        this.isListening = false;
+        this.voiceButton.classList.remove('listening');
+        this.voiceStatus.textContent = 'Click microphone to ask a question';
+        if (this.recognition) {
+          try { this.recognition.stop(); } catch (e) {}
+        }
+      }
+
+      // ---------------- Speaking ----------------
+      stopSpeaking() {
+        if (this.isSpeaking && window.speechSynthesis.speaking) {
+          window.speechSynthesis.cancel();
+        }
+        this.pendingUtterances = 0;
+        this.handleSpeechEnd();
+        this.showMessage('ai', 'Voice stopped.');
+      }
+
+      handleSpeechStart() {
+        this.isSpeaking = true;
+        this.stopButton.disabled = false;
+        this.stopButton.classList.add('active');
+        this.voiceStatus.textContent = 'Speaking... Say "stop" to interrupt';
+        if (this.lastAiMessage) this.lastAiMessage.classList.add('speaking');
+      }
+
+      handleSpeechEnd() {
+        if (this.pendingUtterances > 0) {
+          this.pendingUtterances--;
+          if (this.pendingUtterances > 0) return;
+        }
+        this.isSpeaking = false;
+        this.stopButton.disabled = true;
+        this.stopButton.classList.remove('active');
+        this.voiceStatus.textContent = 'Click microphone to ask a question';
+        if (this.lastAiMessage) this.lastAiMessage.classList.remove('speaking');
+      }
+
+      // ---------------- Understanding ----------------
+      processVoiceCommand(transcript) {
+        this.showMessage('user', transcript);
+        const lowerTranscript = (transcript || '').toLowerCase();
+        const stopCommands = ['stop', 'quiet', 'shut up', 'enough', 'listen to me', 'wait', 'pause'];
+
+        if (stopCommands.some(cmd => lowerTranscript.includes(cmd))) {
+          this.stopSpeaking();
+          if (lowerTranscript.includes('listen to me')) {
+            setTimeout(() => this.startListening(), 700);
+          }
+          return;
+        }
+
+        const response = this.understandAndRespond(transcript);
+        setTimeout(() => {
+          this.showMessage('ai', response);
+          this.speakResponse(response);
+        }, 600);
+      }
+
+      understandAndRespond(inputText) {
+        const lowerText = (inputText || '').toLowerCase();
+        const conceptMap = {
+          'derivative': this.getDerivativeExplanation(),
+          'integral': this.getIntegralExplanation(),
+          'limit': this.getLimitExplanation(),
+          'function': this.getFunctionExplanation(),
+          'variable': this.getVariableExplanation(),
+          'composite': this.getCompositeExplanation(),
+          'exponential': this.getExponentialExplanation(),
+          'linear': this.getLinearExplanation(),
+          'change': this.getDerivativeExplanation(),
+          'rate': this.getDerivativeExplanation(),
+          'accumulation': this.getIntegralExplanation(),
+          'area': this.getIntegralExplanation(),
+          'behavior': this.getLimitExplanation(),
+          'input': this.getFunctionExplanation(),
+          'output': this.getFunctionExplanation(),
+          'symbol': this.getVariableExplanation(),
+          'placeholder': this.getVariableExplanation(),
+          'combine': this.getCompositeExplanation(),
+          'growth': this.getExponentialExplanation(),
+          'constant': this.getLinearExplanation()
+        };
+
+        for (const [concept, explanation] of Object.entries(conceptMap)) {
+          const regex = new RegExp(`\\b${concept}\\b`, 'i');
+          if (regex.test(lowerText)) return explanation;
+        }
+
+        if (lowerText.includes('what is') || lowerText.includes('explain') ||
+            lowerText.includes('tell me about') || lowerText.includes('define')) {
+          const questionPatterns = [
+            { pattern: /(what is|explain|tell me about|define).*derivative/, response: this.getDerivativeExplanation() },
+            { pattern: /(what is|explain|tell me about|define).*integral/, response: this.getIntegralExplanation() },
+            { pattern: /(what is|explain|tell me about|define).*limit/, response: this.getLimitExplanation() },
+            { pattern: /(what is|explain|tell me about|define).*function/, response: this.getFunctionExplanation() },
+            { pattern: /(what is|explain|tell me about|define).*variable/, response: this.getVariableExplanation() },
+            { pattern: /(what is|explain|tell me about|define).*composite/, response: this.getCompositeExplanation() },
+            { pattern: /(what is|explain|tell me about|define).*exponential/, response: this.getExponentialExplanation() },
+            { pattern: /(what is|explain|tell me about|define).*linear/, response: this.getLinearExplanation() }
+          ];
+          for (const { pattern, response } of questionPatterns) {
+            if (pattern.test(lowerText)) return response;
+          }
+        }
+
+        if (/(hello|hi|hey|greetings)/i.test(lowerText)) {
+          return "Hello! I'm your calculus assistant. Ask me about derivatives, integrals, limits, or functions!";
+        }
+        if (/(thank|thanks|appreciate)/i.test(lowerText)) {
+          return "You're welcome! I'm happy to help with calculus questions.";
+        }
+        if (lowerText.length < 5) {
+          return "I'd be happy to explain that concept! Could you select more text or ask specifically?";
+        }
+        return `I'd be happy to explain "${inputText}"! This seems related to calculus. Try asking "What is ${inputText}?" or "Explain ${inputText} to me."`;
+      }
+
+      getDerivativeExplanation() {
+        return "The derivative measures how a function changes as its input changes. It represents the instantaneous rate of change. Think of it like a speedometer for functions — it tells you exactly how fast something is changing at any given moment. For example, if you have a position function, its derivative gives you velocity!";
+      }
+      getIntegralExplanation() {
+        return "The integral is the reverse operation of the derivative. It represents accumulation — adding up tiny pieces to find the total. While derivatives measure rates of change, integrals measure totals and areas. Think of it as sophisticated addition that can handle continuously changing quantities!";
+      }
+      getLimitExplanation() {
+        return "Limits help us understand what happens as we approach a point, without necessarily reaching it. They're fundamental to calculus because they let us define derivatives and integrals precisely. Limits handle tricky situations like division by zero or infinite processes in a mathematically rigorous way.";
+      }
+      getFunctionExplanation() {
+        return "A function is a special relationship where each input has exactly one output. Think of it like a machine: you put something in (the input), and you get something predictable out (the output). For example, revenue as a function of quantity sold: R(Q) = 3.50Q.";
+      }
+      getVariableExplanation() {
+        return "A variable is a symbol that represents a value that can change. It's like a placeholder for values. Variables let us write general rules and formulas that work for many different values. For example, in y = 2x + 3, both x and y are variables.";
+      }
+      getCompositeExplanation() {
+        return "A composite function combines two or more functions. It's like putting one function inside another. If f(x) = x² and g(x) = x + 1, then f(g(x)) means you first add 1, then square: (x + 1)².";
+      }
+      getExponentialExplanation() {
+        return "Exponential functions have the form f(x) = a^x, where the variable is in the exponent. They model rapid growth or decay, like population growth, radioactive decay, or compound interest. These functions change at rates proportional to their current value.";
+      }
+      getLinearExplanation() {
+        return "Linear functions have a constant rate of change. They make straight lines when graphed, with general form y = mx + b where m is the slope and b the intercept. They’re predictable and steady.";
+      }
+
+      // ---------------- Math helpers ----------------
+      isMathy(text) {
+        return /[\^_√∑Σ∫∞≤≥≠≈→×·*⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾]|(sqrt|sin|cos|tan|log|ln|lim|d\/d|\\frac|\\sqrt|\\int|\\sum|\\lim)/i
+          .test(text || '');
+      }
+
+      toSpokenMath(text) {
+        let t = String(text || '');
+
+        // LaTeX common patterns first
+        t = t.replace(/\\frac\s*\{\s*([^{}]+)\s*\}\s*\{\s*([^{}]+)\s*\}/g, (_, num, den) => `${num} over ${den}`);
+        t = t.replace(/\\sqrt\s*\{\s*([^{}]+)\s*\}/g, (_, rad) => `square root of ${rad}`);
+        t = t.replace(/\\int\s*_\{\s*([^{}]+)\s*\}\s*\^\{\s*([^{}]+)\s*\}/g, (_, low, up) => `integral from ${low} to ${up} of`);
+        t = t.replace(/\\sum\s*_\{\s*([^{}]+)\s*\}\s*\^\{\s*([^{}]+)\s*\}/g, (_, low, up) => `sum from ${low} to ${up} of`);
+        t = t.replace(/\\lim\s*_\{\s*([^{}]+)\s*\}/g, (_, cond) => `the limit as ${cond.replace(/\\to|->|→/g, ' approaches ')} of`);
+        t = t.replace(/([A-Za-z0-9)\]]+)\s*\^\{\s*([^}]+)\s*\}/g, (_, base, exp) => {
+          if (exp === '2') return `${base} squared`;
+          if (exp === '3') return `${base} cubed`;
+          return `${base} to the power of ${exp}`;
+        });
+        t = t.replace(/([A-Za-z])_\{\s*([^}]+)\s*\}/g, (_, sym, sub) => `${sym} sub ${sub}`);
+
+        // Greek letters (common)
+        const greek = { 'α':'alpha','β':'beta','γ':'gamma','δ':'delta','Δ':'delta',
+                        'θ':'theta','λ':'lambda','μ':'mu','π':'pi','σ':'sigma',
+                        'Σ':'sigma','φ':'phi','ω':'omega','Ω':'omega' };
+        t = t.replace(/[αβγδΔθλμπσΣφωΩ]/g, ch => ' ' + greek[ch] + ' ');
+
+        // Logs & trig
+        t = t.replace(/\blog_?(\d+)\s*\(\s*([^()]+?)\s*\)/gi, (_, b, arg) => `log base ${b} of ${arg}`);
+        t = t.replace(/\bln\s*\(\s*([^()]+?)\s*\)/gi, (_, arg) => `natural log of ${arg}`);
+        t = t.replace(/\b(sin|cos|tan|sec|csc|cot)\s*\(\s*([^()]+?)\s*\)/gi, (_, fn, arg) => {
+          const map = { sin:'sine', cos:'cosine', tan:'tangent', sec:'secant', csc:'co-secant', cot:'co-tangent' };
+          return `${map[fn.toLowerCase()]} of ${arg}`;
+        });
+
+        // Roots (unicode & ascii)
+        t = t.replace(/\bsqrt\s*\(\s*([^()]+?)\s*\)/gi, (_, rad) => `square root of ${rad}`);
+        t = t.replace(/√\s*([A-Za-z0-9._()]+)/g, (_, rad) => `square root of ${rad}`);
+        t = t.replace(/∛\s*([A-Za-z0-9._()]+)/g, (_, rad) => `cube root of ${rad}`);
+        t = t.replace(/∜\s*([A-Za-z0-9._()]+)/g, (_, rad) => `fourth root of ${rad}`);
+
+        // Powers with ^
+        t = t.replace(/([A-Za-z0-9)\]]+)\s*\^\s*(\d+)/g, (_, base, exp) => {
+          if (exp === '2') return `${base} squared`;
+          if (exp === '3') return `${base} cubed`;
+          return `${base} to the power of ${exp}`;
+        });
+        t = t.replace(/([A-Za-z0-9)\]]+)\s*\^\s*\(\s*([^()]+?)\s*\)/g, (_, base, exp) => `${base} to the power of ${exp}`);
+        t = t.replace(/([A-Za-z0-9)\]]+)\s*\^\s*([A-Za-z]+)/g, (_, base, exp) => `${base} to the power of ${exp}`);
+
+        // Unicode superscripts (x², x³, xⁿ)
+        const sup = {'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁺':'+','⁻':'-','⁼':'=','⁽':'(','⁾':')'};
+        t = t.replace(/([A-Za-z0-9).])([⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾]+)/g, (_, base, s) => {
+          const plain = s.split('').map(ch => sup[ch] || '').join('');
+          if (plain === '2') return `${base} squared`;
+          if (plain === '3') return `${base} cubed`;
+          return `${base} to the power of ${plain}`;
+        });
+
+        // Subscripts: x_1 or x_{n}
+        t = t.replace(/([A-Za-z])_(\{([^}]+)\}|([A-Za-z0-9]+))/g, (_, sym, _whole, braced, simple) => {
+          const sub = braced || simple;
+          return `${sym} sub ${sub}`;
+        });
+
+        // Fractions: (a)/(b) or a/b (skip URLs)
+        t = t.replace(/\(\s*([^()]+?)\s*\)\s*\/\s*\(\s*([^()]+?)\s*\)/g, (_, num, den) => `${num} over ${den}`);
+        t = t.replace(/([A-Za-z0-9)\]]+)\s*\/\s*([A-Za-z0-9(\[]+)/g, function(m, num, den, offset, str) {
+          const before = str.slice(Math.max(0, offset - 8), offset);
+          if (before.includes('://')) return m; // skip URLs
+          return `${num} over ${den}`;
+        });
+
+        // Integrals & sums & limits (unicode)
+        t = t.replace(/∫\s*_\{([^}]+)\}\s*\^\{([^}]+)\}/g, (_, low, up) => `integral from ${low} to ${up} of`);
+        t = t.replace(/∫/g, ' integral of ');
+        t = t.replace(/∑\s*_\{([^}]+)\}\s*\^\{([^}]+)\}/g, (_, low, up) => `sum from ${low} to ${up} of`);
+        t = t.replace(/[Σ∑]/g, ' sum of ');
+        t = t.replace(/\blim\s*_\{([^}]+)\}/gi, (_, cond) => `the limit as ${cond.replace(/->|→/g, ' approaches ')} of`);
+        t = t.replace(/\blim\b/gi, ' limit ');
+
+        // d/dx
+        t = t.replace(/\bd\/d\s*([A-Za-z])/g, (_, v) => `dee by dee ${v}`);
+
+        // Operators & symbols
+        t = t.replace(/[×·*]/g, ' times ')
+             .replace(/≤/g, ' less than or equal to ')
+             .replace(/≥/g, ' greater than or equal to ')
+             .replace(/≠/g, ' not equal to ')
+             .replace(/≈/g, ' approximately equal to ')
+             .replace(/→/g, ' approaches ')
+             .replace(/∞/g, ' infinity ')
+             .replace(/±/g, ' plus or minus ')
+             .replace(/∈/g, ' is an element of ')
+             .replace(/∉/g, ' is not an element of ')
+             .replace(/∪/g, ' union ')
+             .replace(/∩/g, ' intersection ');
+
+        return t.replace(/\s{2,}/g, ' ').trim();
+      }
+
+      // ---------------- Voice prosody & engine ----------------
+      getBaseProsody(personality, profile, speedBase) {
+        let pitch = 1.0, rate = speedBase, volume = 0.95;
+        if (personality === 'friendly') { pitch *= 1.08; rate *= 0.95; }
+        if (personality === 'professional') { pitch *= 0.95; rate *= 1.02; }
+        if (profile.includes('young')) { pitch *= 1.10; rate *= 1.05; }
+        if (profile.includes('senior')) { pitch *= 0.90; rate *= 0.92; }
+        if (profile === 'neutral') { pitch *= 0.98; rate *= 0.98; }
+        return { pitch, rate, volume };
+      }
+
+      pickVoice(profile) {
+        const engineChoice = this.voiceEngine.value;
+        const voices = this.voices || [];
+        if (engineChoice !== 'auto') {
+          const direct = voices.find(v => v.name === engineChoice);
+          if (direct) return direct;
+        }
+        const english = voices.filter(v => (v.lang || '').toLowerCase().startsWith('en'));
+        const femaleHints = ['female','woman','girl','samantha','victoria','moira','karen','serena','zira','eva','joanna','amy','emma','linda','susan','sara','google uk english female'];
+        const maleHints   = ['male','man','boy','alex','daniel','oliver','brian','justin','matthew','david','mark','paul','george','tom','google uk english male'];
+        const hasHint = (name, hints) => hints.some(h => (name||'').toLowerCase().includes(h));
+        const pickByHints = (list, hints) => list.find(v => hasHint(v.name, hints));
+        if (profile.startsWith('female')) return pickByHints(english, femaleHints) || english.find(v => hasHint(v.name,['female'])) || english[0] || voices[0] || null;
+        if (profile.startsWith('male'))   return pickByHints(english, maleHints)   || english.find(v => hasHint(v.name,['male']))   || english[0] || voices[0] || null;
+        const preferred = ['Google US English','Google UK English Male','Google UK English Female','Samantha','Alex','Daniel'];
+        return english.find(v => preferred.includes(v.name)) || english[0] || voices[0] || null;
+      }
+
+      speakResponse(text) {
+        if (!('speechSynthesis' in window)) return;
+
+        try { window.speechSynthesis.cancel(); } catch (e) {}
+        this.pendingUtterances = 0;
+
+        const profile = this.voiceProfile.value;
+        const personality = this.voicePersonality.value;
+        const speedBase = parseFloat(this.voiceSpeed.value);
+        const chosenVoice = this.pickVoice(profile);
+        const base = this.getBaseProsody(personality, profile, speedBase);
+
+        const expressive = !!this.expressiveMode.checked;
+        const splitSentences = (text || '').replace(/\s+/g, ' ').split(/(?<=[.!?])\s+/).filter(Boolean);
+        const parts = expressive ? splitSentences : [text || ''];
+
+        this.pendingUtterances = parts.length;
+
+        parts.forEach((sentence, idx) => {
+          // Always normalize math; detect if any change happened
+          const processed = this.toSpokenMath(sentence);
+          const mathDetected = processed !== sentence;
+
+          const u = new SpeechSynthesisUtterance(processed);
+          u.voice = chosenVoice;
+
+          const mathFactor = mathDetected ? 0.9 : 1.0; // slight slowdown on math
+
+          if (expressive) {
+            const jitter = (min, max) => min + Math.random() * (max - min);
+            u.rate = Math.min(1.4, Math.max(0.7, base.rate * mathFactor * jitter(0.97, 1.05)));
+            u.pitch = Math.min(2.0, Math.max(0.5, base.pitch * jitter(0.98, 1.04)));
+          } else {
+            u.rate = Math.min(1.4, Math.max(0.7, base.rate * mathFactor));
+            u.pitch = base.pitch;
+          }
+
+          u.volume = base.volume;
+          u.lang = chosenVoice && chosenVoice.lang ? chosenVoice.lang : 'en-US';
+          u.onstart = () => { if (idx === 0) this.handleSpeechStart(); };
+          u.onend = () => this.handleSpeechEnd();
+          u.onerror = () => this.handleSpeechEnd();
+
+          window.speechSynthesis.speak(u);
+        });
+      }
+
+      testVoice() {
+        const test = "This is a voice test. If you can hear this, the upgraded human-like voice and math reading are working.";
+        this.speakResponse(test);
+        this.showMessage('ai', "Testing voice output... Adjust settings if needed.");
+      }
+
+      // ---------------- UI helpers ----------------
+      explainSelectedText(selectedText) {
+        this.showMessage('user', `Explain: "${selectedText}"`);
+        const response = this.understandAndRespond(selectedText);
+
+        // If selection looks like math, read it naturally first.
+        const preface = this.isMathy(selectedText) ? `You selected: ${this.toSpokenMath(selectedText)}. ` : '';
+        this.showMessage('ai', response);
+        this.speakResponse(preface + response);
+      }
+
+      showMessage(type, text) {
+        const div = document.createElement('div');
+        div.className = `message ${type}-message`;
+        div.textContent = text;
+        this.conversationElement.appendChild(div);
+        this.conversationElement.scrollTop = this.conversationElement.scrollHeight;
+        const messages = this.conversationElement.querySelectorAll('.message');
+        if (messages.length > 12) messages[0].remove();
+        if (type === 'ai') this.lastAiMessage = div;
+      }
+    }
+
+    // Initialize after DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+      window.vocalAssistant = new FixedSelectionAssistant();
+    });
+  </script>
+</body>
+</html>
