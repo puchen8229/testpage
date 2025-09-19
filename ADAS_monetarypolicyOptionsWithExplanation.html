@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interactive AD-AS Diagram – Monetary Policy</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    canvas { border: 1px solid #ccc; }
+    .main-container { display: flex; gap: 20px; align-items: flex-start; }
+    .policy-panel {
+      width: 300px; padding: 10px; background-color: #f9f9f9;
+      border-radius: 5px; border: 1px solid #ddd; max-height: 500px; overflow-y: auto;
+    }
+    .panel-title { font-weight: bold; margin-bottom: 10px; font-size: 14px; border-bottom: 1px solid #ddd; }
+    .policy-item {
+      padding: 6px 8px; border: 1px solid #ddd; border-radius: 4px; margin: 4px 0;
+      background-color: white; cursor: pointer; font-size: 12px; transition: background-color 0.2s;
+    }
+    .policy-item:hover { background-color: #f0f0f0; }
+    .policy-item.active { background-color: #ffe082; font-weight: bold; }
+    button { padding: 8px 15px; margin-right: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background-color: #45a049; }
+    .check-button { background-color: #2196F3; display: none; }
+    .check-button.visible { display: inline-block; }
+    .feedback {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      max-width: 500px;
+      padding: 20px 30px; font-size: 16px; font-weight: bold; line-height: 1.4;
+      border-radius: 8px; opacity: 0; transition: opacity 0.3s;
+      z-index: 1000; text-align: center;
+    }
+    .feedback.correct { background-color: rgba(76, 175, 80, 0.95); color: white; }
+    .feedback.incorrect { background-color: rgba(244, 67, 54, 0.95); color: white; }
+  </style>
+</head>
+<body>
+  <h1>Interactive AD-AS Diagram – Monetary Policy</h1>
+  <div class="controls">
+    <button onclick="resetGraph()">Reset</button>
+    <button id="checkButton" class="check-button" onclick="checkUserResponse()">Check Answer</button>
+  </div>
+
+  <div class="main-container">
+    <canvas id="adAsCanvas" width="700" height="500"></canvas>
+
+    <div class="policy-panel">
+      <div class="panel-title">Monetary Policy Instruments</div>
+      <!-- Expansionary -->
+      <div class="policy-item" data-curve="AD" data-amount="10" data-explain="Lower cash rate makes borrowing cheaper → ↑C, ↑I → AD shifts right.">Lower cash rate (stimulus)</div>
+      <div class="policy-item" data-curve="AD" data-amount="10" data-explain="Higher ESA balances increase liquidity → AD shifts right.">Increase ESA balances</div>
+      <div class="policy-item" data-curve="AD" data-amount="10" data-explain="Central bank buys govt securities → ↑reserves → lower rates → AD shifts right.">Open market purchase (buy govt securities)</div>
+      <div class="policy-item" data-curve="AD" data-amount="10" data-explain="Quantitative easing increases reserves and lowers yields → AD shifts right.">Quantitative easing (bond buying)</div>
+      <div class="policy-item" data-curve="AD" data-amount="10" data-explain="Forward guidance lowers expected rates → ↑spending today → AD shifts right.">Forward guidance (lower expected rates)</div>
+      <div class="policy-item" data-curve="AD" data-amount="10" data-explain="Negative rates penalize saving → encourage borrowing/spending → AD shifts right.">Negative interest rates</div>
+      <div class="policy-item" data-curve="AD" data-amount="10" data-explain="Credit easing lowers financing costs for targeted sectors → AD shifts right.">Credit easing / targeted lending</div>
+      <!-- Tightening -->
+      <div class="policy-item" data-curve="BOTH" data-ad="-10" data-sras="-10" data-explain="Higher rates reduce demand (AD←) and raise costs (SRAS←).">Raise cash rate (tightening)</div>
+      <div class="policy-item" data-curve="BOTH" data-ad="-10" data-sras="-10" data-explain="Lower ESA balances → ↑rates → AD shifts left, costs ↑ → SRAS shifts left.">Reduce ESA balances</div>
+      <div class="policy-item" data-curve="BOTH" data-ad="-10" data-sras="-10" data-explain="Central bank sells securities → liquidity ↓ → rates ↑ → AD and SRAS shift left.">Open market sale (sell govt securities)</div>
+      <div class="policy-item" data-curve="BOTH" data-ad="-10" data-sras="-10" data-explain="Quantitative tightening reduces reserves, raises yields → AD and SRAS shift left.">Quantitative tightening (bond selling)</div>
+    </div>
+  </div>
+
+  <div class="feedback" id="feedback"></div>
+
+  <script>
+    const canvas=document.getElementById("adAsCanvas"), ctx=canvas.getContext("2d");
+    const width=canvas.width, height=canvas.height;
+    const checkButton=document.getElementById("checkButton");
+
+    const originalAdShift=0, originalSrasShift=0, originalLRASX=width/2;
+    let adShift=0, srasShift=0, lrasX=originalLRASX;
+    let currentPolicyItem=null, isDragging=false, dragTarget=null, lastX=0, userHasMadeChanges=false;
+
+    function drawGraph(){
+      const eq=findIntersection();
+      ctx.clearRect(0,0,width,height);
+      const pad=50;
+      // Axes
+      ctx.strokeStyle="#000"; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(pad,pad); ctx.lineTo(pad,height-pad); ctx.lineTo(width-pad,height-pad); ctx.stroke();
+      // AD
+      ctx.strokeStyle="red"; ctx.lineWidth=2; ctx.setLineDash([]); ctx.beginPath();
+      ctx.moveTo(100,100); ctx.lineTo(width-100,height-100); ctx.stroke();
+      ctx.fillStyle="red"; ctx.fillText("AD",80,85);
+      if(adShift!==0){ ctx.setLineDash([5,5]); ctx.beginPath(); ctx.moveTo(100+adShift,100); ctx.lineTo(width-100+adShift,height-100); ctx.stroke(); ctx.setLineDash([]); }
+      // SRAS
+      ctx.strokeStyle="blue"; ctx.lineWidth=2; ctx.setLineDash([]); ctx.beginPath();
+      ctx.moveTo(100,height-100); ctx.lineTo(width-100,100); ctx.stroke();
+      ctx.fillStyle="blue"; ctx.fillText("SRAS",width-95,85);
+      if(srasShift!==0){ ctx.setLineDash([5,5]); ctx.beginPath(); ctx.moveTo(100+srasShift,height-100); ctx.lineTo(width-100+srasShift,100); ctx.stroke(); ctx.setLineDash([]); }
+      // LRAS
+      ctx.strokeStyle="green"; ctx.lineWidth=2; ctx.setLineDash([]); ctx.beginPath();
+      ctx.moveTo(originalLRASX,50); ctx.lineTo(originalLRASX,height-50); ctx.stroke();
+      ctx.fillStyle="green"; ctx.fillText("LRAS",originalLRASX+5,40);
+      if(lrasX!==originalLRASX){ ctx.setLineDash([5,5]); ctx.beginPath(); ctx.moveTo(lrasX,50); ctx.lineTo(lrasX,height-50); ctx.stroke(); ctx.setLineDash([]); }
+      // Equilibrium
+      ctx.fillStyle="black"; ctx.beginPath(); ctx.arc(eq.x,eq.y,4,0,2*Math.PI); ctx.fill();
+    }
+
+    function findIntersection(){
+      const x1=100+adShift,y1=100, x2=width-100+adShift,y2=height-100;
+      const x3=100+srasShift,y3=height-100, x4=width-100+srasShift,y4=100;
+      const denom=(x1-x2)*(y3-y4)-(y1-y2)*(x3-x4);
+      if(denom===0) return {x:width/2,y:height/2};
+      const px=((x1*y2-y1*x2)*(x3-x4)-(x1-x2)*(x3*y4-y3*x4))/denom;
+      const py=((x1*y2-y1*x2)*(y3-y4)-(y1-y2)*(x3*y4-y3*x4))/denom;
+      return {x:px,y:py};
+    }
+
+    function resetGraph(){ adShift=0; srasShift=0; lrasX=originalLRASX; userHasMadeChanges=false; checkButton.classList.remove("visible"); drawGraph(); }
+
+    function shiftCurve(curve,amount){
+      if(curve==='AD') adShift+=parseInt(amount);
+      if(curve==='SRAS') srasShift+=parseInt(amount);
+      if(curve==='LRAS') lrasX+=parseInt(amount); // still draggable but always wrong
+      if(curve==='BOTH'){ adShift+=parseInt(currentPolicyItem.dataset.ad); srasShift+=parseInt(currentPolicyItem.dataset.sras); }
+      userHasMadeChanges=true; checkButton.classList.add("visible"); drawGraph();
+    }
+
+    function selectPolicyItem(item){
+      document.querySelectorAll('.policy-item').forEach(p=>p.classList.remove('active'));
+      currentPolicyItem=item; item.classList.add('active'); resetGraph();
+    }
+
+    function checkUserResponse(){
+      if(!currentPolicyItem) return;
+      let correct=false, explanation="";
+      if(currentPolicyItem.dataset.curve==='BOTH'){
+        correct=(adShift<0 && srasShift<0 && lrasX===originalLRASX);
+        explanation=currentPolicyItem.dataset.explain;
+      } else if(currentPolicyItem.dataset.curve==='AD'){
+        const expected=parseInt(currentPolicyItem.dataset.amount);
+        correct=(Math.sign(adShift)===Math.sign(expected) && Math.abs(adShift)>=5 && srasShift===0 && lrasX===originalLRASX);
+        explanation=currentPolicyItem.dataset.explain;
+      }
+      if(lrasX!==originalLRASX){ correct=false; explanation="Monetary policy cannot shift LRAS (long-run capacity)."; }
+      showFeedback(correct,explanation);
+      checkButton.classList.remove("visible"); userHasMadeChanges=false;
+    }
+
+    function showFeedback(isCorrect,explanation){
+      const fb=document.getElementById('feedback');
+      fb.textContent=(isCorrect?"✔️ Correct: ":"❌ Incorrect: ")+explanation;
+      fb.className="feedback "+(isCorrect?"correct":"incorrect");
+      fb.style.opacity=1; setTimeout(()=>fb.style.opacity=0,3000);
+    }
+
+    // Events
+    document.querySelectorAll('.policy-item').forEach(item=>item.addEventListener('click',()=>selectPolicyItem(item)));
+    canvas.addEventListener("mousedown",e=>{
+      const rect=canvas.getBoundingClientRect(); const x=e.clientX-rect.left,y=e.clientY-rect.top;
+      const adY=y-((height-200)/(width-200))*(x-(100+adShift))-100;
+      if(Math.abs(adY)<10){isDragging=true; dragTarget='AD';}
+      const srasY=y-((100-(height-100))/(width-200))*(x-(100+srasShift))-(height-100);
+      if(!isDragging && Math.abs(srasY)<10){isDragging=true; dragTarget='SRAS';}
+      if(!isDragging && Math.abs(x-lrasX)<10){isDragging=true; dragTarget='LRAS';}
+      lastX=x;
+    });
+    canvas.addEventListener("mousemove",e=>{
+      if(!isDragging) return;
+      const rect=canvas.getBoundingClientRect(); const x=e.clientX-rect.left; const dx=x-lastX; lastX=x;
+      if(dragTarget==='AD') adShift+=dx;
+      if(dragTarget==='SRAS') srasShift+=dx;
+      if(dragTarget==='LRAS') lrasX+=dx;
+      userHasMadeChanges=true; checkButton.classList.add("visible"); drawGraph();
+    });
+    canvas.addEventListener("mouseup",()=>{isDragging=false; dragTarget=null;});
+    canvas.addEventListener("mouseleave",()=>{isDragging=false; dragTarget=null;});
+
+    drawGraph();
+  </script>
+</body>
+</html>
