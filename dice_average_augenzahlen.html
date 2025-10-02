@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dice LLN Demo — Custom Face Values (Equal Probabilities)</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #121a33;
+      --ink: #e8ecff;
+      --muted: #9fb0ff;
+      --accent: #6ea8fe;
+      --accent-2: #8fffcc;
+      --danger: #ff7b7b;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 20% 0%, #0e1630 0%, var(--bg) 45%),
+                  radial-gradient(1000px 800px at 120% 20%, #10224b 0%, transparent 40%);
+      color: var(--ink);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 1024px;
+      background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(6px);
+      padding: 24px clamp(20px, 4vw, 36px);
+    }
+
+    h1 { margin: 0 0 12px; font-size: clamp(1.2rem, 2.8vw + .6rem, 1.8rem); letter-spacing: .3px; }
+
+    .controls { display: grid; grid-template-columns: repeat(4, 1fr) auto; gap: 12px; align-items: end; }
+    @media (max-width: 900px) { .controls { grid-template-columns: 1fr 1fr 1fr; grid-auto-rows: auto; } }
+
+    label { display: block; margin: 6px 0 6px; color: var(--muted); font-size: .95rem; }
+
+    input[type="number"] {
+      width: 100%; box-sizing: border-box; padding: 12px 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,.12);
+      background: var(--card); color: var(--ink); outline: none; transition: border .2s ease, box-shadow .2s ease;
+    }
+    input[type="number"]:focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(110,168,254,.18); }
+
+    .btn { padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(255,255,255,.12); background: linear-gradient(180deg, #1b2b5a, #15234a);
+      color: var(--ink); font-weight: 600; letter-spacing: .2px; cursor: pointer; transition: transform .04s ease, box-shadow .2s ease, border-color .2s ease; box-shadow: 0 6px 18px rgba(0,0,0,.35);
+    }
+    .btn:hover { border-color: var(--accent); box-shadow: 0 10px 26px rgba(0,0,0,.45); }
+    .btn:active { transform: translateY(1px); }
+
+    .grid {
+      margin-top: 18px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 10px;
+      max-height: 360px; overflow: auto; padding-right: 4px;
+    }
+
+    .die { position: relative; width: 100%; aspect-ratio: 1/1; border-radius: 12px; background: #0e1a3a; border: 1px solid rgba(255,255,255,.08); box-shadow: inset 0 8px 20px rgba(0,0,0,.35), 0 6px 16px rgba(0,0,0,.25); display: grid; place-items: center; }
+    .die.spin { animation: spin .7s ease both; }
+    @keyframes spin { 0% { transform: rotate(0) scale(1); } 50% { transform: rotate(180deg) scale(1.06);} 100% { transform: rotate(360deg) scale(1);} }
+
+    .pips { position: relative; width: 70%; height: 70%; }
+    .pip { position: absolute; width: 18%; height: 18%; border-radius: 50%; background: #e8ecff; box-shadow: 0 2px 0 rgba(0,0,0,.35); }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 720px) { .row { grid-template-columns: 1fr; } }
+
+    .tile { background: var(--card); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 14px 14px 16px; }
+    .stat { font-size: clamp(1.4rem, 3.5vw + .4rem, 2.2rem); font-weight: 700; }
+    .muted { color: var(--muted); }
+
+    .faces { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-top: 6px; }
+    .chip { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 10px; padding: 8px; text-align: center; font-size: .95rem; }
+
+    .chart { width: 100%; height: 160px; display: block; }
+    .legend { display: flex; gap: 12px; align-items: center; color: var(--muted); font-size: .9rem; margin-top: 6px; }
+    .badge { width: 10px; height: 10px; border-radius: 3px; display: inline-block; background: var(--accent-2); }
+    .badge-mean { background: var(--accent); }
+
+    .setup-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+  </style>
+</head>
+<body>
+  <main class="app" role="main">
+    <h1>Roll N Dice — LLN (Custom Face Values)</h1>
+
+    <section class="controls">
+      <div>
+        <label for="diceCount">Number of dice (N)</label>
+        <input id="diceCount" type="number" inputmode="numeric" min="1" step="1" value="60" />
+      </div>
+      <div>
+        <label for="vizCount">Visualize up to (K)</label>
+        <input id="vizCount" type="number" inputmode="numeric" min="0" step="1" value="60" />
+      </div>
+      <div>
+        <label for="duration">Roll duration (ms)</label>
+        <input id="duration" type="number" min="100" step="100" value="900" disabled />
+      </div>
+      <div>
+        <label for="seed">Seed (optional)</label>
+        <input id="seed" type="number" step="1" placeholder="" />
+      </div>
+      <div>
+        <button id="rollBtn" class="btn" type="button">🎲 Roll</button>
+        <div style="height:6px"></div>
+        <button id="demoBtn" class="btn" type="button">📈 LLN Demo</button>
+      </div>
+    </section>
+
+    <section class="setup tile" aria-label="Die values">
+      <div class="setup-grid">
+        <div class="tile"><label>Face 1 value</label><input id="val1" type="number" step="1" value="1"></div>
+        <div class="tile"><label>Face 2 value</label><input id="val2" type="number" step="1" value="2"></div>
+        <div class="tile"><label>Face 3 value</label><input id="val3" type="number" step="1" value="3"></div>
+        <div class="tile"><label>Face 4 value</label><input id="val4" type="number" step="1" value="4"></div>
+        <div class="tile"><label>Face 5 value</label><input id="val5" type="number" step="1" value="5"></div>
+        <div class="tile"><label>Face 6 value</label><input id="val6" type="number" step="1" value="6"></div>
+      </div>
+    </section>
+
+    <div id="errorMsg" class="error" aria-live="polite"></div>
+
+    <section class="row" aria-live="polite">
+      <div class="tile">
+        <div class="muted">Sample mean</div>
+        <div id="avg" class="stat">–</div>
+        <div id="summary" class="muted" style="margin-top:6px">No rolls yet.</div>
+        <div id="ci" class="muted" style="margin-top:8px"></div>
+        <div class="faces" id="faces"></div>
+      </div>
+      <div class="tile">
+        <svg id="chart" class="chart" viewBox="0 0 600 160" preserveAspectRatio="none" aria-label="Running averages chart"></svg>
+        <div class="legend"><span class="badge"></span> run averages &nbsp; <span class="badge badge-mean"></span> theoretical mean μ</div>
+      </div>
+    </section>
+
+    <section class="tile" style="margin-top:14px">
+      <div class="muted" style="margin-bottom:8px">Animated dice (first K)</div>
+      <div id="grid" class="grid" aria-label="Dice grid"></div>
+    </section>
+  </main>
+
+  <script>
+    (function(){
+      /* ---------- DOM refs ---------- */
+      const avgEl   = document.getElementById('avg');
+      const sumEl   = document.getElementById('summary');
+      const ciEl    = document.getElementById('ci');
+      const facesEl = document.getElementById('faces');
+      const gridEl  = document.getElementById('grid');
+      const chartEl = document.getElementById('chart');
+      const errorEl = document.getElementById('errorMsg');
+
+      const N_INPUT   = document.getElementById('diceCount');
+      const K_INPUT   = document.getElementById('vizCount');
+      const SEED_INPUT= document.getElementById('seed');
+      const ROLL_BTN  = document.getElementById('rollBtn');
+      const DEMO_BTN  = document.getElementById('demoBtn');
+
+      const VAL_INPUTS = [1,2,3,4,5,6].map(i=>document.getElementById('val'+i));
+
+      /* ---------- RNG ---------- */
+      function mulberry32(a){
+        return function(){
+          let t = a += 0x6D2B79F5;
+          t = Math.imul(t ^ t >>> 15, t | 1);
+          t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+          return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        }
+      }
+      function makeRngPair(){
+        // default: no seed (use Math.random). If a seed is provided, use deterministic PRNGs.
+        const seedText = SEED_INPUT.value;
+        if (seedText === '' || seedText === undefined || seedText === null){
+          return { outcome: Math.random, anim: Math.random, seeded: false };
+        }
+        const base = (Number(seedText) >>> 0) || 0;
+        return { outcome: mulberry32(base), anim: mulberry32((base ^ 0x9e3779b9) >>> 0), seeded: true };
+      }
+
+      /* ---------- helpers ---------- */
+      function formatNumber(x){ return x.toLocaleString(); }
+
+      function validate(){
+        const n = Number(N_INPUT.value);
+        const k = Number(K_INPUT.value);
+        if (!Number.isInteger(n) || n < 1) return {ok:false,msg:'N must be an integer ≥ 1.'};
+        if (!Number.isInteger(k) || k < 0) return {ok:false,msg:'K must be an integer ≥ 0.'};
+        if (k > n) return {ok:false,msg:'K cannot exceed N.'};
+        if (n > 2_000_000) return {ok:false,msg:'That\'s a lot of dice! Try ≤ 2,000,000.'};
+        const setup = getDieSetup();
+        if (!setup.ok) return {ok:false,msg:setup.msg};
+        return {ok:true,n,k,setup};
+      }
+
+      function computeMuVariance(vals){
+        const mu = vals.reduce((s,v)=> s + v, 0) / 6;
+        const variance = vals.reduce((s,v)=> s + (v-mu)*(v-mu), 0) / 6; // equal probs
+        return {mu, variance};
+      }
+
+      function getDieSetup(){
+        const vals = VAL_INPUTS.map(inp=>Number(inp.value));
+        if (!vals.every(v=>Number.isFinite(v) && Number.isInteger(v))){
+          return {ok:false,msg:'All face values must be integers.'};
+        }
+        const {mu, variance} = computeMuVariance(vals);
+        return {ok:true, vals, mu, variance};
+      }
+
+      function buildGrid(k){
+        gridEl.innerHTML = '';
+        for(let i=0;i<k;i++){
+          const die = document.createElement('div');
+          die.className = 'die spin';
+          const p = document.createElement('div');
+          p.className = 'pips';
+          die.appendChild(p);
+          gridEl.appendChild(die);
+        }
+      }
+
+      // map arbitrary face value -> pips to display (1..6)
+      function valueToPips(v){
+        if (!Number.isFinite(v)) return 1;
+        const iv = Math.round(v);
+        return Math.min(6, Math.max(1, iv));
+      }
+
+      function setFace(node, pipCount){
+        const p = node.firstChild; // .pips
+        p.innerHTML = '';
+        const coords = {
+          1: [[50,50]],
+          2: [[25,25],[75,75]],
+          3: [[25,25],[50,50],[75,75]],
+          4: [[25,25],[25,75],[75,25],[75,75]],
+          5: [[25,25],[25,75],[50,50],[75,25],[75,75]],
+          6: [[25,25],[25,50],[25,75],[75,25],[75,50],[75,75]]
+        }[pipCount];
+        for(const [x,y] of coords){
+          const dot = document.createElement('div');
+          dot.className = 'pip';
+          dot.style.left = (x-9) + '%';
+          dot.style.top  = (y-9) + '%';
+          p.appendChild(dot);
+        }
+      }
+
+      function animateDice(diceNodes, rng, stopTime, pipMap){
+        function tick(){
+          const now = performance.now();
+          if (now < stopTime){
+            for(const node of diceNodes){
+              const idx = Math.floor(rng()*6); // 0..5 (equal prob per face)
+              setFace(node, pipMap[idx]);
+            }
+            requestAnimationFrame(tick);
+          }
+        }
+        requestAnimationFrame(tick);
+      }
+
+      function renderFaceChips(counts, vals){
+        facesEl.innerHTML = '';
+        counts.forEach((c,i)=>{
+          const chip = document.createElement('div');
+          chip.className = 'chip';
+          chip.title = `Face ${i+1} (value ${vals[i]}): ${c}`;
+          chip.textContent = `Face ${i+1} (v=${vals[i]}): ${formatNumber(c)}`;
+          facesEl.appendChild(chip);
+        });
+      }
+
+      // running averages chart
+      const history = [];
+      function drawChart(mu, minV, maxV){
+        const W = 600, H = 160, PAD=10;
+        const pts = history.slice(-120);
+        chartEl.innerHTML = '';
+        const svgNS = 'http://www.w3.org/2000/svg';
+        const bg = document.createElementNS(svgNS,'rect');
+        bg.setAttribute('x',0); bg.setAttribute('y',0); bg.setAttribute('width',W); bg.setAttribute('height',H); bg.setAttribute('fill','rgba(255,255,255,0.03)');
+        chartEl.appendChild(bg);
+        if (pts.length<1) return;
+        const lo = Math.min(minV, mu);
+        const hi = Math.max(maxV, mu);
+        const scaleY = v => hi===lo ? H/2 : (H - ((v - lo)/(hi - lo))*H);
+        const yMean = scaleY(mu);
+        const meanLine = document.createElementNS(svgNS,'line');
+        meanLine.setAttribute('x1',0); meanLine.setAttribute('x2',W); meanLine.setAttribute('y1',yMean); meanLine.setAttribute('y2',yMean);
+        meanLine.setAttribute('stroke','#6ea8fe'); meanLine.setAttribute('stroke-width','1'); meanLine.setAttribute('stroke-dasharray','4 3');
+        chartEl.appendChild(meanLine);
+        const dx = (W-2*PAD)/Math.max(1,(pts.length-1));
+        const poly = document.createElementNS(svgNS,'polyline');
+        let d='';
+        pts.forEach((xbar, i)=>{ const x = PAD + i*dx; const y = scaleY(xbar); d += `${x},${y} `; });
+        poly.setAttribute('points', d.trim());
+        poly.setAttribute('fill','none');
+        poly.setAttribute('stroke','#8fffcc');
+        poly.setAttribute('stroke-width','2');
+        chartEl.appendChild(poly);
+      }
+
+      function updateCI(n, mu, variance, xbar){
+        const se = Math.sqrt(variance)/Math.sqrt(n);
+        const half = 1.96*se;
+        ciEl.textContent = `μ=${mu.toFixed(4)}; 95% band ≈ [${(mu-half).toFixed(3)}, ${(mu+half).toFixed(3)}]; mean=${xbar.toFixed(4)}`;
+      }
+
+      function sampleFaceIndex(rng){ return Math.floor(rng()*6); }
+
+      async function rollOnce(){
+        errorEl.textContent = '';
+        const v = validate();
+        if (!v.ok){ errorEl.textContent = v.msg; return; }
+        const {n:kTotal, k, setup} = v;
+
+        const rngs = makeRngPair();
+        const rngOutcomes = rngs.outcome;
+        const rngAnim = rngs.anim;
+
+        // Precompute pip mapping based on user-entered face values
+        const pipMap = setup.vals.map(valueToPips); // length 6, entries 1..6
+
+        // Build grid and pre-sample outcomes for first K dice (equal face probability)
+        buildGrid(k);
+        const nodes = Array.from(gridEl.children);
+        const kIdxs = new Array(k);
+        for (let i=0;i<k;i++) kIdxs[i] = sampleFaceIndex(rngOutcomes);
+
+        const stopTime = performance.now() + 900; // fixed duration
+        // animate showing only pip counts compatible with user's face numbers
+        animateDice(nodes, rngAnim, stopTime, pipMap);
+
+        // Totals: include the first K outcomes, then simulate the rest
+        const counts = [0,0,0,0,0,0];
+        let sum = 0;
+        for (let i=0;i<k;i++){ const idx = kIdxs[i]; counts[idx]++; sum += setup.vals[idx]; }
+
+        let remaining = kTotal - k;
+        const CHUNK = 200000;
+        function loop(){
+          const thisChunk = Math.min(CHUNK, remaining);
+          for(let i=0;i<thisChunk;i++){
+            const idx = sampleFaceIndex(rngOutcomes);
+            counts[idx]++; sum += setup.vals[idx];
+          }
+          remaining -= thisChunk;
+          if (remaining>0){ return new Promise(res=>requestAnimationFrame(()=>res(loop()))); }
+          return Promise.resolve();
+        }
+        await loop();
+
+        // Wait for animation then reveal actual K faces using pip map tied to values
+        const waitMs = Math.max(0, stopTime - performance.now());
+        await new Promise(res=>setTimeout(res, waitMs));
+        for (let i=0;i<nodes.length;i++){ setFace(nodes[i], pipMap[kIdxs[i]]); nodes[i].classList.remove('spin'); }
+
+        const avg = sum / kTotal;
+        avgEl.textContent = avg.toFixed(4);
+        sumEl.textContent = `${formatNumber(kTotal)} dice rolled. Total = ${formatNumber(sum)}.`;
+        renderFaceChips(counts, setup.vals);
+        updateCI(kTotal, setup.mu, setup.variance, avg);
+        history.push(avg); drawChart(setup.mu, Math.min(...setup.vals), Math.max(...setup.vals));
+      }
+
+      async function llnDemo(){
+        const Ns = [10, 30, 100, 300, 1000, 3000, 10000];
+        for (const N of Ns){ N_INPUT.value = N; K_INPUT.value = Math.min(N, 100); await rollOnce(); }
+      }
+
+      // --- Tiny hidden tests (open with #test hash to run) ---
+      function devTests(){
+        // valueToPips mapping
+        console.assert(valueToPips(1)===1, 'pips 1');
+        console.assert(valueToPips(6)===6, 'pips 6');
+        console.assert(valueToPips(0)===1, 'pips clamp low');
+        console.assert(valueToPips(8)===6, 'pips clamp high');
+        console.assert(valueToPips(5.7)===6, 'pips round');
+        const {mu, variance} = computeMuVariance([1,1,1,1,1,1]);
+        console.assert(mu===1, 'mu 1 when all ones');
+        console.assert(variance===0, 'var 0 when all ones');
+      }
+      if (location.hash === '#test') devTests();
+
+      ROLL_BTN.addEventListener('click', rollOnce);
+      DEMO_BTN.addEventListener('click', llnDemo);
+      N_INPUT.addEventListener('keydown', e=>{ if(e.key==='Enter') rollOnce(); });
+
+      buildGrid(Number(K_INPUT.value)||0);
+    })();
+  </script>
+</body>
+</html>
