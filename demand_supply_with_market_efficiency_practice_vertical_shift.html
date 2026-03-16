@@ -1,0 +1,3557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Demand and Supply Tools — Determinants and Market Efficiency</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --panel: #f8fafc;
+      --border: #d9e2ec;
+      --text: #1f2933;
+      --muted: #52606d;
+      --demand: #c62828;
+      --supply: #1565c0;
+      --accent: #2e7d32;
+      --accent-2: #1976d2;
+      --warn: #d84315;
+      --soft: #fff8e1;
+      --chip: #eef2f6;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 20px;
+      font-family: Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    h1 {
+      margin: 0 0 8px 0;
+      font-size: 30px;
+    }
+
+    .subtitle {
+      max-width: 1180px;
+      color: var(--muted);
+      line-height: 1.45;
+      margin: 0 0 14px 0;
+    }
+
+    .summary-strip {
+      max-width: 1180px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .summary-chip {
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--chip);
+      color: #334e68;
+      border: 1px solid var(--border);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    button {
+      padding: 9px 15px;
+      border: none;
+      border-radius: 6px;
+      background: var(--accent);
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform 0.12s ease, opacity 0.12s ease;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      opacity: 0.96;
+    }
+
+    button.secondary {
+      background: #546e7a;
+    }
+
+    button.check-button {
+      background: var(--accent-2);
+      display: none;
+    }
+
+    button.check-button.visible {
+      display: inline-block;
+    }
+
+    .main-container {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .graph-area {
+      flex: 0 0 auto;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+
+    canvas {
+      border: 1px solid #cfd8dc;
+      border-radius: 8px;
+      background: white;
+      touch-action: none;
+      display: block;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-line {
+      width: 28px;
+      height: 0;
+      border-top: 3px solid #000;
+    }
+
+    .legend-line.demand { border-color: var(--demand); }
+    .legend-line.supply { border-color: var(--supply); }
+    .legend-line.shifted { border-top-style: dashed; }
+
+    .graph-note {
+      margin-top: 8px;
+      max-width: 760px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .panel {
+      width: 430px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--panel);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+      max-height: 780px;
+    }
+
+    .panel-header {
+      padding: 14px 14px 12px 14px;
+      background: #f1f5f9;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .panel-title {
+      font-weight: bold;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .panel-help {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .status-box {
+      padding: 12px 14px;
+      background: #fffdf2;
+      border-bottom: 1px solid var(--border);
+      min-height: 72px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    .status-box strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .search-box {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      background: white;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 9px 11px;
+      border: 1px solid #bcccdc;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .scenario-list {
+      padding: 12px 14px 18px 14px;
+      overflow-y: auto;
+    }
+
+    .group-heading {
+      margin: 14px 0 8px 0;
+      font-weight: bold;
+      font-size: 13px;
+      color: #243b53;
+      border-bottom: 1px solid #d9e2ec;
+      padding-bottom: 4px;
+    }
+
+    .scenario-item {
+      padding: 9px 10px;
+      border: 1px solid #d9e2ec;
+      border-radius: 7px;
+      background: white;
+      margin-bottom: 7px;
+      cursor: pointer;
+      transition: background-color 0.18s ease, border-color 0.18s ease, transform 0.12s ease;
+    }
+
+    .scenario-item:hover {
+      background: #f7fbff;
+      border-color: #9fb3c8;
+      transform: translateY(-1px);
+    }
+
+    .scenario-item.active {
+      background: #fff3cd;
+      border-color: #d4a72c;
+    }
+
+    .scenario-title {
+      font-size: 13px;
+      line-height: 1.35;
+      margin-bottom: 3px;
+    }
+
+    .scenario-note {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .count-label {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 6px;
+    }
+
+    .empty-state {
+      font-size: 13px;
+      color: var(--muted);
+      padding: 6px 0;
+    }
+
+    .feedback {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      max-width: 620px;
+      width: calc(100% - 36px);
+      padding: 22px 26px;
+      font-size: 16px;
+      font-weight: bold;
+      line-height: 1.45;
+      border-radius: 10px;
+      z-index: 1000;
+      display: none;
+      box-shadow: 0 8px 26px rgba(0, 0, 0, 0.18);
+    }
+
+    .feedback.correct {
+      background: rgba(46, 125, 50, 0.97);
+      color: white;
+    }
+
+    .feedback.incorrect {
+      background: rgba(198, 40, 40, 0.97);
+      color: white;
+    }
+
+    .feedback.visible {
+      display: block;
+    }
+
+    .feedback small {
+      display: block;
+      margin-top: 10px;
+      opacity: 0.92;
+      font-size: 12px;
+      font-weight: normal;
+    }
+
+    @media (max-width: 1260px) {
+      .main-container {
+        flex-direction: column;
+      }
+
+      .panel {
+        width: 100%;
+        max-height: none;
+      }
+
+      .graph-area {
+        width: 100%;
+        overflow-x: auto;
+      }
+    }
+  
+
+    .module-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0 0 18px 0;
+    }
+
+    .module-tab {
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: white;
+      color: #334e68;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.12s ease, background-color 0.12s ease, border-color 0.12s ease;
+    }
+
+    .module-tab:hover {
+      transform: translateY(-1px);
+      background: #f8fafc;
+    }
+
+    .module-tab.active {
+      background: #e8f5e9;
+      border-color: #81c784;
+      color: #1b5e20;
+    }
+
+    .module-section {
+      display: none;
+    }
+
+    .module-section.active {
+      display: block;
+    }
+
+    .module-intro {
+      max-width: 1180px;
+      color: var(--muted);
+      line-height: 1.45;
+      margin: 0 0 16px 0;
+    }
+
+    .welfare-panel {
+      width: 470px;
+      max-height: none;
+    }
+
+    .welfare-controls {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      background: white;
+    }
+
+    .welfare-controls label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0 0 10px 0;
+      font-size: 13px;
+      font-weight: bold;
+      color: #243b53;
+    }
+
+    .welfare-controls input[type="range"] {
+      width: 100%;
+    }
+
+    .inline-value {
+      font-size: 12px;
+      font-weight: normal;
+      color: var(--muted);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      background: #fdfefe;
+    }
+
+    .metric-card {
+      border: 1px solid #d9e2ec;
+      background: white;
+      border-radius: 8px;
+      padding: 10px;
+      min-height: 72px;
+    }
+
+    .metric-label {
+      display: block;
+      font-size: 11px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .metric-value {
+      display: block;
+      font-size: 17px;
+      font-weight: bold;
+      color: #102a43;
+      line-height: 1.35;
+    }
+
+    .policy-list {
+      padding-top: 12px;
+      padding-bottom: 8px;
+      background: #f8fafc;
+      overflow-y: visible;
+    }
+
+    .policy-item {
+      border-left: 4px solid transparent;
+    }
+
+    .policy-item.active {
+      border-left-color: #2e7d32;
+    }
+
+    .welfare-table-wrap {
+      padding: 12px 14px 16px 14px;
+      border-top: 1px solid var(--border);
+      background: white;
+    }
+
+    .welfare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .welfare-table thead th {
+      background: #f8fafc;
+      color: #334e68;
+      border-bottom: 1px solid #d9e2ec;
+      padding: 8px 6px;
+      text-align: right;
+      font-weight: bold;
+    }
+
+    .welfare-table thead th:first-child,
+    .welfare-table tbody td:first-child {
+      text-align: left;
+    }
+
+    .welfare-table tbody td {
+      padding: 8px 6px;
+      border-bottom: 1px solid #e6edf3;
+      text-align: right;
+      vertical-align: top;
+    }
+
+    .welfare-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .delta-positive {
+      color: #1b5e20;
+      font-weight: bold;
+    }
+
+    .delta-negative {
+      color: #b71c1c;
+      font-weight: bold;
+    }
+
+    .delta-zero {
+      color: var(--muted);
+      font-weight: bold;
+    }
+
+    .legend-fill {
+      width: 18px;
+      height: 12px;
+      border-radius: 4px;
+      border: 1px solid rgba(15, 23, 42, 0.15);
+      display: inline-block;
+    }
+
+    .legend-fill.initial-cs { background: rgba(198, 40, 40, 0.10); }
+    .legend-fill.initial-ps { background: rgba(21, 101, 192, 0.10); }
+    .legend-fill.current-cs { background: rgba(198, 40, 40, 0.28); }
+    .legend-fill.current-ps { background: rgba(21, 101, 192, 0.28); }
+    .legend-fill.government { background: rgba(46, 125, 50, 0.25); }
+    .legend-fill.subsidy { background: rgba(216, 67, 21, 0.22); }
+    .legend-fill.dwl { background: rgba(96, 125, 139, 0.35); }
+
+    .welfare-explainer {
+      padding: 0 14px 14px 14px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+      background: white;
+    }
+
+    .welfare-note {
+      margin-top: 10px;
+    }
+
+    .metric-inline {
+      display: inline-block;
+      min-width: 88px;
+      margin-right: 6px;
+    }
+
+    @media (max-width: 1260px) {
+      .welfare-panel {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+  
+    .welfare-subtabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0 0 16px 0;
+    }
+
+    .welfare-subtab {
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: white;
+      color: #334e68;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.12s ease, background-color 0.12s ease, border-color 0.12s ease;
+    }
+
+    .welfare-subtab:hover {
+      transform: translateY(-1px);
+      background: #f8fafc;
+    }
+
+    .welfare-subtab.active {
+      background: #e3f2fd;
+      border-color: #90caf9;
+      color: #0d47a1;
+    }
+
+    .welfare-subsection {
+      display: none;
+    }
+
+    .welfare-subsection.active {
+      display: block;
+    }
+
+    .legend-line.guess-demand {
+      border-color: #8e24aa;
+      border-top-style: dashed;
+    }
+
+    .legend-line.guess-supply {
+      border-color: #00897b;
+      border-top-style: dashed;
+    }
+
+    .practice-answer-wrap {
+      border-top: 1px solid var(--border);
+      background: white;
+    }
+
+    .practice-answer-heading {
+      padding: 12px 14px 0 14px;
+      font-weight: bold;
+      font-size: 13px;
+      color: #243b53;
+    }
+
+    .practice-answer-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      padding: 12px 14px 14px 14px;
+    }
+
+    .practice-answer-card {
+      border: 1px solid #d9e2ec;
+      background: white;
+      border-radius: 8px;
+      padding: 10px;
+    }
+
+    .practice-answer-card label {
+      display: block;
+      font-size: 12px;
+      font-weight: bold;
+      color: #243b53;
+      margin-bottom: 6px;
+    }
+
+    .practice-answer-card select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #bcccdc;
+      border-radius: 6px;
+      font-size: 13px;
+      background: white;
+    }
+
+    .practice-feedback {
+      display: none;
+      margin: 0 14px 12px 14px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .practice-feedback.visible {
+      display: block;
+    }
+
+    .practice-feedback.correct {
+      background: rgba(46, 125, 50, 0.10);
+      border: 1px solid #81c784;
+      color: #1b5e20;
+    }
+
+    .practice-feedback.incorrect {
+      background: rgba(198, 40, 40, 0.08);
+      border: 1px solid #ef9a9a;
+      color: #8e1b1b;
+    }
+
+    .answer-correct {
+      color: #1b5e20;
+      font-weight: bold;
+    }
+
+    .answer-incorrect {
+      color: #b71c1c;
+      font-weight: bold;
+    }
+
+    .answer-pending {
+      color: var(--muted);
+      font-weight: bold;
+    }
+
+
+    @media (max-width: 760px) {
+      .practice-answer-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+
+  </style>
+</head>
+<body>
+  
+<div class="module-tabs">
+  <button class="module-tab" data-target="welfareModule">Market efficiency analysis</button>
+  <button class="module-tab" data-target="determinantModule">Non-price determinants trainer</button>
+</div>
+
+  
+<section id="welfareModule" class="module-section active">
+  <h1>Interactive Market Efficiency Analysis</h1>
+  <p class="subtitle">
+    Start from a competitive demand-and-supply equilibrium, then apply common government interventions and compare the result with the initial benchmark. Drag the original demand or supply curve horizontally to create a different starting market, choose a policy from the intervention bank, and inspect how consumer surplus, producer surplus, government revenue or subsidy cost, economic surplus, and deadweight loss change.
+  </p>
+
+  <div class="summary-strip">
+    <div class="summary-chip">Baseline versus policy comparison</div>
+    <div class="summary-chip">Taxes on consumers or producers</div>
+    <div class="summary-chip">Subsidies on consumers or producers</div>
+    <div class="summary-chip">Binding price ceilings and floors</div>
+    <div class="summary-chip">Draggable demand and supply curves</div>
+    <div class="summary-chip">Colour-coded CS, PS, government and DWL</div>
+  </div>
+
+  <div class="welfare-subtabs">
+    <button class="welfare-subtab active" data-target="welfareExploreSection">Explore and measure</button>
+    <button class="welfare-subtab" data-target="welfarePracticeSection">Practice and check</button>
+  </div>
+
+  <div id="welfareExploreSection" class="welfare-subsection active">
+    <div class="controls">
+    <button onclick="welfare.resetMarket()">Reset market</button>
+    <button class="secondary" onclick="welfare.resetPolicy()">Reset policy</button>
+    <button class="secondary" onclick="welfare.randomPolicy()">Random intervention</button>
+  </div>
+
+  <div class="main-container">
+    <div class="graph-area">
+      <canvas id="welfareCanvas" width="780" height="560"></canvas>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-line demand"></span><span>Original demand</span></div>
+        <div class="legend-item"><span class="legend-line supply"></span><span>Original supply</span></div>
+        <div class="legend-item"><span class="legend-line demand shifted"></span><span>Policy-shifted demand</span></div>
+        <div class="legend-item"><span class="legend-line supply shifted"></span><span>Policy-shifted supply</span></div>
+        <div class="legend-item"><span class="legend-fill initial-cs"></span><span>Initial surplus areas</span></div>
+        <div class="legend-item"><span class="legend-fill current-cs"></span><span>Current consumer surplus</span></div>
+        <div class="legend-item"><span class="legend-fill current-ps"></span><span>Current producer surplus</span></div>
+        <div class="legend-item"><span class="legend-fill government"></span><span>Government revenue</span></div>
+        <div class="legend-item"><span class="legend-fill subsidy"></span><span>Government subsidy cost</span></div>
+        <div class="legend-item"><span class="legend-fill dwl"></span><span>Deadweight loss</span></div>
+      </div>
+      <div class="graph-note">
+        Drag the original demand or supply curve horizontally to change the starting market. Pale filled areas show the initial competitive surpluses; stronger fills show the post-policy outcome. The grey triangle marks the deadweight loss relative to the initial equilibrium.
+      </div>
+    </div>
+
+    <div class="panel welfare-panel">
+      <div class="panel-header">
+        <div class="panel-title">Government intervention bank</div>
+        <div class="panel-help">
+          Choose a policy from the list, then change its size with the slider. Taxes and subsidies shift one side of the market; price controls hold the price away from the competitive benchmark and create a shortage or surplus.
+        </div>
+      </div>
+
+      <div id="welfareStatusBox" class="status-box"></div>
+
+      <div class="welfare-controls">
+        <label for="policyMagnitude">
+          <span>Policy magnitude</span>
+          <span id="policyMagnitudeLabel" class="inline-value">No intervention selected</span>
+        </label>
+        <input id="policyMagnitude" type="range" min="0" max="8" step="0.25" value="3">
+      </div>
+
+      <div class="metric-grid">
+        <div class="metric-card">
+          <span class="metric-label">Initial equilibrium</span>
+          <span id="metricInitial" class="metric-value">P₀ = 0, Q₀ = 0</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">After policy</span>
+          <span id="metricCurrent" class="metric-value">Pᵦ = 0, Pₛ = 0, Q₁ = 0</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Market imbalance</span>
+          <span id="metricImbalance" class="metric-value">None</span>
+        </div>
+      </div>
+
+      <div id="policyList" class="scenario-list policy-list"></div>
+
+      <div class="welfare-table-wrap">
+        <table class="welfare-table">
+          <thead>
+            <tr>
+              <th>Measure</th>
+              <th>Initial</th>
+              <th>After policy</th>
+              <th>Change</th>
+            </tr>
+          </thead>
+          <tbody id="welfareTableBody"></tbody>
+        </table>
+      </div>
+
+      <div id="welfareInterpretation" class="welfare-explainer"></div>
+    </div>
+  </div>
+  </div>
+
+
+  <div id="welfarePracticeSection" class="welfare-subsection">
+    <div class="controls">
+      <button onclick="welfarePractice.resetGuess()">Reset guess</button>
+      <button class="secondary" onclick="welfarePractice.resetPolicy()">Reset policy</button>
+      <button class="secondary" onclick="welfarePractice.randomPolicy()">Random intervention</button>
+      <button class="check-button visible" onclick="welfarePractice.checkAnswer()">Check practice</button>
+    </div>
+
+    <div class="main-container">
+      <div class="graph-area">
+        <canvas id="welfarePracticeCanvas" width="780" height="560"></canvas>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-line demand"></span><span>Original demand</span></div>
+          <div class="legend-item"><span class="legend-line supply"></span><span>Original supply</span></div>
+          <div class="legend-item"><span class="legend-line guess-demand"></span><span>Your demand guess</span></div>
+          <div class="legend-item"><span class="legend-line guess-supply"></span><span>Your supply guess</span></div>
+          <div class="legend-item"><span class="legend-line demand shifted"></span><span>Correct shifted demand</span></div>
+          <div class="legend-item"><span class="legend-line supply shifted"></span><span>Correct shifted supply</span></div>
+          <div class="legend-item"><span class="legend-fill initial-cs"></span><span>Initial surplus areas</span></div>
+          <div class="legend-item"><span class="legend-fill current-cs"></span><span>Current consumer surplus</span></div>
+          <div class="legend-item"><span class="legend-fill current-ps"></span><span>Current producer surplus</span></div>
+          <div class="legend-item"><span class="legend-fill government"></span><span>Government revenue</span></div>
+          <div class="legend-item"><span class="legend-fill subsidy"></span><span>Government subsidy cost</span></div>
+          <div class="legend-item"><span class="legend-fill dwl"></span><span>Deadweight loss</span></div>
+        </div>
+        <div class="graph-note">
+          Drag the curve you think the intervention shifts, then choose how consumer surplus, producer surplus, government balance, economic surplus, and deadweight loss change relative to the initial equilibrium. For price ceilings and price floors, the underlying demand and supply curves do not shift.
+        </div>
+      </div>
+
+      <div class="panel welfare-panel">
+        <div class="panel-header">
+          <div class="panel-title">Government intervention practice</div>
+          <div class="panel-help">
+            This mode works like the non-price determinants trainer. Choose a policy, move the curve you think shifts, fill in the welfare changes, and then check your answer. After checking, the correct shifted curve and coloured welfare areas are revealed.
+          </div>
+        </div>
+
+        <div id="welfarePracticeStatus" class="status-box">
+          <strong>Choose a policy to begin.</strong>
+          Then drag the shifted curve you expect and complete the welfare change answers before checking.
+        </div>
+
+        <div class="welfare-controls">
+          <label for="practicePolicyMagnitude">
+            <span>Policy magnitude</span>
+            <span id="practicePolicyMagnitudeLabel" class="inline-value">No intervention selected</span>
+          </label>
+          <input id="practicePolicyMagnitude" type="range" min="0" max="8" step="0.25" value="3">
+        </div>
+
+        <div id="welfarePracticePolicyList" class="scenario-list policy-list"></div>
+
+        <div class="practice-answer-wrap">
+          <div class="practice-answer-heading">Your answers</div>
+          <div class="practice-answer-grid">
+            <div class="practice-answer-card">
+              <label for="practiceAnswerCS">Consumer surplus</label>
+              <select id="practiceAnswerCS">
+                <option value="">Choose</option>
+                <option value="increase">Increase</option>
+                <option value="decrease">Decrease</option>
+                <option value="no_change">No change</option>
+              </select>
+            </div>
+            <div class="practice-answer-card">
+              <label for="practiceAnswerPS">Producer surplus</label>
+              <select id="practiceAnswerPS">
+                <option value="">Choose</option>
+                <option value="increase">Increase</option>
+                <option value="decrease">Decrease</option>
+                <option value="no_change">No change</option>
+              </select>
+            </div>
+            <div class="practice-answer-card">
+              <label for="practiceAnswerGov">Government balance</label>
+              <select id="practiceAnswerGov">
+                <option value="">Choose</option>
+                <option value="increase">Increase</option>
+                <option value="decrease">Decrease</option>
+                <option value="no_change">No change</option>
+              </select>
+            </div>
+            <div class="practice-answer-card">
+              <label for="practiceAnswerES">Economic surplus</label>
+              <select id="practiceAnswerES">
+                <option value="">Choose</option>
+                <option value="increase">Increase</option>
+                <option value="decrease">Decrease</option>
+                <option value="no_change">No change</option>
+              </select>
+            </div>
+            <div class="practice-answer-card">
+              <label for="practiceAnswerDWL">Deadweight loss</label>
+              <select id="practiceAnswerDWL">
+                <option value="">Choose</option>
+                <option value="increase">Increase</option>
+                <option value="decrease">Decrease</option>
+                <option value="no_change">No change</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="welfarePracticeFeedback" class="practice-feedback"></div>
+
+        <div class="welfare-table-wrap">
+          <table class="welfare-table">
+            <thead>
+              <tr>
+                <th>Measure</th>
+                <th>Your answer</th>
+                <th>Actual change</th>
+                <th>Exact change</th>
+              </tr>
+            </thead>
+            <tbody id="welfarePracticeTableBody"></tbody>
+          </table>
+        </div>
+
+        <div id="welfarePracticeInterpretation" class="welfare-explainer"></div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+  <section id="determinantModule" class="module-section">
+<h1>Interactive Demand and Supply Model — Non-price Determinants</h1>
+  <p class="subtitle">
+    Select a determinant from the list, then shift the correct curve and check your answer. This version mirrors the exercise style of your uploaded AD-AS activity, but for a standard market demand-and-supply diagram with a broad bank of non-price determinants.
+  </p>
+
+  <div class="summary-strip">
+    <div class="summary-chip">54 scenarios</div>
+    <div class="summary-chip">Income and type of good</div>
+    <div class="summary-chip">Demographics and tastes</div>
+    <div class="summary-chip">Advertising and information</div>
+    <div class="summary-chip">Substitutes and complements</div>
+    <div class="summary-chip">Expectations and confidence</div>
+    <div class="summary-chip">Credit, taxes, subsidies, seasonality</div>
+    <div class="summary-chip">Input costs, wages, productivity, technology</div>
+    <div class="summary-chip">Firms, regulation, related production choices</div>
+    <div class="summary-chip">Logistics, exchange rates, shocks</div>
+  </div>
+
+  <div class="controls">
+    <button onclick="resetGraph()">Reset</button>
+    <button class="secondary" onclick="pickRandomScenario()">Random scenario</button>
+    <button id="checkButton" class="check-button" onclick="checkUserResponse()">Check Answer</button>
+  </div>
+
+  <div class="main-container">
+    <div class="graph-area">
+      <canvas id="marketCanvas" width="780" height="560"></canvas>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-line demand"></span><span>Original demand</span></div>
+        <div class="legend-item"><span class="legend-line supply"></span><span>Original supply</span></div>
+        <div class="legend-item"><span class="legend-line demand shifted"></span><span>Shifted demand</span></div>
+        <div class="legend-item"><span class="legend-line supply shifted"></span><span>Shifted supply</span></div>
+      </div>
+      <div class="graph-note">
+        Tip: click and drag the demand or supply line horizontally. A right shift means more demand or supply at every price; a left shift means less. Context-dependent cases (such as normal versus inferior goods) are labelled explicitly in the scenario list.
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title">Determinant bank</div>
+        <div class="panel-help">
+          The list is grouped by source of the shock so it stays comprehensive without giving away every answer up front. Use the search box to filter by terms such as income, substitute, subsidy, technology, regulation, or exchange rate.
+        </div>
+      </div>
+      <div id="statusBox" class="status-box">
+        <strong>Choose a determinant to begin.</strong>
+        Then drag the curve you think should shift. The check button appears after you move a curve.
+      </div>
+      <div class="search-box">
+        <input id="searchInput" type="text" placeholder="Filter scenarios">
+        <div id="countLabel" class="count-label"></div>
+      </div>
+      <div id="scenarioList" class="scenario-list"></div>
+    </div>
+  </div>
+
+  <div id="feedback" class="feedback" onclick="hideFeedback()"></div>
+</section>
+  <script>
+const scenarios = [{"group": "Households: income, demographics and tastes", "title": "Higher consumer income (normal good)", "note": "Income", "curve": "D", "direction": "right", "explanation": "For a normal good, higher income increases consumers' willingness and ability to buy, so demand shifts right.", "equilibrium": "Equilibrium price rises and equilibrium quantity rises."}, {"group": "Households: income, demographics and tastes", "title": "Lower consumer income (normal good)", "note": "Income", "curve": "D", "direction": "left", "explanation": "For a normal good, lower income reduces consumers' purchasing power, so demand shifts left.", "equilibrium": "Equilibrium price falls and equilibrium quantity falls."}, {"group": "Households: income, demographics and tastes", "title": "Lower consumer income (inferior good)", "note": "Income and type of good", "curve": "D", "direction": "right", "explanation": "For an inferior good, lower income makes consumers switch toward cheaper options, so demand shifts right.", "equilibrium": "Equilibrium price rises and equilibrium quantity rises."}, {"group": "Households: income, demographics and tastes", "title": "Higher consumer income (inferior good)", "note": "Income and type of good", "curve": "D", "direction": "left", "explanation": "For an inferior good, higher income makes consumers switch away toward preferred alternatives, so demand shifts left.", "equilibrium": "Equilibrium price falls and equilibrium quantity falls."}, {"group": "Households: income, demographics and tastes", "title": "Target-market demographics become more favourable", "note": "Demographics", "curve": "D", "direction": "right", "explanation": "When the share of likely buyers grows, more units are demanded at every price, so demand shifts right.", "equilibrium": "Equilibrium price rises and equilibrium quantity rises."}, {"group": "Households: income, demographics and tastes", "title": "Target-market demographics become less favourable", "note": "Demographics", "curve": "D", "direction": "left", "explanation": "When the share of likely buyers shrinks, fewer units are demanded at every price, so demand shifts left.", "equilibrium": "Equilibrium price falls and equilibrium quantity falls."}, {"group": "Households: income, demographics and tastes", "title": "Product becomes more fashionable or preferred", "note": "Tastes and preferences", "curve": "D", "direction": "right", "explanation": "Stronger tastes and preferences for the good increase demand at every price, so demand shifts right.", "equilibrium": "Equilibrium price rises and equilibrium quantity rises."}, {"group": "Households: income, demographics and tastes", "title": "Product falls out of fashion or tastes worsen", "note": "Tastes and preferences", "curve": "D", "direction": "left", "explanation": "Weaker tastes and preferences reduce demand at every price, so demand shifts left.", "equilibrium": "Equilibrium price falls and equilibrium quantity falls."}, {"group": "Households: income, demographics and tastes", "title": "Successful advertising or better product information", "note": "Advertising and information", "curve": "D", "direction": "right", "explanation": "Advertising or better information can raise consumers' desire to buy, so demand shifts right.", "equilibrium": "Equilibrium price rises and equilibrium quantity rises."}, {"group": "Households: income, demographics and tastes", "title": "Negative publicity, product recall, or safety scare", "note": "Advertising and information", "curve": "D", "direction": "left", "explanation": "Bad news about the product reduces willingness to buy, so demand shifts left.", "equilibrium": "Equilibrium price falls and equilibrium quantity falls."}, {"group": "Households: related goods, expectations, credit and policy", "title": "Price of a substitute rises", "note": "Related goods: substitutes", "curve": "D", "direction": "right", "explanation": "If a substitute becomes more expensive, consumers switch toward this good, so demand shifts right.", "equilibrium": "Equilibrium price rises and equilibrium quantity rises."}, {"group": "Households: related goods, expectations, credit and policy", "title": "Price of a substitute falls", "note": "Related goods: substitutes", "curve": "D", "direction": "left", "explanation": "If a substitute becomes cheaper, consumers switch away from this good, so demand shifts left.", "equilibrium": "Equilibrium price falls and equilibrium quantity falls."}, {"group": "Households: related goods, expectations, credit and policy", "title": "Price of a complement falls", "note": "Related goods: complements", "curve": "D", "direction": "right", "explanation": "If a complement becomes cheaper, consumers buy more of both goods together, so demand shifts right.", "equilibrium": "Equilibrium price rises and equilibrium quantity rises."}, {"group": "Households: related goods, expectations, credit and policy", "title": "Price of a complement rises", "note": "Related goods: complements", "curve": "D", "direction": "left", "explanation": "If a complement becomes more expensive, consumers buy less of both goods together, so demand shifts left.", "equilibrium": "Equilibrium price falls and equilibrium quantity falls."}, {"group": "Households: related goods, expectations, credit and policy", "title": "Number of buyers increases", "note": "Market size", "curve": "D", "direction": "right", "explanation": "With more buyers in the market, total demand rises at every price, so demand shifts right.", "equilibrium": "Equilibrium price rises and equilibrium quantity rises."}, {"group": "Households: related goods, expectations, credit and policy", "title": "Number of buyers decreases", "note": "Market size", "curve": "D", "direction": "left", "explanation": "With fewer buyers in the market, total demand falls at every price, so demand shifts left.", "equilibrium": "Equilibrium price falls and equilibrium quantity falls."}, {"group": "Households: related goods, expectations, credit and policy", "title": "Consumers expect higher future prices", "note": "Expectations", "curve": "D", "direction": "right", "explanation": "If consumers expect the good to become dearer later, they buy more now, so demand shifts right.", "equilibrium": "Equilibrium price rises and equilibrium quantity rises."}, {"group": "Households: related goods, expectations, credit and policy", "title": "Consumers expect lower future prices", "note": "Expectations", "curve": "D", "direction": "left", "explanation": "If consumers expect the good to become cheaper later, they postpone purchases, so demand shifts left.", "equilibrium": "Equilibrium price falls and equilibrium quantity falls."}, {"group": "Households: related goods, expectations, credit and policy", "title": "Consumer confidence improves or expected future income rises", "note": "Income expectations", "curve": "D", "direction": "right", "explanation": "Greater confidence about future income encourages current spending, so demand shifts right.", "equilibrium": "Equilibrium price rises and equilibrium quantity rises."}, {"group": "Households: related goods, expectations, credit and policy", "title": "Consumer confidence falls or recession fears increase", "note": "Income expectations", "curve": "D", "direction": "left", "explanation": "Worse expectations about future income reduce current spending, so demand shifts left.", "equilibrium": "Equilibrium price falls and equilibrium quantity falls."}, {"group": "Households: related goods, expectations, credit and policy", "title": "Easier consumer credit or lower borrowing costs (durables or housing)", "note": "Credit conditions", "curve": "D", "direction": "right", "explanation": "When financing becomes easier or cheaper, households buy more interest-sensitive goods, so demand shifts right.", "equilibrium": "Equilibrium price rises and equilibrium quantity rises."}, {"group": "Households: related goods, expectations, credit and policy", "title": "Tighter consumer credit or higher borrowing costs", "note": "Credit conditions", "curve": "D", "direction": "left", "explanation": "When financing becomes harder or more expensive, households reduce purchases of interest-sensitive goods, so demand shifts left.", "equilibrium": "Equilibrium price falls and equilibrium quantity falls."}, {"group": "Households: related goods, expectations, credit and policy", "title": "Government rebate or subsidy to buyers", "note": "Government policy", "curve": "D", "direction": "right", "explanation": "A subsidy or rebate effectively boosts buyers' willingness and ability to purchase, so demand shifts right.", "equilibrium": "Equilibrium price rises and equilibrium quantity rises."}, {"group": "Households: related goods, expectations, credit and policy", "title": "Tax on buyers or removal of a buyer rebate", "note": "Government policy", "curve": "D", "direction": "left", "explanation": "A buyer-side tax or removal of a rebate discourages purchases, so demand shifts left.", "equilibrium": "Equilibrium price falls and equilibrium quantity falls."}, {"group": "Households: related goods, expectations, credit and policy", "title": "Seasonal rise in demand", "note": "Seasonality", "curve": "D", "direction": "right", "explanation": "Seasonal factors can make consumers want more of the good at every price, so demand shifts right.", "equilibrium": "Equilibrium price rises and equilibrium quantity rises."}, {"group": "Households: related goods, expectations, credit and policy", "title": "Seasonal fall in demand", "note": "Seasonality", "curve": "D", "direction": "left", "explanation": "When the season passes, consumers want less of the good at every price, so demand shifts left.", "equilibrium": "Equilibrium price falls and equilibrium quantity falls."}, {"group": "Firms: costs, wages, productivity and technology", "title": "Lower raw-material or input costs", "note": "Input prices", "curve": "S", "direction": "right", "explanation": "Lower input costs make production more profitable at every price, so supply shifts right.", "equilibrium": "Equilibrium price falls and equilibrium quantity rises."}, {"group": "Firms: costs, wages, productivity and technology", "title": "Higher raw-material or input costs", "note": "Input prices", "curve": "S", "direction": "left", "explanation": "Higher input costs make production less profitable at every price, so supply shifts left.", "equilibrium": "Equilibrium price rises and equilibrium quantity falls."}, {"group": "Firms: costs, wages, productivity and technology", "title": "Lower wage costs", "note": "Labour costs", "curve": "S", "direction": "right", "explanation": "Lower labour costs reduce firms' costs of production, so supply shifts right.", "equilibrium": "Equilibrium price falls and equilibrium quantity rises."}, {"group": "Firms: costs, wages, productivity and technology", "title": "Higher wage costs", "note": "Labour costs", "curve": "S", "direction": "left", "explanation": "Higher labour costs raise firms' costs of production, so supply shifts left.", "equilibrium": "Equilibrium price rises and equilibrium quantity falls."}, {"group": "Firms: costs, wages, productivity and technology", "title": "Better production technology", "note": "Technology", "curve": "S", "direction": "right", "explanation": "Better technology lets firms produce more efficiently, so supply shifts right.", "equilibrium": "Equilibrium price falls and equilibrium quantity rises."}, {"group": "Firms: costs, wages, productivity and technology", "title": "Technology setback or equipment breakdown", "note": "Technology", "curve": "S", "direction": "left", "explanation": "A production setback makes firms less efficient, so supply shifts left.", "equilibrium": "Equilibrium price rises and equilibrium quantity falls."}, {"group": "Firms: costs, wages, productivity and technology", "title": "Higher productivity or improved worker training", "note": "Productivity", "curve": "S", "direction": "right", "explanation": "Higher productivity lowers unit costs and increases output at each price, so supply shifts right.", "equilibrium": "Equilibrium price falls and equilibrium quantity rises."}, {"group": "Firms: costs, wages, productivity and technology", "title": "Lower productivity or strike action", "note": "Productivity", "curve": "S", "direction": "left", "explanation": "Lower productivity reduces output at each price, so supply shifts left.", "equilibrium": "Equilibrium price rises and equilibrium quantity falls."}, {"group": "Firms: sellers, capacity, taxes and related production choices", "title": "More firms enter the market", "note": "Number of sellers", "curve": "S", "direction": "right", "explanation": "More sellers increase total market supply at every price, so supply shifts right.", "equilibrium": "Equilibrium price falls and equilibrium quantity rises."}, {"group": "Firms: sellers, capacity, taxes and related production choices", "title": "Firms exit the market", "note": "Number of sellers", "curve": "S", "direction": "left", "explanation": "Fewer sellers reduce total market supply at every price, so supply shifts left.", "equilibrium": "Equilibrium price rises and equilibrium quantity falls."}, {"group": "Firms: sellers, capacity, taxes and related production choices", "title": "Better access to business credit or expanded capacity", "note": "Capacity and finance", "curve": "S", "direction": "right", "explanation": "Easier finance or more productive capacity allows firms to supply more at each price, so supply shifts right.", "equilibrium": "Equilibrium price falls and equilibrium quantity rises."}, {"group": "Firms: sellers, capacity, taxes and related production choices", "title": "Credit squeeze or capacity constraint", "note": "Capacity and finance", "curve": "S", "direction": "left", "explanation": "Tighter finance or capacity limits restrict production, so supply shifts left.", "equilibrium": "Equilibrium price rises and equilibrium quantity falls."}, {"group": "Firms: sellers, capacity, taxes and related production choices", "title": "Producer subsidy", "note": "Government policy", "curve": "S", "direction": "right", "explanation": "A producer subsidy lowers effective production costs, so supply shifts right.", "equilibrium": "Equilibrium price falls and equilibrium quantity rises."}, {"group": "Firms: sellers, capacity, taxes and related production choices", "title": "Higher business tax or excise on sellers", "note": "Government policy", "curve": "S", "direction": "left", "explanation": "A seller-side tax raises firms' costs, so supply shifts left.", "equilibrium": "Equilibrium price rises and equilibrium quantity falls."}, {"group": "Firms: sellers, capacity, taxes and related production choices", "title": "Lower business tax", "note": "Government policy", "curve": "S", "direction": "right", "explanation": "Lower business taxes improve profitability at each price, so supply shifts right.", "equilibrium": "Equilibrium price falls and equilibrium quantity rises."}, {"group": "Firms: sellers, capacity, taxes and related production choices", "title": "Stricter regulation or higher compliance costs", "note": "Regulation", "curve": "S", "direction": "left", "explanation": "More burdensome regulation raises production costs, so supply shifts left.", "equilibrium": "Equilibrium price rises and equilibrium quantity falls."}, {"group": "Firms: sellers, capacity, taxes and related production choices", "title": "Lower price of an alternative product in production", "note": "Related goods in production", "curve": "S", "direction": "right", "explanation": "If another product becomes less attractive to produce, firms shift resources toward this good, so supply shifts right.", "equilibrium": "Equilibrium price falls and equilibrium quantity rises."}, {"group": "Firms: sellers, capacity, taxes and related production choices", "title": "Higher price of an alternative product in production", "note": "Related goods in production", "curve": "S", "direction": "left", "explanation": "If another product becomes more attractive to produce, firms shift resources away from this good, so supply shifts left.", "equilibrium": "Equilibrium price rises and equilibrium quantity falls."}, {"group": "Firms: shocks, logistics, exchange rates and expectations", "title": "Good weather or a bumper harvest", "note": "Natural conditions", "curve": "S", "direction": "right", "explanation": "Favourable natural conditions raise output, so supply shifts right.", "equilibrium": "Equilibrium price falls and equilibrium quantity rises."}, {"group": "Firms: shocks, logistics, exchange rates and expectations", "title": "Bad weather, natural disaster, or production damage", "note": "Natural conditions", "curve": "S", "direction": "left", "explanation": "Adverse shocks reduce firms' ability to produce, so supply shifts left.", "equilibrium": "Equilibrium price rises and equilibrium quantity falls."}, {"group": "Firms: shocks, logistics, exchange rates and expectations", "title": "Lower transport or energy costs", "note": "Logistics and energy", "curve": "S", "direction": "right", "explanation": "Cheaper transport or energy lowers total production costs, so supply shifts right.", "equilibrium": "Equilibrium price falls and equilibrium quantity rises."}, {"group": "Firms: shocks, logistics, exchange rates and expectations", "title": "Supply-chain disruption or higher logistics costs", "note": "Logistics and energy", "curve": "S", "direction": "left", "explanation": "Disruptions or higher shipping costs reduce output at each price, so supply shifts left.", "equilibrium": "Equilibrium price rises and equilibrium quantity falls."}, {"group": "Firms: shocks, logistics, exchange rates and expectations", "title": "Currency appreciation lowers the cost of imported inputs", "note": "Exchange rates", "curve": "S", "direction": "right", "explanation": "If imported inputs become cheaper, firms can supply more at each price, so supply shifts right.", "equilibrium": "Equilibrium price falls and equilibrium quantity rises."}, {"group": "Firms: shocks, logistics, exchange rates and expectations", "title": "Currency depreciation raises the cost of imported inputs", "note": "Exchange rates", "curve": "S", "direction": "left", "explanation": "If imported inputs become dearer, firms can supply less at each price, so supply shifts left.", "equilibrium": "Equilibrium price rises and equilibrium quantity falls."}, {"group": "Firms: shocks, logistics, exchange rates and expectations", "title": "Producers expect lower future prices", "note": "Expectations", "curve": "S", "direction": "right", "explanation": "If producers expect lower prices later, they bring more supply to market now, so supply shifts right.", "equilibrium": "Equilibrium price falls and equilibrium quantity rises."}, {"group": "Firms: shocks, logistics, exchange rates and expectations", "title": "Producers expect higher future prices", "note": "Expectations", "curve": "S", "direction": "left", "explanation": "If producers expect higher prices later, they may hold stock back now, so supply shifts left.", "equilibrium": "Equilibrium price rises and equilibrium quantity falls."}, {"group": "Firms: shocks, logistics, exchange rates and expectations", "title": "Discovery of new resources or improved infrastructure", "note": "Resource availability", "curve": "S", "direction": "right", "explanation": "Better access to resources or infrastructure expands productive capacity, so supply shifts right.", "equilibrium": "Equilibrium price falls and equilibrium quantity rises."}, {"group": "Firms: shocks, logistics, exchange rates and expectations", "title": "Disease, pests, or war damage production", "note": "Adverse supply shock", "curve": "S", "direction": "left", "explanation": "Serious disruptions to production reduce market supply, so supply shifts left.", "equilibrium": "Equilibrium price rises and equilibrium quantity falls."}];
+
+    const canvas = document.getElementById('marketCanvas');
+    const ctx = canvas.getContext('2d');
+    const width = canvas.width;
+    const height = canvas.height;
+
+    const statusBox = document.getElementById('statusBox');
+    const searchInput = document.getElementById('searchInput');
+    const scenarioList = document.getElementById('scenarioList');
+    const countLabel = document.getElementById('countLabel');
+    const feedback = document.getElementById('feedback');
+    const checkButton = document.getElementById('checkButton');
+
+    const padLeft = 78;
+    const padTop = 55;
+    const padRight = 58;
+    const padBottom = 74;
+    const xStart = 135;
+    const xEnd = width - 130;
+    const yTop = 120;
+    const yBottom = height - 120;
+
+    const SHIFT_LIMIT = 185;
+    const HIT_TOLERANCE = 14;
+    const RESET_TOLERANCE = 7;
+    const MIN_SHIFT_FOR_CORRECT = 16;
+
+    let demandShift = 0;
+    let supplyShift = 0;
+    let currentScenarioIndex = null;
+    let isDragging = false;
+    let dragTarget = null;
+    let lastX = 0;
+    let userHasMadeChanges = false;
+
+    function getDemandLine(shift) {
+      return {
+        x1: xStart + shift,
+        y1: yTop,
+        x2: xEnd + shift,
+        y2: yBottom
+      };
+    }
+
+    function getSupplyLine(shift) {
+      return {
+        x1: xStart + shift,
+        y1: yBottom,
+        x2: xEnd + shift,
+        y2: yTop
+      };
+    }
+
+    function drawAxes() {
+      ctx.save();
+      ctx.strokeStyle = '#1f2933';
+      ctx.lineWidth = 2;
+
+      ctx.beginPath();
+      ctx.moveTo(padLeft, padTop);
+      ctx.lineTo(padLeft, height - padBottom);
+      ctx.lineTo(width - padRight, height - padBottom);
+      ctx.stroke();
+
+      // Axis arrowheads
+      ctx.beginPath();
+      ctx.moveTo(width - padRight, height - padBottom);
+      ctx.lineTo(width - padRight - 12, height - padBottom - 6);
+      ctx.lineTo(width - padRight - 12, height - padBottom + 6);
+      ctx.closePath();
+      ctx.fillStyle = '#1f2933';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(padLeft, padTop);
+      ctx.lineTo(padLeft - 6, padTop + 12);
+      ctx.lineTo(padLeft + 6, padTop + 12);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = '#1f2933';
+      ctx.font = '16px Arial';
+      ctx.fillText('Price', 26, 34);
+      ctx.fillText('Quantity', width - 145, height - 20);
+
+      ctx.restore();
+    }
+
+    function drawLine(line, options = {}) {
+      const {
+        color = '#000000',
+        dashed = false,
+        width = 3,
+        label = '',
+        labelX = null,
+        labelY = null
+      } = options;
+
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.setLineDash(dashed ? [10, 8] : []);
+      ctx.beginPath();
+      ctx.moveTo(line.x1, line.y1);
+      ctx.lineTo(line.x2, line.y2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      if (label) {
+        ctx.fillStyle = color;
+        ctx.font = 'bold 15px Arial';
+        ctx.fillText(label, labelX ?? line.x1 - 28, labelY ?? line.y1 - 8);
+      }
+      ctx.restore();
+    }
+
+    function lineIntersection(lineA, lineB) {
+      const {x1, y1, x2, y2} = lineA;
+      const {x1: x3, y1: y3, x2: x4, y2: y4} = lineB;
+      const denom = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+
+      if (denom === 0) {
+        return { x: width / 2, y: height / 2 };
+      }
+
+      const px = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / denom;
+      const py = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / denom;
+      return { x: px, y: py };
+    }
+
+    function drawEquilibrium(point, label, color, hollow = false) {
+      ctx.save();
+      if (hollow) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(point.x, point.y, 5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = color;
+      ctx.font = 'bold 14px Arial';
+      ctx.fillText(label, point.x + 8, point.y - 10);
+      ctx.restore();
+    }
+
+    function drawGuideLines(point) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(100, 116, 139, 0.45)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([5, 6]);
+
+      ctx.beginPath();
+      ctx.moveTo(point.x, point.y);
+      ctx.lineTo(point.x, height - padBottom);
+      ctx.moveTo(point.x, point.y);
+      ctx.lineTo(padLeft, point.y);
+      ctx.stroke();
+
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#52606d';
+      ctx.font = '12px Arial';
+      ctx.fillText('P*', padLeft - 30, point.y + 4);
+      ctx.fillText('Q*', point.x - 6, height - padBottom + 22);
+      ctx.restore();
+    }
+
+    function drawGraph() {
+      ctx.clearRect(0, 0, width, height);
+      drawAxes();
+
+      const originalDemand = getDemandLine(0);
+      const originalSupply = getSupplyLine(0);
+      const shiftedDemand = getDemandLine(demandShift);
+      const shiftedSupply = getSupplyLine(supplyShift);
+
+      drawLine(originalDemand, {
+        color: '#c62828',
+        label: 'D',
+        labelX: originalDemand.x1 - 26,
+        labelY: originalDemand.y1 - 10
+      });
+
+      drawLine(originalSupply, {
+        color: '#1565c0',
+        label: 'S',
+        labelX: originalSupply.x2 + 10,
+        labelY: originalSupply.y2 - 8
+      });
+
+      if (Math.abs(demandShift) > 0.5) {
+        drawLine(shiftedDemand, {
+          color: '#c62828',
+          dashed: true,
+          label: 'D₁',
+          labelX: shiftedDemand.x1 - 30,
+          labelY: shiftedDemand.y1 - 10
+        });
+      }
+
+      if (Math.abs(supplyShift) > 0.5) {
+        drawLine(shiftedSupply, {
+          color: '#1565c0',
+          dashed: true,
+          label: 'S₁',
+          labelX: shiftedSupply.x2 + 12,
+          labelY: shiftedSupply.y2 - 8
+        });
+      }
+
+      const originalEq = lineIntersection(originalDemand, originalSupply);
+      const currentEq = lineIntersection(shiftedDemand, shiftedSupply);
+
+      drawEquilibrium(originalEq, 'E₀', '#90a4ae', true);
+
+      if (Math.abs(demandShift) > 0.5 || Math.abs(supplyShift) > 0.5) {
+        drawGuideLines(currentEq);
+        drawEquilibrium(currentEq, 'E₁', '#212121', false);
+      } else {
+        drawGuideLines(originalEq);
+        drawEquilibrium(originalEq, 'E', '#212121', false);
+      }
+    }
+
+    function clampShift(value) {
+      return Math.max(-SHIFT_LIMIT, Math.min(SHIFT_LIMIT, value));
+    }
+
+    function resetGraph() {
+      demandShift = 0;
+      supplyShift = 0;
+      userHasMadeChanges = false;
+      isDragging = false;
+      dragTarget = null;
+      checkButton.classList.remove('visible');
+      hideFeedback();
+      drawGraph();
+    }
+
+    function setStatusText() {
+      if (currentScenarioIndex === null) {
+        statusBox.innerHTML = '<strong>Choose a determinant to begin.</strong>Then drag the curve you think should shift. The check button appears after you move a curve.';
+        return;
+      }
+
+      const scenario = scenarios[currentScenarioIndex];
+      statusBox.innerHTML = `
+        <strong>Selected determinant:</strong>
+        ${
+          escapeHtml(scenario.title)
+        }
+        <br>
+        <span style="color:#52606d;">Category: ${escapeHtml(scenario.note)}. Decide which curve shifts and in which direction.</span>
+      `;
+    }
+
+    function escapeHtml(text) {
+      return text
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function chooseScenario(index) {
+      currentScenarioIndex = index;
+      document.querySelectorAll('.scenario-item').forEach(item => item.classList.remove('active'));
+      const selectedItem = document.querySelector(`.scenario-item[data-index="${index}"]`);
+      if (selectedItem) {
+        selectedItem.classList.add('active');
+      }
+      setStatusText();
+      resetGraph();
+    }
+
+    function getVisibleScenarioIndices() {
+      const query = searchInput.value.trim().toLowerCase();
+      return scenarios
+        .map((scenario, index) => ({ scenario, index }))
+        .filter((entry) => {
+          if (!query) return true;
+          const haystack = `${entry.scenario.group} ${entry.scenario.title} ${entry.scenario.note}`.toLowerCase();
+          return haystack.includes(query);
+        })
+        .map((entry) => entry.index);
+    }
+
+    function renderScenarioList() {
+      const visibleIndices = getVisibleScenarioIndices();
+      scenarioList.innerHTML = '';
+
+      if (visibleIndices.length === 0) {
+        scenarioList.innerHTML = '<div class="empty-state">No scenarios match your filter.</div>';
+        countLabel.textContent = '0 visible scenarios';
+        return;
+      }
+
+      countLabel.textContent = `${visibleIndices.length} visible scenario${visibleIndices.length === 1 ? '' : 's'}`;
+
+      let currentGroup = '';
+      visibleIndices.forEach((index) => {
+        const scenario = scenarios[index];
+
+        if (scenario.group !== currentGroup) {
+          currentGroup = scenario.group;
+          const heading = document.createElement('div');
+          heading.className = 'group-heading';
+          heading.textContent = scenario.group;
+          scenarioList.appendChild(heading);
+        }
+
+        const item = document.createElement('div');
+        item.className = 'scenario-item';
+        if (index === currentScenarioIndex) {
+          item.classList.add('active');
+        }
+        item.dataset.index = String(index);
+        item.innerHTML = `
+          <div class="scenario-title">${escapeHtml(scenario.title)}</div>
+          <div class="scenario-note">${escapeHtml(scenario.note)}</div>
+        `;
+        item.addEventListener('click', () => chooseScenario(index));
+        scenarioList.appendChild(item);
+      });
+    }
+
+    function pickRandomScenario() {
+      const visible = getVisibleScenarioIndices();
+      if (!visible.length) return;
+      const randomIndex = visible[Math.floor(Math.random() * visible.length)];
+      chooseScenario(randomIndex);
+    }
+
+    function pointToSegmentDistance(px, py, x1, y1, x2, y2) {
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+
+      if (dx === 0 && dy === 0) {
+        return Math.hypot(px - x1, py - y1);
+      }
+
+      const t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy)));
+      const projX = x1 + t * dx;
+      const projY = y1 + t * dy;
+      return Math.hypot(px - projX, py - projY);
+    }
+
+    function canvasCoordinates(event) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top
+      };
+    }
+
+    function beginDrag(x, y) {
+      const currentDemand = getDemandLine(demandShift);
+      const currentSupply = getSupplyLine(supplyShift);
+
+      const demandDistance = pointToSegmentDistance(x, y, currentDemand.x1, currentDemand.y1, currentDemand.x2, currentDemand.y2);
+      const supplyDistance = pointToSegmentDistance(x, y, currentSupply.x1, currentSupply.y1, currentSupply.x2, currentSupply.y2);
+
+      if (demandDistance <= HIT_TOLERANCE && demandDistance <= supplyDistance) {
+        isDragging = true;
+        dragTarget = 'D';
+      } else if (supplyDistance <= HIT_TOLERANCE) {
+        isDragging = true;
+        dragTarget = 'S';
+      } else {
+        isDragging = false;
+        dragTarget = null;
+      }
+
+      lastX = x;
+    }
+
+    function updateDrag(x) {
+      if (!isDragging || !dragTarget) return;
+
+      const dx = x - lastX;
+      lastX = x;
+
+      if (dragTarget === 'D') {
+        demandShift = clampShift(demandShift + dx);
+      } else if (dragTarget === 'S') {
+        supplyShift = clampShift(supplyShift + dx);
+      }
+
+      userHasMadeChanges = true;
+      checkButton.classList.add('visible');
+      hideFeedback();
+      drawGraph();
+    }
+
+    function endDrag() {
+      isDragging = false;
+      dragTarget = null;
+    }
+
+    function describeDirection(value) {
+      if (value > 0) return 'right';
+      if (value < 0) return 'left';
+      return 'not shifted';
+    }
+
+    function checkUserResponse() {
+      if (currentScenarioIndex === null) {
+        showFeedback(false, 'Choose a determinant first, then move the curve you think should shift.');
+        return;
+      }
+
+      if (!userHasMadeChanges) {
+        showFeedback(false, 'Move a curve before checking your answer.');
+        return;
+      }
+
+      const scenario = scenarios[currentScenarioIndex];
+      const demandMoved = Math.abs(demandShift) > RESET_TOLERANCE;
+      const supplyMoved = Math.abs(supplyShift) > RESET_TOLERANCE;
+
+      let correct = false;
+      let lead = '';
+
+      if (scenario.curve === 'D') {
+        if (supplyMoved && !demandMoved) {
+          lead = 'This determinant changes demand, not supply.';
+        } else if (supplyMoved && demandMoved) {
+          lead = 'Only demand should shift for this determinant.';
+        } else if (!demandMoved) {
+          lead = 'Demand has not been shifted enough yet.';
+        } else if (describeDirection(demandShift) !== scenario.direction) {
+          lead = `You shifted demand ${describeDirection(demandShift)}, but this scenario requires a ${scenario.direction} shift of demand.`;
+        } else if (Math.abs(demandShift) < MIN_SHIFT_FOR_CORRECT) {
+          lead = `Shift demand a little farther to the ${scenario.direction} so the change clearly registers.`;
+        } else {
+          correct = true;
+        }
+      } else if (scenario.curve === 'S') {
+        if (demandMoved && !supplyMoved) {
+          lead = 'This determinant changes supply, not demand.';
+        } else if (demandMoved && supplyMoved) {
+          lead = 'Only supply should shift for this determinant.';
+        } else if (!supplyMoved) {
+          lead = 'Supply has not been shifted enough yet.';
+        } else if (describeDirection(supplyShift) !== scenario.direction) {
+          lead = `You shifted supply ${describeDirection(supplyShift)}, but this scenario requires a ${scenario.direction} shift of supply.`;
+        } else if (Math.abs(supplyShift) < MIN_SHIFT_FOR_CORRECT) {
+          lead = `Shift supply a little farther to the ${scenario.direction} so the change clearly registers.`;
+        } else {
+          correct = true;
+        }
+      }
+
+      const message = correct
+        ? `Correct: ${scenario.explanation} ${scenario.equilibrium}`
+        : `Incorrect: ${lead} ${scenario.explanation} ${scenario.equilibrium}`;
+
+      showFeedback(correct, message);
+    }
+
+    function showFeedback(isCorrect, message) {
+      feedback.innerHTML = `${message}<small>Click anywhere on this box to dismiss.</small>`;
+      feedback.className = `feedback ${isCorrect ? 'correct' : 'incorrect'} visible`;
+    }
+
+    function hideFeedback() {
+      feedback.className = 'feedback';
+      feedback.innerHTML = '';
+    }
+
+    canvas.addEventListener('mousedown', (event) => {
+      const {x, y} = canvasCoordinates(event);
+      beginDrag(x, y);
+    });
+
+    canvas.addEventListener('mousemove', (event) => {
+      const {x} = canvasCoordinates(event);
+      updateDrag(x);
+    });
+
+    canvas.addEventListener('mouseup', endDrag);
+    canvas.addEventListener('mouseleave', endDrag);
+
+    canvas.addEventListener('touchstart', (event) => {
+      if (!event.touches.length) return;
+      const touch = event.touches[0];
+      const {x, y} = canvasCoordinates(touch);
+      beginDrag(x, y);
+      event.preventDefault();
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', (event) => {
+      if (!event.touches.length) return;
+      const touch = event.touches[0];
+      const {x} = canvasCoordinates(touch);
+      updateDrag(x);
+      event.preventDefault();
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', endDrag);
+    canvas.addEventListener('touchcancel', endDrag);
+
+    searchInput.addEventListener('input', () => {
+      renderScenarioList();
+    });
+
+    renderScenarioList();
+    setStatusText();
+    drawGraph();
+  </script>
+  
+<script>
+  (() => {
+    const policyDefinitions = [
+  {
+    "id": "none",
+    "group": "Competitive benchmark",
+    "title": "No intervention",
+    "note": "Baseline competitive equilibrium.",
+    "description": "Use this benchmark to compare welfare before any policy. In a standard competitive market with no externalities, this starting point maximises economic surplus."
+  },
+  {
+    "id": "tax_consumer",
+    "group": "Taxes",
+    "title": "Per-unit tax on consumers",
+    "note": "Shifts demand down by the tax wedge.",
+    "description": "A consumer tax raises the amount buyers effectively pay for each unit. In the graph, the demand curve relevant to sellers shifts downward by the tax amount."
+  },
+  {
+    "id": "tax_producer",
+    "group": "Taxes",
+    "title": "Per-unit tax on producers",
+    "note": "Shifts supply up by the tax wedge.",
+    "description": "A producer tax lowers the price sellers keep from each sale. In the graph, the supply curve relevant to buyers shifts upward by the tax amount."
+  },
+  {
+    "id": "subsidy_consumer",
+    "group": "Subsidies",
+    "title": "Per-unit subsidy to consumers",
+    "note": "Shifts demand up by the subsidy wedge.",
+    "description": "A consumer subsidy reduces buyers' out-of-pocket cost. In the graph, the demand curve relevant to sellers shifts upward by the subsidy amount."
+  },
+  {
+    "id": "subsidy_producer",
+    "group": "Subsidies",
+    "title": "Per-unit subsidy to producers",
+    "note": "Shifts supply down by the subsidy wedge.",
+    "description": "A producer subsidy raises the amount sellers receive per unit. In the graph, the supply curve relevant to buyers shifts downward by the subsidy amount."
+  },
+  {
+    "id": "price_ceiling",
+    "group": "Price controls",
+    "title": "Binding price ceiling",
+    "note": "Sets price below equilibrium and creates a shortage.",
+    "description": "A binding price ceiling keeps the market price below the competitive equilibrium. The lower price increases quantity demanded but reduces quantity supplied, so a shortage emerges."
+  },
+  {
+    "id": "price_floor",
+    "group": "Price controls",
+    "title": "Binding price floor",
+    "note": "Sets price above equilibrium and creates a surplus.",
+    "description": "A binding price floor keeps the market price above the competitive equilibrium. The higher price reduces quantity demanded but encourages extra supply, so a surplus emerges."
+  }
+];
+
+    const canvas = document.getElementById('welfareCanvas');
+    const ctx = canvas.getContext('2d');
+    const statusBox = document.getElementById('welfareStatusBox');
+    const magnitudeSlider = document.getElementById('policyMagnitude');
+    const magnitudeLabel = document.getElementById('policyMagnitudeLabel');
+    const policyList = document.getElementById('policyList');
+    const tableBody = document.getElementById('welfareTableBody');
+    const interpretation = document.getElementById('welfareInterpretation');
+    const metricInitial = document.getElementById('metricInitial');
+    const metricCurrent = document.getElementById('metricCurrent');
+    const metricImbalance = document.getElementById('metricImbalance');
+
+    const width = canvas.width;
+    const height = canvas.height;
+    const margin = { left: 78, right: 56, top: 34, bottom: 68 };
+    const plotWidth = width - margin.left - margin.right;
+    const plotHeight = height - margin.top - margin.bottom;
+    const Q_MAX = 20;
+    const P_MAX = 30;
+    const X_SCALE = plotWidth / Q_MAX;
+    const Y_SCALE = plotHeight / P_MAX;
+    const DRAG_LIMIT = 4;
+    const HIT_TOLERANCE = 12;
+    const GRID_STEP_Q = 2;
+    const GRID_STEP_P = 2;
+
+    const baseMarket = { a: 24, b: 1, c: 4, d: 1 };
+
+    const colors = {
+      demand: '#c62828',
+      supply: '#1565c0',
+      government: 'rgba(46, 125, 50, 0.26)',
+      subsidy: 'rgba(216, 67, 21, 0.22)',
+      csInitial: 'rgba(198, 40, 40, 0.10)',
+      psInitial: 'rgba(21, 101, 192, 0.10)',
+      csCurrent: 'rgba(198, 40, 40, 0.28)',
+      psCurrent: 'rgba(21, 101, 192, 0.28)',
+      dwl: 'rgba(96, 125, 139, 0.35)',
+      policy: '#6d4c41',
+      equilibrium: '#212121',
+      baseline: '#90a4ae',
+      grid: '#ebeff3'
+    };
+
+    const state = {
+      demandShiftQ: 0,
+      supplyShiftQ: 0,
+      selectedPolicy: 'none',
+      magnitude: 3,
+      dragging: null,
+      lastX: 0
+    };
+
+    function escapeHtml(text) {
+      return text
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function qToX(q) {
+      return margin.left + q * X_SCALE;
+    }
+
+    function pToY(p) {
+      return height - margin.bottom - p * Y_SCALE;
+    }
+
+    function xToQ(x) {
+      return (x - margin.left) / X_SCALE;
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function D(market, q) {
+      return market.a - market.b * q;
+    }
+
+    function S(market, q) {
+      return market.c + market.d * q;
+    }
+
+    function intDemand(market, q) {
+      return market.a * q - 0.5 * market.b * q * q;
+    }
+
+    function intSupply(market, q) {
+      return market.c * q + 0.5 * market.d * q * q;
+    }
+
+    function consumerSurplus(market, q, buyerPrice) {
+      return Math.max(0, intDemand(market, q) - buyerPrice * q);
+    }
+
+    function producerSurplus(market, q, sellerPrice) {
+      return Math.max(0, sellerPrice * q - intSupply(market, q));
+    }
+
+    function getMarket() {
+      return {
+        a: baseMarket.a + baseMarket.b * state.demandShiftQ,
+        b: baseMarket.b,
+        c: baseMarket.c - baseMarket.d * state.supplyShiftQ,
+        d: baseMarket.d
+      };
+    }
+
+    function competitiveEquilibrium(market) {
+      const q = clamp((market.a - market.c) / (market.b + market.d), 0, Q_MAX);
+      const p = D(market, q);
+      return { q, p };
+    }
+
+    function policyDefinition() {
+      return policyDefinitions.find((item) => item.id === state.selectedPolicy) || policyDefinitions[0];
+    }
+
+    function magnitudeText(policy, amount) {
+      if (policy.id === 'none') return 'No intervention selected';
+      if (policy.id === 'price_ceiling' || policy.id === 'price_floor') {
+        return `$${formatNumber(amount)} away from equilibrium`;
+      }
+      return `$${formatNumber(amount)} per unit`;
+    }
+
+    function computeOutcome() {
+      const market = getMarket();
+      const baseline = competitiveEquilibrium(market);
+      const policy = policyDefinition();
+      const magnitude = Number(magnitudeSlider.value);
+
+      const result = {
+        market,
+        baseline,
+        policy,
+        magnitude,
+        quantity: baseline.q,
+        buyerPrice: baseline.p,
+        sellerPrice: baseline.p,
+        government: 0,
+        showShiftedDemand: false,
+        showShiftedSupply: false,
+        shiftedDemandFn: null,
+        shiftedSupplyFn: null,
+        shiftedLabel: '',
+        policyLine: null,
+        imbalanceLabel: 'None',
+        imbalanceValue: 0,
+        imbalanceType: '',
+        notes: [],
+        buyerLabel: 'P₁',
+        sellerLabel: 'P₁'
+      };
+
+      if (policy.id === 'tax_consumer') {
+        const q = clamp((market.a - market.c - magnitude) / (market.b + market.d), 0, Q_MAX);
+        result.quantity = q;
+        result.buyerPrice = D(market, q);
+        result.sellerPrice = S(market, q);
+        result.government = magnitude * q;
+        result.showShiftedDemand = true;
+        result.shiftedDemandFn = (x) => D(market, x) - magnitude;
+        result.shiftedLabel = 'Dₜ';
+        result.notes.push('The demand curve relevant to sellers shifts downward by the tax amount.');
+        result.buyerLabel = 'Pᵦ';
+        result.sellerLabel = 'Pₛ';
+      } else if (policy.id === 'tax_producer') {
+        const q = clamp((market.a - market.c - magnitude) / (market.b + market.d), 0, Q_MAX);
+        result.quantity = q;
+        result.buyerPrice = D(market, q);
+        result.sellerPrice = S(market, q);
+        result.government = magnitude * q;
+        result.showShiftedSupply = true;
+        result.shiftedSupplyFn = (x) => S(market, x) + magnitude;
+        result.shiftedLabel = 'Sₜ';
+        result.notes.push('The supply curve relevant to buyers shifts upward by the tax amount.');
+        result.buyerLabel = 'Pᵦ';
+        result.sellerLabel = 'Pₛ';
+      } else if (policy.id === 'subsidy_consumer') {
+        const q = clamp((market.a - market.c + magnitude) / (market.b + market.d), 0, Q_MAX);
+        result.quantity = q;
+        result.buyerPrice = D(market, q);
+        result.sellerPrice = S(market, q);
+        result.government = -magnitude * q;
+        result.showShiftedDemand = true;
+        result.shiftedDemandFn = (x) => D(market, x) + magnitude;
+        result.shiftedLabel = 'Dₛ';
+        result.notes.push('The demand curve relevant to sellers shifts upward by the subsidy amount.');
+        result.buyerLabel = 'Pᵦ';
+        result.sellerLabel = 'Pₛ';
+      } else if (policy.id === 'subsidy_producer') {
+        const q = clamp((market.a - market.c + magnitude) / (market.b + market.d), 0, Q_MAX);
+        result.quantity = q;
+        result.buyerPrice = D(market, q);
+        result.sellerPrice = S(market, q);
+        result.government = -magnitude * q;
+        result.showShiftedSupply = true;
+        result.shiftedSupplyFn = (x) => S(market, x) - magnitude;
+        result.shiftedLabel = 'Sₛ';
+        result.notes.push('The supply curve relevant to buyers shifts downward by the subsidy amount.');
+        result.buyerLabel = 'Pᵦ';
+        result.sellerLabel = 'Pₛ';
+      } else if (policy.id === 'price_ceiling') {
+        const controlledPrice = clamp(baseline.p - magnitude, 0, P_MAX);
+        const qDemand = clamp((market.a - controlledPrice) / market.b, 0, Q_MAX);
+        const qSupply = clamp((controlledPrice - market.c) / market.d, 0, Q_MAX);
+        result.quantity = Math.min(qDemand, qSupply);
+        result.buyerPrice = controlledPrice;
+        result.sellerPrice = controlledPrice;
+        result.policyLine = {
+          price: controlledPrice,
+          label: 'Price ceiling'
+        };
+        result.imbalanceType = 'shortage';
+        result.imbalanceValue = Math.max(0, qDemand - qSupply);
+        result.imbalanceLabel = `Shortage = ${formatNumber(result.imbalanceValue)}`;
+        result.notes.push('The lower controlled price reduces supply and increases quantity demanded, so only the short side of the market is traded.');
+      } else if (policy.id === 'price_floor') {
+        const controlledPrice = clamp(baseline.p + magnitude, 0, P_MAX);
+        const qDemand = clamp((market.a - controlledPrice) / market.b, 0, Q_MAX);
+        const qSupply = clamp((controlledPrice - market.c) / market.d, 0, Q_MAX);
+        result.quantity = Math.min(qDemand, qSupply);
+        result.buyerPrice = controlledPrice;
+        result.sellerPrice = controlledPrice;
+        result.policyLine = {
+          price: controlledPrice,
+          label: 'Price floor'
+        };
+        result.imbalanceType = 'surplus';
+        result.imbalanceValue = Math.max(0, qSupply - qDemand);
+        result.imbalanceLabel = `Surplus = ${formatNumber(result.imbalanceValue)}`;
+        result.notes.push('The higher controlled price encourages supply but reduces quantity demanded, so only the short side of the market is traded.');
+      }
+
+      result.baselineCS = consumerSurplus(market, baseline.q, baseline.p);
+      result.baselinePS = producerSurplus(market, baseline.q, baseline.p);
+      result.baselineES = result.baselineCS + result.baselinePS;
+
+      result.currentCS = consumerSurplus(market, result.quantity, result.buyerPrice);
+      result.currentPS = producerSurplus(market, result.quantity, result.sellerPrice);
+      result.currentES = result.currentCS + result.currentPS + result.government;
+      result.deadweightLoss = Math.max(0, result.baselineES - result.currentES);
+
+      result.deltaCS = result.currentCS - result.baselineCS;
+      result.deltaPS = result.currentPS - result.baselinePS;
+      result.deltaGovernment = result.government;
+      result.deltaES = result.currentES - result.baselineES;
+
+      return result;
+    }
+
+    function formatNumber(value) {
+      const rounded = Math.abs(value) < 0.005 ? 0 : value;
+      return rounded.toFixed(2).replace(/\.00$/, '');
+    }
+
+    function formatSigned(value) {
+      const rounded = Math.abs(value) < 0.005 ? 0 : value;
+      const prefix = rounded > 0 ? '+' : '';
+      return `${prefix}${formatNumber(rounded)}`;
+    }
+
+    function deltaClass(value) {
+      if (value > 0.005) return 'delta-positive';
+      if (value < -0.005) return 'delta-negative';
+      return 'delta-zero';
+    }
+
+    function drawGrid() {
+      ctx.save();
+      ctx.strokeStyle = colors.grid;
+      ctx.lineWidth = 1;
+
+      for (let q = 0; q <= Q_MAX; q += GRID_STEP_Q) {
+        const x = qToX(q);
+        ctx.beginPath();
+        ctx.moveTo(x, margin.top);
+        ctx.lineTo(x, height - margin.bottom);
+        ctx.stroke();
+      }
+
+      for (let p = 0; p <= P_MAX; p += GRID_STEP_P) {
+        const y = pToY(p);
+        ctx.beginPath();
+        ctx.moveTo(margin.left, y);
+        ctx.lineTo(width - margin.right, y);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function drawAxes() {
+      ctx.save();
+      ctx.strokeStyle = '#1f2933';
+      ctx.lineWidth = 2;
+
+      ctx.beginPath();
+      ctx.moveTo(margin.left, margin.top);
+      ctx.lineTo(margin.left, height - margin.bottom);
+      ctx.lineTo(width - margin.right, height - margin.bottom);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(width - margin.right, height - margin.bottom);
+      ctx.lineTo(width - margin.right - 12, height - margin.bottom - 6);
+      ctx.lineTo(width - margin.right - 12, height - margin.bottom + 6);
+      ctx.closePath();
+      ctx.fillStyle = '#1f2933';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(margin.left, margin.top);
+      ctx.lineTo(margin.left - 6, margin.top + 12);
+      ctx.lineTo(margin.left + 6, margin.top + 12);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = '#1f2933';
+      ctx.font = '16px Arial';
+      ctx.fillText('Price', 26, 34);
+      ctx.fillText('Quantity', width - 145, height - 20);
+
+      ctx.fillStyle = '#52606d';
+      ctx.font = '11px Arial';
+
+      for (let q = 0; q <= Q_MAX; q += 4) {
+        const x = qToX(q);
+        ctx.fillText(String(q), x - 4, height - margin.bottom + 18);
+      }
+
+      for (let p = 0; p <= P_MAX; p += 4) {
+        const y = pToY(p);
+        ctx.fillText(String(p), margin.left - 28, y + 4);
+      }
+
+      ctx.restore();
+    }
+
+    function drawCurve(fn, color, dashed = false, label = '', labelQ = 1) {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 3;
+      ctx.setLineDash(dashed ? [10, 8] : []);
+      ctx.beginPath();
+
+      let started = false;
+      for (let q = 0; q <= Q_MAX; q += 0.05) {
+        const p = fn(q);
+        if (p < 0 || p > P_MAX) continue;
+        const x = qToX(q);
+        const y = pToY(p);
+        if (!started) {
+          ctx.moveTo(x, y);
+          started = true;
+        } else {
+          ctx.lineTo(x, y);
+        }
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      if (label) {
+        const labelPrice = clamp(fn(labelQ), 0.5, P_MAX - 0.5);
+        ctx.fillStyle = color;
+        ctx.font = 'bold 15px Arial';
+        ctx.fillText(label, qToX(labelQ) - 12, pToY(labelPrice) - 8);
+      }
+      ctx.restore();
+    }
+
+    function fillPolygon(points, fillStyle, strokeStyle = null) {
+      if (!points.length) return;
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < points.length; i += 1) {
+        ctx.lineTo(points[i].x, points[i].y);
+      }
+      ctx.closePath();
+      ctx.fillStyle = fillStyle;
+      ctx.fill();
+
+      if (strokeStyle) {
+        ctx.strokeStyle = strokeStyle;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function surplusPolygonDemand(market, qMax, priceLine) {
+      const points = [{ x: qToX(0), y: pToY(D(market, 0)) }];
+      for (let q = 0; q <= qMax; q += 0.1) {
+        points.push({ x: qToX(q), y: pToY(D(market, q)) });
+      }
+      points.push({ x: qToX(qMax), y: pToY(D(market, qMax)) });
+      points.push({ x: qToX(qMax), y: pToY(priceLine) });
+      points.push({ x: qToX(0), y: pToY(priceLine) });
+      return points;
+    }
+
+    function surplusPolygonSupply(market, qMax, priceLine) {
+      const points = [{ x: qToX(0), y: pToY(priceLine) }, { x: qToX(qMax), y: pToY(priceLine) }];
+      for (let q = qMax; q >= 0; q -= 0.1) {
+        points.push({ x: qToX(q), y: pToY(S(market, q)) });
+      }
+      points.push({ x: qToX(0), y: pToY(S(market, 0)) });
+      return points;
+    }
+
+    function rectanglePolygon(qMax, pTop, pBottom) {
+      return [
+        { x: qToX(0), y: pToY(pTop) },
+        { x: qToX(qMax), y: pToY(pTop) },
+        { x: qToX(qMax), y: pToY(pBottom) },
+        { x: qToX(0), y: pToY(pBottom) }
+      ];
+    }
+
+    function drawGuides(result) {
+      const baseX = qToX(result.baseline.q);
+      const baseY = pToY(result.baseline.p);
+
+      ctx.save();
+      ctx.strokeStyle = 'rgba(100, 116, 139, 0.5)';
+      ctx.setLineDash([5, 6]);
+      ctx.lineWidth = 1.4;
+
+      ctx.beginPath();
+      ctx.moveTo(baseX, baseY);
+      ctx.lineTo(baseX, height - margin.bottom);
+      ctx.moveTo(baseX, baseY);
+      ctx.lineTo(margin.left, baseY);
+      ctx.stroke();
+
+      const currentX = qToX(result.quantity);
+      const buyerY = pToY(result.buyerPrice);
+      const sellerY = pToY(result.sellerPrice);
+
+      ctx.beginPath();
+      ctx.moveTo(currentX, sellerY);
+      ctx.lineTo(currentX, height - margin.bottom);
+      ctx.stroke();
+
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#52606d';
+      ctx.font = '12px Arial';
+      ctx.fillText('P₀', margin.left - 32, baseY + 4);
+      ctx.fillText('Q₀', baseX - 8, height - margin.bottom + 24);
+
+      if (Math.abs(result.quantity - result.baseline.q) > 0.02 || Math.abs(result.buyerPrice - result.baseline.p) > 0.02 || Math.abs(result.sellerPrice - result.baseline.p) > 0.02) {
+        if (Math.abs(result.buyerPrice - result.sellerPrice) < 0.02) {
+          ctx.beginPath();
+          ctx.moveTo(currentX, buyerY);
+          ctx.lineTo(margin.left, buyerY);
+          ctx.stroke();
+          ctx.fillText('P₁', margin.left - 32, buyerY + 4);
+        } else {
+          ctx.beginPath();
+          ctx.moveTo(currentX, buyerY);
+          ctx.lineTo(margin.left, buyerY);
+          ctx.moveTo(currentX, sellerY);
+          ctx.lineTo(margin.left, sellerY);
+          ctx.stroke();
+          ctx.fillText('Pᵦ', margin.left - 36, buyerY + 4);
+          ctx.fillText('Pₛ', margin.left - 34, sellerY + 4);
+        }
+        ctx.fillText('Q₁', currentX - 8, height - margin.bottom + 24);
+      }
+
+      ctx.restore();
+    }
+
+    function drawEquilibrium(pointQ, pointP, label, color, hollow = false) {
+      const x = qToX(pointQ);
+      const y = pToY(pointP);
+      ctx.save();
+      if (hollow) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(x, y, 6, 0, Math.PI * 2);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.fillStyle = color;
+      ctx.font = 'bold 14px Arial';
+      ctx.fillText(label, x + 8, y - 10);
+      ctx.restore();
+    }
+
+    function drawPolicyLine(policyLine) {
+      if (!policyLine) return;
+      const y = pToY(policyLine.price);
+      ctx.save();
+      ctx.strokeStyle = colors.policy;
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([10, 6]);
+      ctx.beginPath();
+      ctx.moveTo(margin.left, y);
+      ctx.lineTo(width - margin.right, y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = colors.policy;
+      ctx.font = 'bold 13px Arial';
+      ctx.fillText(policyLine.label, width - margin.right - 130, y - 8);
+      ctx.restore();
+    }
+
+    function drawWedge(result) {
+      if (Math.abs(result.buyerPrice - result.sellerPrice) < 0.03) return;
+      const x = qToX(result.quantity) + 12;
+      const yTop = pToY(Math.max(result.buyerPrice, result.sellerPrice));
+      const yBottom = pToY(Math.min(result.buyerPrice, result.sellerPrice));
+
+      ctx.save();
+      ctx.strokeStyle = '#6d4c41';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x, yTop);
+      ctx.lineTo(x, yBottom);
+      ctx.moveTo(x - 6, yTop);
+      ctx.lineTo(x + 6, yTop);
+      ctx.moveTo(x - 6, yBottom);
+      ctx.lineTo(x + 6, yBottom);
+      ctx.stroke();
+
+      ctx.fillStyle = '#6d4c41';
+      ctx.font = 'bold 12px Arial';
+      const label = result.government >= 0 ? 'Tax wedge' : 'Subsidy wedge';
+      ctx.fillText(label, x + 10, (yTop + yBottom) / 2 - 3);
+      ctx.restore();
+    }
+
+    function drawAreas(result) {
+      const market = result.market;
+
+      fillPolygon(surplusPolygonDemand(market, result.baseline.q, result.baseline.p), colors.csInitial);
+      fillPolygon(surplusPolygonSupply(market, result.baseline.q, result.baseline.p), colors.psInitial);
+
+      fillPolygon(surplusPolygonDemand(market, result.quantity, result.buyerPrice), colors.csCurrent);
+      fillPolygon(surplusPolygonSupply(market, result.quantity, result.sellerPrice), colors.psCurrent);
+
+      if (Math.abs(result.buyerPrice - result.sellerPrice) > 0.03 && result.quantity > 0) {
+        const poly = rectanglePolygon(result.quantity, Math.max(result.buyerPrice, result.sellerPrice), Math.min(result.buyerPrice, result.sellerPrice));
+        fillPolygon(poly, result.government >= 0 ? colors.government : colors.subsidy);
+      }
+
+      if (Math.abs(result.quantity - result.baseline.q) > 0.03) {
+        const dwlPoly = [
+          { x: qToX(result.baseline.q), y: pToY(result.baseline.p) },
+          { x: qToX(result.quantity), y: pToY(D(market, result.quantity)) },
+          { x: qToX(result.quantity), y: pToY(S(market, result.quantity)) }
+        ];
+        fillPolygon(dwlPoly, colors.dwl);
+      }
+    }
+
+    function draw() {
+      const result = computeOutcome();
+      ctx.clearRect(0, 0, width, height);
+
+      drawGrid();
+      drawAxes();
+      drawAreas(result);
+
+      drawCurve((q) => D(result.market, q), colors.demand, false, 'D', 1);
+      drawCurve((q) => S(result.market, q), colors.supply, false, 'S', Q_MAX - 2);
+
+      if (result.showShiftedDemand) {
+        drawCurve(result.shiftedDemandFn, colors.demand, true, result.shiftedLabel || 'D₁', 2);
+      }
+      if (result.showShiftedSupply) {
+        drawCurve(result.shiftedSupplyFn, colors.supply, true, result.shiftedLabel || 'S₁', Q_MAX - 4);
+      }
+
+      drawPolicyLine(result.policyLine);
+      drawGuides(result);
+      drawEquilibrium(result.baseline.q, result.baseline.p, 'E₀', colors.baseline, true);
+      drawEquilibrium(result.quantity, (result.buyerPrice + result.sellerPrice) / 2, 'E₁', colors.equilibrium, false);
+      drawWedge(result);
+
+      updatePanel(result);
+    }
+
+    function updatePanel(result) {
+      const policy = result.policy;
+      magnitudeLabel.textContent = magnitudeText(policy, result.magnitude);
+      magnitudeSlider.disabled = policy.id === 'none';
+
+      const priceNote = Math.abs(result.buyerPrice - result.sellerPrice) < 0.02
+        ? `After the policy, the market price is P₁ = $${formatNumber(result.buyerPrice)} and the traded quantity is Q₁ = ${formatNumber(result.quantity)}.`
+        : `After the policy, buyers pay Pᵦ = $${formatNumber(result.buyerPrice)}, sellers receive Pₛ = $${formatNumber(result.sellerPrice)}, and the traded quantity is Q₁ = ${formatNumber(result.quantity)}.`;
+
+      const imbalanceSentence = result.imbalanceType
+        ? ` The policy creates a ${result.imbalanceType} of ${formatNumber(result.imbalanceValue)} units.`
+        : '';
+
+      statusBox.innerHTML = `
+        <strong>Selected intervention:</strong>
+        ${escapeHtml(policy.title)}
+        <br>
+        ${escapeHtml(policy.description)}
+        <br>
+        <span style="color:#52606d;">At the initial competitive equilibrium, P₀ = $${formatNumber(result.baseline.p)} and Q₀ = ${formatNumber(result.baseline.q)}. ${priceNote}${imbalanceSentence}</span>
+      `;
+
+      metricInitial.textContent = `P₀ = $${formatNumber(result.baseline.p)}, Q₀ = ${formatNumber(result.baseline.q)}`;
+      if (Math.abs(result.buyerPrice - result.sellerPrice) < 0.02) {
+        metricCurrent.textContent = `P₁ = $${formatNumber(result.buyerPrice)}, Q₁ = ${formatNumber(result.quantity)}`;
+      } else {
+        metricCurrent.textContent = `Pᵦ = $${formatNumber(result.buyerPrice)}, Pₛ = $${formatNumber(result.sellerPrice)}, Q₁ = ${formatNumber(result.quantity)}`;
+      }
+      metricImbalance.textContent = result.imbalanceLabel || 'None';
+
+      const rows = [
+        ['Consumer surplus', result.baselineCS, result.currentCS, result.deltaCS],
+        ['Producer surplus', result.baselinePS, result.currentPS, result.deltaPS],
+        ['Government balance', 0, result.government, result.deltaGovernment],
+        ['Economic surplus', result.baselineES, result.currentES, result.deltaES],
+        ['Deadweight loss', 0, result.deadweightLoss, result.deadweightLoss]
+      ];
+
+      tableBody.innerHTML = rows.map((row) => `
+        <tr>
+          <td>${row[0]}</td>
+          <td>${row[0] === 'Government balance' ? '$0' : '$' + formatNumber(row[1])}</td>
+          <td>${row[0] === 'Government balance' ? '$' + formatSigned(row[2]) : '$' + formatNumber(row[2])}</td>
+          <td class="${deltaClass(row[3])}">${row[0] === 'Deadweight loss' ? '$' + formatNumber(row[3]) : '$' + formatSigned(row[3])}</td>
+        </tr>
+      `).join('');
+
+      const govSentence = result.government > 0.005
+        ? `Government revenue rises by $${formatNumber(result.government)}.`
+        : (result.government < -0.005
+          ? `Government spending rises by $${formatNumber(Math.abs(result.government))}.`
+          : `Government balance stays at zero.`);
+
+      const interventionEffect = result.deltaES < -0.005
+        ? `Economic surplus falls by $${formatNumber(Math.abs(result.deltaES))}, which is exactly the deadweight loss relative to the initial competitive equilibrium.`
+        : `Economic surplus is unchanged relative to the initial equilibrium.`;
+
+      interpretation.innerHTML = `
+        <strong>How to read the colours:</strong> light fills show the initial competitive consumer and producer surplus; stronger fills show the post-policy surpluses; green marks tax revenue; orange marks subsidy cost; grey marks deadweight loss.
+        <div class="welfare-note">${govSentence} ${interventionEffect}</div>
+      `;
+    }
+
+    function renderPolicyList() {
+      policyList.innerHTML = '';
+      let currentGroup = '';
+      policyDefinitions.forEach((policy) => {
+        if (policy.group !== currentGroup) {
+          currentGroup = policy.group;
+          const heading = document.createElement('div');
+          heading.className = 'group-heading';
+          heading.textContent = policy.group;
+          policyList.appendChild(heading);
+        }
+
+        const item = document.createElement('div');
+        item.className = 'scenario-item policy-item';
+        if (policy.id === state.selectedPolicy) {
+          item.classList.add('active');
+        }
+        item.innerHTML = `
+          <div class="scenario-title">${escapeHtml(policy.title)}</div>
+          <div class="scenario-note">${escapeHtml(policy.note)}</div>
+        `;
+        item.addEventListener('click', () => {
+          state.selectedPolicy = policy.id;
+          renderPolicyList();
+          draw();
+        });
+        policyList.appendChild(item);
+      });
+    }
+
+    function policySegments() {
+      const market = getMarket();
+      return {
+        demand: {
+          x1: qToX(0),
+          y1: pToY(D(market, 0)),
+          x2: qToX(Q_MAX),
+          y2: pToY(D(market, Q_MAX))
+        },
+        supply: {
+          x1: qToX(0),
+          y1: pToY(S(market, 0)),
+          x2: qToX(Q_MAX),
+          y2: pToY(S(market, Q_MAX))
+        }
+      };
+    }
+
+    function pointToSegmentDistance(px, py, x1, y1, x2, y2) {
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      if (dx === 0 && dy === 0) return Math.hypot(px - x1, py - y1);
+      const t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy)));
+      const projX = x1 + t * dx;
+      const projY = y1 + t * dy;
+      return Math.hypot(px - projX, py - projY);
+    }
+
+    function canvasCoordinates(event) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top
+      };
+    }
+
+    function beginDrag(x, y) {
+      const segments = policySegments();
+      const demandDistance = pointToSegmentDistance(x, y, segments.demand.x1, segments.demand.y1, segments.demand.x2, segments.demand.y2);
+      const supplyDistance = pointToSegmentDistance(x, y, segments.supply.x1, segments.supply.y1, segments.supply.x2, segments.supply.y2);
+
+      if (demandDistance <= HIT_TOLERANCE && demandDistance <= supplyDistance) {
+        state.dragging = 'demand';
+      } else if (supplyDistance <= HIT_TOLERANCE) {
+        state.dragging = 'supply';
+      } else {
+        state.dragging = null;
+      }
+      state.lastX = x;
+    }
+
+    function updateDrag(x) {
+      if (!state.dragging) return;
+      const deltaQ = (x - state.lastX) / X_SCALE;
+      state.lastX = x;
+
+      if (state.dragging === 'demand') {
+        state.demandShiftQ = clamp(state.demandShiftQ + deltaQ, -DRAG_LIMIT, DRAG_LIMIT);
+      } else if (state.dragging === 'supply') {
+        state.supplyShiftQ = clamp(state.supplyShiftQ + deltaQ, -DRAG_LIMIT, DRAG_LIMIT);
+      }
+      draw();
+    }
+
+    function endDrag() {
+      state.dragging = null;
+    }
+
+    function resetMarket() {
+      state.demandShiftQ = 0;
+      state.supplyShiftQ = 0;
+      draw();
+    }
+
+    function resetPolicy() {
+      state.selectedPolicy = 'none';
+      magnitudeSlider.value = 3;
+      renderPolicyList();
+      draw();
+    }
+
+    function randomPolicy() {
+      const available = policyDefinitions.filter((policy) => policy.id !== 'none');
+      const chosen = available[Math.floor(Math.random() * available.length)];
+      state.selectedPolicy = chosen.id;
+      magnitudeSlider.value = (1 + Math.random() * 5).toFixed(2);
+      renderPolicyList();
+      draw();
+    }
+
+    magnitudeSlider.addEventListener('input', () => {
+      state.magnitude = Number(magnitudeSlider.value);
+      draw();
+    });
+
+    canvas.addEventListener('mousedown', (event) => {
+      const { x, y } = canvasCoordinates(event);
+      beginDrag(x, y);
+    });
+
+    canvas.addEventListener('mousemove', (event) => {
+      const { x } = canvasCoordinates(event);
+      updateDrag(x);
+    });
+
+    canvas.addEventListener('mouseup', endDrag);
+    canvas.addEventListener('mouseleave', endDrag);
+
+    canvas.addEventListener('touchstart', (event) => {
+      if (!event.touches.length) return;
+      const touch = event.touches[0];
+      const { x, y } = canvasCoordinates(touch);
+      beginDrag(x, y);
+      event.preventDefault();
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', (event) => {
+      if (!event.touches.length) return;
+      const touch = event.touches[0];
+      const { x } = canvasCoordinates(touch);
+      updateDrag(x);
+      event.preventDefault();
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', endDrag);
+    canvas.addEventListener('touchcancel', endDrag);
+
+    renderPolicyList();
+    draw();
+
+    window.welfare = {
+      resetMarket,
+      resetPolicy,
+      randomPolicy,
+      draw
+    };
+  })();
+</script>
+
+  
+
+<script>
+  (() => {
+    const practicePolicyDefinitions = [
+  {
+    "id": "none",
+    "group": "Competitive benchmark",
+    "title": "No intervention",
+    "note": "Baseline competitive equilibrium.",
+    "description": "Use this benchmark to compare welfare before any policy. In a standard competitive market with no externalities, this starting point maximises economic surplus."
+  },
+  {
+    "id": "tax_consumer",
+    "group": "Taxes",
+    "title": "Per-unit tax on consumers",
+    "note": "Shifts demand down by the tax wedge.",
+    "description": "A consumer tax raises the amount buyers effectively pay for each unit. In the graph, the demand curve relevant to sellers shifts downward by the tax amount."
+  },
+  {
+    "id": "tax_producer",
+    "group": "Taxes",
+    "title": "Per-unit tax on producers",
+    "note": "Shifts supply up by the tax wedge.",
+    "description": "A producer tax lowers the price sellers keep from each sale. In the graph, the supply curve relevant to buyers shifts upward by the tax amount."
+  },
+  {
+    "id": "subsidy_consumer",
+    "group": "Subsidies",
+    "title": "Per-unit subsidy to consumers",
+    "note": "Shifts demand up by the subsidy wedge.",
+    "description": "A consumer subsidy reduces buyers' out-of-pocket cost. In the graph, the demand curve relevant to sellers shifts upward by the subsidy amount."
+  },
+  {
+    "id": "subsidy_producer",
+    "group": "Subsidies",
+    "title": "Per-unit subsidy to producers",
+    "note": "Shifts supply down by the subsidy wedge.",
+    "description": "A producer subsidy raises the amount sellers receive per unit. In the graph, the supply curve relevant to buyers shifts downward by the subsidy amount."
+  },
+  {
+    "id": "price_ceiling",
+    "group": "Price controls",
+    "title": "Binding price ceiling",
+    "note": "Sets price below equilibrium and creates a shortage.",
+    "description": "A binding price ceiling keeps the market price below the competitive equilibrium. The lower price increases quantity demanded but reduces quantity supplied, so a shortage emerges."
+  },
+  {
+    "id": "price_floor",
+    "group": "Price controls",
+    "title": "Binding price floor",
+    "note": "Sets price above equilibrium and creates a surplus.",
+    "description": "A binding price floor keeps the market price above the competitive equilibrium. The higher price reduces quantity demanded but encourages extra supply, so a surplus emerges."
+  }
+];
+
+    const canvas = document.getElementById('welfarePracticeCanvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const statusBox = document.getElementById('welfarePracticeStatus');
+    const magnitudeSlider = document.getElementById('practicePolicyMagnitude');
+    const magnitudeLabel = document.getElementById('practicePolicyMagnitudeLabel');
+    const policyList = document.getElementById('welfarePracticePolicyList');
+    const tableBody = document.getElementById('welfarePracticeTableBody');
+    const interpretation = document.getElementById('welfarePracticeInterpretation');
+    const feedback = document.getElementById('welfarePracticeFeedback');
+
+    const selects = {
+      cs: document.getElementById('practiceAnswerCS'),
+      ps: document.getElementById('practiceAnswerPS'),
+      gov: document.getElementById('practiceAnswerGov'),
+      es: document.getElementById('practiceAnswerES'),
+      dwl: document.getElementById('practiceAnswerDWL')
+    };
+
+    const width = canvas.width;
+    const height = canvas.height;
+    const margin = { left: 78, right: 56, top: 34, bottom: 68 };
+    const plotWidth = width - margin.left - margin.right;
+    const plotHeight = height - margin.top - margin.bottom;
+    const Q_MAX = 20;
+    const P_MAX = 30;
+    const X_SCALE = plotWidth / Q_MAX;
+    const Y_SCALE = plotHeight / P_MAX;
+    const GRID_STEP_Q = 2;
+    const GRID_STEP_P = 2;
+    const HIT_TOLERANCE = 12;
+    const SHIFT_LIMIT = 8;
+    const MOVE_TOLERANCE = 0.18;
+    const MAGNITUDE_TOLERANCE = 0.35;
+
+    const baseMarket = { a: 24, b: 1, c: 4, d: 1 };
+
+    const colors = {
+      demand: '#c62828',
+      supply: '#1565c0',
+      guessDemand: '#8e24aa',
+      guessSupply: '#00897b',
+      government: 'rgba(46, 125, 50, 0.26)',
+      subsidy: 'rgba(216, 67, 21, 0.22)',
+      csInitial: 'rgba(198, 40, 40, 0.10)',
+      psInitial: 'rgba(21, 101, 192, 0.10)',
+      csCurrent: 'rgba(198, 40, 40, 0.28)',
+      psCurrent: 'rgba(21, 101, 192, 0.28)',
+      dwl: 'rgba(96, 125, 139, 0.35)',
+      policy: '#6d4c41',
+      equilibrium: '#212121',
+      baseline: '#90a4ae',
+      grid: '#ebeff3'
+    };
+
+    const state = {
+      selectedPolicy: 'none',
+      magnitude: Number(magnitudeSlider.value),
+      demandGuessP: 0,
+      supplyGuessP: 0,
+      dragging: null,
+      lastY: 0,
+      revealed: false
+    };
+
+    function escapeHtml(text) {
+      return text
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function qToX(q) {
+      return margin.left + q * X_SCALE;
+    }
+
+    function pToY(p) {
+      return height - margin.bottom - p * Y_SCALE;
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function D(market, q) {
+      return market.a - market.b * q;
+    }
+
+    function S(market, q) {
+      return market.c + market.d * q;
+    }
+
+    function intDemand(market, q) {
+      return market.a * q - 0.5 * market.b * q * q;
+    }
+
+    function intSupply(market, q) {
+      return market.c * q + 0.5 * market.d * q * q;
+    }
+
+    function consumerSurplus(market, q, buyerPrice) {
+      return Math.max(0, intDemand(market, q) - buyerPrice * q);
+    }
+
+    function producerSurplus(market, q, sellerPrice) {
+      return Math.max(0, sellerPrice * q - intSupply(market, q));
+    }
+
+    function formatNumber(value) {
+      const rounded = Math.abs(value) < 0.005 ? 0 : value;
+      return rounded.toFixed(2).replace(/\.00$/, '');
+    }
+
+    function formatSigned(value) {
+      const rounded = Math.abs(value) < 0.005 ? 0 : value;
+      const prefix = rounded > 0 ? '+' : '';
+      return `${prefix}${formatNumber(rounded)}`;
+    }
+
+    function deltaClass(value) {
+      if (value > 0.005) return 'delta-positive';
+      if (value < -0.005) return 'delta-negative';
+      return 'delta-zero';
+    }
+
+    function answerLabel(value) {
+      if (value === 'increase') return 'Increase';
+      if (value === 'decrease') return 'Decrease';
+      if (value === 'no_change') return 'No change';
+      return '—';
+    }
+
+    function answerVerb(value) {
+      if (value === 'increase') return 'increases';
+      if (value === 'decrease') return 'decreases';
+      return 'is unchanged';
+    }
+
+    function answerPhrase(value) {
+      if (value === 'increase') return 'increase';
+      if (value === 'decrease') return 'decrease';
+      return 'stay the same';
+    }
+
+    function magnitudeText(policy, amount) {
+      if (policy.id === 'none') return 'No intervention selected';
+      if (policy.id === 'price_ceiling' || policy.id === 'price_floor') {
+        return `$${formatNumber(amount)} away from equilibrium`;
+      }
+      return `$${formatNumber(amount)} per unit`;
+    }
+
+    function getMarket() {
+      return { ...baseMarket };
+    }
+
+    function competitiveEquilibrium(market) {
+      const q = clamp((market.a - market.c) / (market.b + market.d), 0, Q_MAX);
+      const p = D(market, q);
+      return { q, p };
+    }
+
+    function policyDefinition() {
+      return practicePolicyDefinitions.find((item) => item.id === state.selectedPolicy) || practicePolicyDefinitions[0];
+    }
+
+    function expectedShift(policyId, magnitude) {
+      if (magnitude < 0.05) {
+        return {
+          curve: 'none',
+          direction: 'none',
+          amount: 0,
+          explanation: 'A zero-sized intervention leaves the market unchanged.'
+        };
+      }
+
+      if (policyId === 'tax_consumer') {
+        return {
+          curve: 'D',
+          direction: 'down',
+          amount: magnitude,
+          explanation: 'A consumer tax shifts the relevant demand curve downward by the size of the tax wedge.'
+        };
+      }
+      if (policyId === 'subsidy_consumer') {
+        return {
+          curve: 'D',
+          direction: 'up',
+          amount: magnitude,
+          explanation: 'A consumer subsidy shifts the relevant demand curve upward by the size of the subsidy wedge.'
+        };
+      }
+      if (policyId === 'tax_producer') {
+        return {
+          curve: 'S',
+          direction: 'up',
+          amount: magnitude,
+          explanation: 'A producer tax shifts the relevant supply curve upward by the size of the tax wedge.'
+        };
+      }
+      if (policyId === 'subsidy_producer') {
+        return {
+          curve: 'S',
+          direction: 'down',
+          amount: magnitude,
+          explanation: 'A producer subsidy shifts the relevant supply curve downward by the size of the subsidy wedge.'
+        };
+      }
+
+      return {
+        curve: 'none',
+        direction: 'none',
+        amount: 0,
+        explanation: 'This policy changes the outcome without shifting the underlying demand or supply curves.'
+      };
+    }
+
+    function computeOutcome() {
+      const market = getMarket();
+      const baseline = competitiveEquilibrium(market);
+      const policy = policyDefinition();
+      const magnitude = Number(magnitudeSlider.value);
+
+      const result = {
+        market,
+        baseline,
+        policy,
+        magnitude,
+        quantity: baseline.q,
+        buyerPrice: baseline.p,
+        sellerPrice: baseline.p,
+        government: 0,
+        showShiftedDemand: false,
+        showShiftedSupply: false,
+        shiftedDemandFn: null,
+        shiftedSupplyFn: null,
+        shiftedLabel: '',
+        policyLine: null,
+        imbalanceLabel: 'None',
+        imbalanceValue: 0,
+        imbalanceType: '',
+        notes: [],
+        buyerLabel: 'P₁',
+        sellerLabel: 'P₁'
+      };
+
+      if (policy.id === 'tax_consumer') {
+        const q = clamp((market.a - market.c - magnitude) / (market.b + market.d), 0, Q_MAX);
+        result.quantity = q;
+        result.buyerPrice = D(market, q);
+        result.sellerPrice = S(market, q);
+        result.government = magnitude * q;
+        result.showShiftedDemand = true;
+        result.shiftedDemandFn = (x) => D(market, x) - magnitude;
+        result.shiftedLabel = 'Dₜ';
+        result.notes.push('The demand curve relevant to sellers shifts downward by the tax amount.');
+        result.buyerLabel = 'Pᵦ';
+        result.sellerLabel = 'Pₛ';
+      } else if (policy.id === 'tax_producer') {
+        const q = clamp((market.a - market.c - magnitude) / (market.b + market.d), 0, Q_MAX);
+        result.quantity = q;
+        result.buyerPrice = D(market, q);
+        result.sellerPrice = S(market, q);
+        result.government = magnitude * q;
+        result.showShiftedSupply = true;
+        result.shiftedSupplyFn = (x) => S(market, x) + magnitude;
+        result.shiftedLabel = 'Sₜ';
+        result.notes.push('The supply curve relevant to buyers shifts upward by the tax amount.');
+        result.buyerLabel = 'Pᵦ';
+        result.sellerLabel = 'Pₛ';
+      } else if (policy.id === 'subsidy_consumer') {
+        const q = clamp((market.a - market.c + magnitude) / (market.b + market.d), 0, Q_MAX);
+        result.quantity = q;
+        result.buyerPrice = D(market, q);
+        result.sellerPrice = S(market, q);
+        result.government = -magnitude * q;
+        result.showShiftedDemand = true;
+        result.shiftedDemandFn = (x) => D(market, x) + magnitude;
+        result.shiftedLabel = 'Dₛ';
+        result.notes.push('The demand curve relevant to sellers shifts upward by the subsidy amount.');
+        result.buyerLabel = 'Pᵦ';
+        result.sellerLabel = 'Pₛ';
+      } else if (policy.id === 'subsidy_producer') {
+        const q = clamp((market.a - market.c + magnitude) / (market.b + market.d), 0, Q_MAX);
+        result.quantity = q;
+        result.buyerPrice = D(market, q);
+        result.sellerPrice = S(market, q);
+        result.government = -magnitude * q;
+        result.showShiftedSupply = true;
+        result.shiftedSupplyFn = (x) => S(market, x) - magnitude;
+        result.shiftedLabel = 'Sₛ';
+        result.notes.push('The supply curve relevant to buyers shifts downward by the subsidy amount.');
+        result.buyerLabel = 'Pᵦ';
+        result.sellerLabel = 'Pₛ';
+      } else if (policy.id === 'price_ceiling') {
+        const controlledPrice = clamp(baseline.p - magnitude, 0, P_MAX);
+        const qDemand = clamp((market.a - controlledPrice) / market.b, 0, Q_MAX);
+        const qSupply = clamp((controlledPrice - market.c) / market.d, 0, Q_MAX);
+        result.quantity = Math.min(qDemand, qSupply);
+        result.buyerPrice = controlledPrice;
+        result.sellerPrice = controlledPrice;
+        result.policyLine = { price: controlledPrice, label: 'Price ceiling' };
+        result.imbalanceValue = Math.max(0, qDemand - qSupply);
+        result.imbalanceType = result.imbalanceValue > 0.005 ? 'shortage' : '';
+        result.imbalanceLabel = result.imbalanceValue > 0.005 ? `Shortage of ${formatNumber(result.imbalanceValue)} units` : 'None';
+        result.notes.push('A binding price ceiling creates a shortage. This tool measures consumer surplus using the units that are actually traded.');
+      } else if (policy.id === 'price_floor') {
+        const controlledPrice = clamp(baseline.p + magnitude, 0, P_MAX);
+        const qDemand = clamp((market.a - controlledPrice) / market.b, 0, Q_MAX);
+        const qSupply = clamp((controlledPrice - market.c) / market.d, 0, Q_MAX);
+        result.quantity = Math.min(qDemand, qSupply);
+        result.buyerPrice = controlledPrice;
+        result.sellerPrice = controlledPrice;
+        result.policyLine = { price: controlledPrice, label: 'Price floor' };
+        result.imbalanceValue = Math.max(0, qSupply - qDemand);
+        result.imbalanceType = result.imbalanceValue > 0.005 ? 'surplus' : '';
+        result.imbalanceLabel = result.imbalanceValue > 0.005 ? `Surplus of ${formatNumber(result.imbalanceValue)} units` : 'None';
+        result.notes.push('A binding price floor creates a surplus. This tool measures producer surplus only for the units that are actually sold.');
+      }
+
+      result.baselineCS = consumerSurplus(market, baseline.q, baseline.p);
+      result.baselinePS = producerSurplus(market, baseline.q, baseline.p);
+      result.baselineES = result.baselineCS + result.baselinePS;
+
+      result.currentCS = consumerSurplus(market, result.quantity, result.buyerPrice);
+      result.currentPS = producerSurplus(market, result.quantity, result.sellerPrice);
+      result.currentES = result.currentCS + result.currentPS + result.government;
+
+      result.deltaCS = result.currentCS - result.baselineCS;
+      result.deltaPS = result.currentPS - result.baselinePS;
+      result.deltaGovernment = result.government;
+      result.deltaES = result.currentES - result.baselineES;
+      result.deadweightLoss = Math.max(0, result.baselineES - result.currentES);
+
+      return result;
+    }
+
+    function changeDirection(value) {
+      if (value > 0.05) return 'increase';
+      if (value < -0.05) return 'decrease';
+      return 'no_change';
+    }
+
+    function actualAnswers(result) {
+      return {
+        cs: changeDirection(result.deltaCS),
+        ps: changeDirection(result.deltaPS),
+        gov: changeDirection(result.deltaGovernment),
+        es: changeDirection(result.deltaES),
+        dwl: result.deadweightLoss > 0.05 ? 'increase' : 'no_change'
+      };
+    }
+
+    function exactChangeText(key, result) {
+      if (key === 'dwl') return `$${formatNumber(result.deadweightLoss)}`;
+      if (key === 'gov') return `$${formatSigned(result.deltaGovernment)}`;
+      if (key === 'cs') return `$${formatSigned(result.deltaCS)}`;
+      if (key === 'ps') return `$${formatSigned(result.deltaPS)}`;
+      return `$${formatSigned(result.deltaES)}`;
+    }
+
+    function answerCellClass(userValue, actualValue) {
+      if (!userValue) return 'answer-pending';
+      if (!state.revealed) return 'answer-pending';
+      return userValue === actualValue ? 'answer-correct' : 'answer-incorrect';
+    }
+
+    function fillPolygon(points, color) {
+      if (!points.length) return;
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < points.length; i += 1) {
+        ctx.lineTo(points[i].x, points[i].y);
+      }
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawGrid() {
+      ctx.save();
+      ctx.strokeStyle = colors.grid;
+      ctx.lineWidth = 1;
+
+      for (let q = 0; q <= Q_MAX; q += GRID_STEP_Q) {
+        const x = qToX(q);
+        ctx.beginPath();
+        ctx.moveTo(x, margin.top);
+        ctx.lineTo(x, height - margin.bottom);
+        ctx.stroke();
+      }
+
+      for (let p = 0; p <= P_MAX; p += GRID_STEP_P) {
+        const y = pToY(p);
+        ctx.beginPath();
+        ctx.moveTo(margin.left, y);
+        ctx.lineTo(width - margin.right, y);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function drawAxes() {
+      ctx.save();
+      ctx.strokeStyle = '#1f2933';
+      ctx.lineWidth = 2;
+
+      ctx.beginPath();
+      ctx.moveTo(margin.left, margin.top);
+      ctx.lineTo(margin.left, height - margin.bottom);
+      ctx.lineTo(width - margin.right, height - margin.bottom);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(width - margin.right, height - margin.bottom);
+      ctx.lineTo(width - margin.right - 12, height - margin.bottom - 6);
+      ctx.lineTo(width - margin.right - 12, height - margin.bottom + 6);
+      ctx.closePath();
+      ctx.fillStyle = '#1f2933';
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(margin.left, margin.top);
+      ctx.lineTo(margin.left - 6, margin.top + 12);
+      ctx.lineTo(margin.left + 6, margin.top + 12);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = '#1f2933';
+      ctx.font = '16px Arial';
+      ctx.fillText('Price', 24, 26);
+      ctx.fillText('Quantity', width - 145, height - 22);
+
+      ctx.font = '11px Arial';
+      ctx.fillStyle = '#52606d';
+
+      for (let q = 0; q <= Q_MAX; q += GRID_STEP_Q) {
+        ctx.fillText(String(q), qToX(q) - 5, height - margin.bottom + 18);
+      }
+      for (let p = 0; p <= P_MAX; p += GRID_STEP_P) {
+        ctx.fillText(String(p), margin.left - 28, pToY(p) + 4);
+      }
+
+      ctx.restore();
+    }
+
+    function drawCurve(fn, color, dashed, label, labelQ) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 3;
+      ctx.setLineDash(dashed ? [10, 8] : []);
+
+      for (let step = 0; step <= 100; step += 1) {
+        const q = (Q_MAX * step) / 100;
+        const x = qToX(q);
+        const y = pToY(fn(q));
+        if (step === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      if (label) {
+        ctx.fillStyle = color;
+        ctx.font = 'bold 15px Arial';
+        ctx.fillText(label, qToX(labelQ), pToY(fn(labelQ)) - 10);
+      }
+      ctx.restore();
+    }
+
+    function guessSegment(curveType) {
+      const shiftP = curveType === 'demand' ? state.demandGuessP : state.supplyGuessP;
+      if (curveType === 'demand') {
+        return {
+          x1: qToX(0),
+          y1: pToY(D(baseMarket, 0) + shiftP),
+          x2: qToX(Q_MAX),
+          y2: pToY(D(baseMarket, Q_MAX) + shiftP)
+        };
+      }
+      return {
+        x1: qToX(0),
+        y1: pToY(S(baseMarket, 0) + shiftP),
+        x2: qToX(Q_MAX),
+        y2: pToY(S(baseMarket, Q_MAX) + shiftP)
+      };
+    }
+
+    function drawGuessCurve(curveType) {
+      const segment = guessSegment(curveType);
+      const color = curveType === 'demand' ? colors.guessDemand : colors.guessSupply;
+      const label = curveType === 'demand' ? 'D?' : 'S?';
+
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 3;
+      ctx.setLineDash([8, 6]);
+      ctx.beginPath();
+      ctx.moveTo(segment.x1, segment.y1);
+      ctx.lineTo(segment.x2, segment.y2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = color;
+      ctx.font = 'bold 15px Arial';
+      ctx.fillText(label, segment.x1 + 12, segment.y1 - 10);
+      ctx.restore();
+    }
+
+    function drawEquilibrium(q, p, label, color, hollow) {
+      ctx.save();
+      if (hollow) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(qToX(q), pToY(p), 6, 0, Math.PI * 2);
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(qToX(q), pToY(p), 5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.fillStyle = color;
+      ctx.font = 'bold 14px Arial';
+      ctx.fillText(label, qToX(q) + 8, pToY(p) - 10);
+      ctx.restore();
+    }
+
+    function drawGuides(q, p, quantityLabel, priceLabel) {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(100, 116, 139, 0.45)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([5, 6]);
+
+      ctx.beginPath();
+      ctx.moveTo(qToX(q), pToY(p));
+      ctx.lineTo(qToX(q), height - margin.bottom);
+      ctx.moveTo(qToX(q), pToY(p));
+      ctx.lineTo(margin.left, pToY(p));
+      ctx.stroke();
+
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#52606d';
+      ctx.font = '12px Arial';
+      ctx.fillText(priceLabel, margin.left - 34, pToY(p) + 4);
+      ctx.fillText(quantityLabel, qToX(q) - 8, height - margin.bottom + 22);
+      ctx.restore();
+    }
+
+    function drawPolicyLine(policyLine) {
+      if (!state.revealed || !policyLine) return;
+
+      ctx.save();
+      ctx.strokeStyle = colors.policy;
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([9, 6]);
+      const y = pToY(policyLine.price);
+      ctx.beginPath();
+      ctx.moveTo(margin.left, y);
+      ctx.lineTo(width - margin.right, y);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = colors.policy;
+      ctx.font = 'bold 13px Arial';
+      ctx.fillText(policyLine.label, margin.left + 10, y - 8);
+      ctx.restore();
+    }
+
+    function drawWedge(result) {
+      if (!state.revealed) return;
+      if (Math.abs(result.buyerPrice - result.sellerPrice) < 0.02) return;
+
+      const x = qToX(result.quantity);
+      const yBuy = pToY(result.buyerPrice);
+      const ySell = pToY(result.sellerPrice);
+
+      ctx.save();
+      ctx.strokeStyle = colors.policy;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([6, 5]);
+      ctx.beginPath();
+      ctx.moveTo(x, yBuy);
+      ctx.lineTo(x, ySell);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = colors.policy;
+      ctx.font = '12px Arial';
+      ctx.fillText('Pᵦ', margin.left - 26, yBuy + 4);
+      ctx.fillText('Pₛ', margin.left - 26, ySell + 4);
+      ctx.restore();
+    }
+
+    function drawAreas(result) {
+      const market = result.market;
+
+      const initialCS = [
+        { x: qToX(0), y: pToY(D(market, 0)) },
+        { x: qToX(result.baseline.q), y: pToY(D(market, result.baseline.q)) },
+        { x: qToX(result.baseline.q), y: pToY(result.baseline.p) },
+        { x: qToX(0), y: pToY(result.baseline.p) }
+      ];
+      fillPolygon(initialCS, colors.csInitial);
+
+      const initialPS = [
+        { x: qToX(0), y: pToY(result.baseline.p) },
+        { x: qToX(result.baseline.q), y: pToY(result.baseline.p) },
+        { x: qToX(result.baseline.q), y: pToY(S(market, result.baseline.q)) },
+        { x: qToX(0), y: pToY(S(market, 0)) }
+      ];
+      fillPolygon(initialPS, colors.psInitial);
+
+      if (!state.revealed) return;
+
+      const currentCS = [
+        { x: qToX(0), y: pToY(D(market, 0)) },
+        { x: qToX(result.quantity), y: pToY(D(market, result.quantity)) },
+        { x: qToX(result.quantity), y: pToY(result.buyerPrice) },
+        { x: qToX(0), y: pToY(result.buyerPrice) }
+      ];
+      fillPolygon(currentCS, colors.csCurrent);
+
+      const currentPS = [
+        { x: qToX(0), y: pToY(result.sellerPrice) },
+        { x: qToX(result.quantity), y: pToY(result.sellerPrice) },
+        { x: qToX(result.quantity), y: pToY(S(market, result.quantity)) },
+        { x: qToX(0), y: pToY(S(market, 0)) }
+      ];
+      fillPolygon(currentPS, colors.psCurrent);
+
+      if (Math.abs(result.buyerPrice - result.sellerPrice) > 0.02 && result.quantity > 0.02) {
+        const governmentPoly = [
+          { x: qToX(0), y: pToY(result.buyerPrice) },
+          { x: qToX(result.quantity), y: pToY(result.buyerPrice) },
+          { x: qToX(result.quantity), y: pToY(result.sellerPrice) },
+          { x: qToX(0), y: pToY(result.sellerPrice) }
+        ];
+        fillPolygon(governmentPoly, result.government >= 0 ? colors.government : colors.subsidy);
+      }
+
+      if (Math.abs(result.quantity - result.baseline.q) > 0.03) {
+        const dwlPoly = [
+          { x: qToX(result.baseline.q), y: pToY(result.baseline.p) },
+          { x: qToX(result.quantity), y: pToY(D(market, result.quantity)) },
+          { x: qToX(result.quantity), y: pToY(S(market, result.quantity)) }
+        ];
+        fillPolygon(dwlPoly, colors.dwl);
+      }
+    }
+
+    function describeDirection(value) {
+      if (value > MOVE_TOLERANCE) return 'up';
+      if (value < -MOVE_TOLERANCE) return 'down';
+      return 'not shifted';
+    }
+
+    function shiftInstruction(policy, expectation) {
+      if (expectation.curve === 'D') {
+        return `Practice task: shift demand ${expectation.direction} by about $${formatNumber(expectation.amount)} per unit (a vertical shift), then answer the welfare changes.`;
+      }
+      if (expectation.curve === 'S') {
+        return `Practice task: shift supply ${expectation.direction} by about $${formatNumber(expectation.amount)} per unit (a vertical shift), then answer the welfare changes.`;
+      }
+      if (policy.id === 'price_ceiling' || policy.id === 'price_floor') {
+        return 'Practice task: do not shift demand or supply. This intervention works through a controlled price, so leave the curves in place and answer the welfare changes.';
+      }
+      return 'Practice task: leave both curves in place and answer the welfare changes.';
+    }
+
+    function actualSummary(actual) {
+      return `Relative to the initial equilibrium, consumer surplus ${answerVerb(actual.cs)}, producer surplus ${answerVerb(actual.ps)}, government balance ${answerVerb(actual.gov)}, economic surplus ${answerVerb(actual.es)}, and deadweight loss ${answerVerb(actual.dwl)}.`;
+    }
+
+    function renderPracticeTable(result) {
+      const actual = actualAnswers(result);
+      const rows = [
+        { key: 'cs', label: 'Consumer surplus', delta: result.deltaCS },
+        { key: 'ps', label: 'Producer surplus', delta: result.deltaPS },
+        { key: 'gov', label: 'Government balance', delta: result.deltaGovernment },
+        { key: 'es', label: 'Economic surplus', delta: result.deltaES },
+        { key: 'dwl', label: 'Deadweight loss', delta: result.deadweightLoss }
+      ];
+
+      tableBody.innerHTML = rows.map((row) => {
+        const userValue = selects[row.key].value;
+        const actualValue = actual[row.key];
+        const actualText = state.revealed ? answerLabel(actualValue) : 'Check answer';
+        const exactText = state.revealed ? exactChangeText(row.key, result) : '—';
+        return `
+          <tr>
+            <td>${row.label}</td>
+            <td class="${answerCellClass(userValue, actualValue)}">${answerLabel(userValue)}</td>
+            <td class="${state.revealed ? deltaClass(row.delta) : ''}">${actualText}</td>
+            <td class="${state.revealed ? deltaClass(row.delta) : ''}">${exactText}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function updatePanel(result) {
+      const policy = result.policy;
+      const expectation = expectedShift(policy.id, result.magnitude);
+      magnitudeLabel.textContent = magnitudeText(policy, result.magnitude);
+      magnitudeSlider.disabled = policy.id === 'none';
+
+      const revealNote = state.revealed
+        ? (Math.abs(result.buyerPrice - result.sellerPrice) < 0.02
+          ? ` After checking, the model gives P₁ = $${formatNumber(result.buyerPrice)} and Q₁ = ${formatNumber(result.quantity)}.`
+          : ` After checking, the model gives Pᵦ = $${formatNumber(result.buyerPrice)}, Pₛ = $${formatNumber(result.sellerPrice)}, and Q₁ = ${formatNumber(result.quantity)}.`)
+        : '';
+
+      statusBox.innerHTML = `
+        <strong>Selected practice case:</strong>
+        ${escapeHtml(policy.title)}
+        <br>
+        ${escapeHtml(policy.description)}
+        <br>
+        <span style="color:#52606d;">${escapeHtml(shiftInstruction(policy, expectation))}${revealNote}</span>
+      `;
+
+      renderPracticeTable(result);
+
+      if (!state.revealed) {
+        interpretation.innerHTML = `
+          <strong>Before checking:</strong> drag the curve you think shifts up or down and choose whether each welfare measure rises, falls, or stays the same. The initial light shaded areas are the benchmark consumer and producer surplus.
+          <div class="welfare-note">For price ceilings and price floors, the exercise treats the actual traded units as the relevant market quantity. Taxes and subsidies create a wedge between what buyers pay and what sellers receive.</div>
+        `;
+      } else {
+        const governmentSentence = result.government > 0.005
+          ? `Government revenue increases by $${formatNumber(result.government)}.`
+          : (result.government < -0.005
+            ? `Government balance decreases by $${formatNumber(Math.abs(result.government))} because the subsidy costs the government money.`
+            : `Government balance does not change.`);
+
+        interpretation.innerHTML = `
+          <strong>After checking:</strong> the coloured areas show the correct post-policy welfare decomposition. ${actualSummary(actualAnswers(result))}
+          <div class="welfare-note">${governmentSentence} ${result.deadweightLoss > 0.005 ? `Deadweight loss is $${formatNumber(result.deadweightLoss)}.` : `There is no deadweight loss in this case.`}</div>
+        `;
+      }
+    }
+
+    function draw() {
+      const result = computeOutcome();
+      ctx.clearRect(0, 0, width, height);
+
+      drawGrid();
+      drawAxes();
+      drawAreas(result);
+
+      drawCurve((q) => D(result.market, q), colors.demand, false, 'D', 1);
+      drawCurve((q) => S(result.market, q), colors.supply, false, 'S', Q_MAX - 2);
+
+      if (Math.abs(state.demandGuessP) > 0.02) {
+        drawGuessCurve('demand');
+      }
+      if (Math.abs(state.supplyGuessP) > 0.02) {
+        drawGuessCurve('supply');
+      }
+
+      if (state.revealed && result.showShiftedDemand) {
+        drawCurve(result.shiftedDemandFn, colors.demand, true, result.shiftedLabel || 'D₁', 2);
+      }
+      if (state.revealed && result.showShiftedSupply) {
+        drawCurve(result.shiftedSupplyFn, colors.supply, true, result.shiftedLabel || 'S₁', Q_MAX - 4);
+      }
+
+      drawPolicyLine(result.policyLine);
+      drawGuides(result.baseline.q, result.baseline.p, 'Q₀', 'P₀');
+      drawEquilibrium(result.baseline.q, result.baseline.p, 'E₀', colors.baseline, true);
+
+      if (state.revealed) {
+        drawEquilibrium(result.quantity, (result.buyerPrice + result.sellerPrice) / 2, 'E₁', colors.equilibrium, false);
+        drawWedge(result);
+      }
+
+      updatePanel(result);
+    }
+
+    function pointToSegmentDistance(px, py, x1, y1, x2, y2) {
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      if (dx === 0 && dy === 0) return Math.hypot(px - x1, py - y1);
+      const t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy)));
+      const projX = x1 + t * dx;
+      const projY = y1 + t * dy;
+      return Math.hypot(px - projX, py - projY);
+    }
+
+    function canvasCoordinates(event) {
+      const rect = canvas.getBoundingClientRect();
+      return {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top
+      };
+    }
+
+    function beginDrag(x, y) {
+      const demand = guessSegment('demand');
+      const supply = guessSegment('supply');
+      const demandDistance = pointToSegmentDistance(x, y, demand.x1, demand.y1, demand.x2, demand.y2);
+      const supplyDistance = pointToSegmentDistance(x, y, supply.x1, supply.y1, supply.x2, supply.y2);
+
+      if (demandDistance <= HIT_TOLERANCE && demandDistance <= supplyDistance) {
+        state.dragging = 'demand';
+      } else if (supplyDistance <= HIT_TOLERANCE) {
+        state.dragging = 'supply';
+      } else {
+        state.dragging = null;
+      }
+      state.lastY = y;
+    }
+
+    function updateDrag(y) {
+      if (!state.dragging) return;
+      const deltaP = (state.lastY - y) / Y_SCALE;
+      state.lastY = y;
+
+      if (state.dragging === 'demand') {
+        state.demandGuessP = clamp(state.demandGuessP + deltaP, -SHIFT_LIMIT, SHIFT_LIMIT);
+      } else if (state.dragging === 'supply') {
+        state.supplyGuessP = clamp(state.supplyGuessP + deltaP, -SHIFT_LIMIT, SHIFT_LIMIT);
+      }
+
+      state.revealed = false;
+      hideFeedback();
+      draw();
+    }
+
+    function endDrag() {
+      state.dragging = null;
+    }
+
+    function clearAnswers() {
+      Object.values(selects).forEach((select) => {
+        select.value = '';
+      });
+    }
+
+    function hideFeedback() {
+      feedback.className = 'practice-feedback';
+      feedback.innerHTML = '';
+    }
+
+    function showFeedback(isCorrect, message) {
+      feedback.className = `practice-feedback ${isCorrect ? 'correct' : 'incorrect'} visible`;
+      feedback.innerHTML = message;
+    }
+
+    function renderPolicyList() {
+      policyList.innerHTML = '';
+      let currentGroup = '';
+
+      practicePolicyDefinitions.forEach((policy) => {
+        if (policy.group !== currentGroup) {
+          currentGroup = policy.group;
+          const heading = document.createElement('div');
+          heading.className = 'group-heading';
+          heading.textContent = policy.group;
+          policyList.appendChild(heading);
+        }
+
+        const item = document.createElement('div');
+        item.className = 'scenario-item policy-item';
+        if (policy.id === state.selectedPolicy) {
+          item.classList.add('active');
+        }
+        item.innerHTML = `
+          <div class="scenario-title">${escapeHtml(policy.title)}</div>
+          <div class="scenario-note">${escapeHtml(policy.note)}</div>
+        `;
+        item.addEventListener('click', () => {
+          state.selectedPolicy = policy.id;
+          state.revealed = false;
+          state.demandGuessP = 0;
+          state.supplyGuessP = 0;
+          clearAnswers();
+          hideFeedback();
+          renderPolicyList();
+          draw();
+        });
+        policyList.appendChild(item);
+      });
+    }
+
+    function checkAnswer() {
+      const missing = Object.entries(selects)
+        .filter(([, select]) => !select.value)
+        .map(([key]) => key);
+
+      if (missing.length) {
+        showFeedback(false, 'Complete all welfare change fields before checking.');
+        return;
+      }
+
+      const result = computeOutcome();
+      const expectation = expectedShift(result.policy.id, result.magnitude);
+      const actual = actualAnswers(result);
+
+      const demandMoved = Math.abs(state.demandGuessP) > MOVE_TOLERANCE;
+      const supplyMoved = Math.abs(state.supplyGuessP) > MOVE_TOLERANCE;
+
+      let shiftCorrect = false;
+      let shiftLead = '';
+
+      if (expectation.curve === 'D') {
+        if (supplyMoved && !demandMoved) {
+          shiftLead = 'This intervention shifts demand, not supply.';
+        } else if (supplyMoved && demandMoved) {
+          shiftLead = 'Only demand should shift for this intervention.';
+        } else if (!demandMoved) {
+          shiftLead = 'Move the demand curve up or down before checking.';
+        } else if (describeDirection(state.demandGuessP) !== expectation.direction) {
+          shiftLead = `You shifted demand ${describeDirection(state.demandGuessP)}, but the correct shift is ${expectation.direction}.`;
+        } else if (Math.abs(Math.abs(state.demandGuessP) - expectation.amount) > MAGNITUDE_TOLERANCE) {
+          shiftLead = `The direction is right, but the size should be about $${formatNumber(expectation.amount)} per unit.`;
+        } else {
+          shiftCorrect = true;
+        }
+      } else if (expectation.curve === 'S') {
+        if (demandMoved && !supplyMoved) {
+          shiftLead = 'This intervention shifts supply, not demand.';
+        } else if (demandMoved && supplyMoved) {
+          shiftLead = 'Only supply should shift for this intervention.';
+        } else if (!supplyMoved) {
+          shiftLead = 'Move the supply curve up or down before checking.';
+        } else if (describeDirection(state.supplyGuessP) !== expectation.direction) {
+          shiftLead = `You shifted supply ${describeDirection(state.supplyGuessP)}, but the correct shift is ${expectation.direction}.`;
+        } else if (Math.abs(Math.abs(state.supplyGuessP) - expectation.amount) > MAGNITUDE_TOLERANCE) {
+          shiftLead = `The direction is right, but the size should be about $${formatNumber(expectation.amount)} per unit.`;
+        } else {
+          shiftCorrect = true;
+        }
+      } else {
+        if (demandMoved || supplyMoved) {
+          shiftLead = 'This intervention does not shift the underlying demand or supply curves, so both should stay in place.';
+        } else {
+          shiftCorrect = true;
+        }
+      }
+
+      const wrongAnswers = [];
+      const labels = {
+        cs: 'consumer surplus',
+        ps: 'producer surplus',
+        gov: 'government balance',
+        es: 'economic surplus',
+        dwl: 'deadweight loss'
+      };
+
+      Object.entries(selects).forEach(([key, select]) => {
+        if (select.value !== actual[key]) {
+          wrongAnswers.push(`${labels[key]} should ${answerPhrase(actual[key])}`);
+        }
+      });
+
+      state.revealed = true;
+      draw();
+
+      const message = shiftCorrect && wrongAnswers.length === 0
+        ? `Correct. ${expectation.explanation} ${actualSummary(actual)}`
+        : `Incorrect. ${shiftLead ? shiftLead + ' ' : ''}${wrongAnswers.length ? `For the welfare changes, ${wrongAnswers.join('; ')}. ` : ''}${expectation.explanation} ${actualSummary(actual)}`;
+
+      showFeedback(shiftCorrect && wrongAnswers.length === 0, message);
+    }
+
+    function resetGuess() {
+      state.demandGuessP = 0;
+      state.supplyGuessP = 0;
+      state.revealed = false;
+      clearAnswers();
+      hideFeedback();
+      draw();
+    }
+
+    function resetPolicy() {
+      state.selectedPolicy = 'none';
+      magnitudeSlider.value = 3;
+      state.magnitude = Number(magnitudeSlider.value);
+      renderPolicyList();
+      resetGuess();
+    }
+
+    function randomPolicy() {
+      const available = practicePolicyDefinitions.filter((policy) => policy.id !== 'none');
+      const chosen = available[Math.floor(Math.random() * available.length)];
+      state.selectedPolicy = chosen.id;
+      magnitudeSlider.value = (1 + Math.random() * 5).toFixed(2);
+      state.magnitude = Number(magnitudeSlider.value);
+      renderPolicyList();
+      resetGuess();
+    }
+
+    magnitudeSlider.addEventListener('input', () => {
+      state.magnitude = Number(magnitudeSlider.value);
+      state.revealed = false;
+      hideFeedback();
+      draw();
+    });
+
+    Object.values(selects).forEach((select) => {
+      select.addEventListener('change', () => {
+        hideFeedback();
+        renderPracticeTable(computeOutcome());
+      });
+    });
+
+    canvas.addEventListener('mousedown', (event) => {
+      const { x, y } = canvasCoordinates(event);
+      beginDrag(x, y);
+    });
+
+    canvas.addEventListener('mousemove', (event) => {
+      const { y } = canvasCoordinates(event);
+      updateDrag(y);
+    });
+
+    canvas.addEventListener('mouseup', endDrag);
+    canvas.addEventListener('mouseleave', endDrag);
+
+    canvas.addEventListener('touchstart', (event) => {
+      if (!event.touches.length) return;
+      const touch = event.touches[0];
+      const { x, y } = canvasCoordinates(touch);
+      beginDrag(x, y);
+      event.preventDefault();
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', (event) => {
+      if (!event.touches.length) return;
+      const touch = event.touches[0];
+      const { y } = canvasCoordinates(touch);
+      updateDrag(y);
+      event.preventDefault();
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', endDrag);
+    canvas.addEventListener('touchcancel', endDrag);
+
+    renderPolicyList();
+    draw();
+
+    window.welfarePractice = {
+      resetGuess,
+      resetPolicy,
+      randomPolicy,
+      checkAnswer,
+      draw
+    };
+  })();
+</script>
+
+<script>
+  (() => {
+    const tabs = Array.from(document.querySelectorAll('.welfare-subtab'));
+    const sections = Array.from(document.querySelectorAll('.welfare-subsection'));
+
+    if (!tabs.length) return;
+
+    function activate(targetId) {
+      tabs.forEach((tab) => {
+        tab.classList.toggle('active', tab.dataset.target === targetId);
+      });
+      sections.forEach((section) => {
+        section.classList.toggle('active', section.id === targetId);
+      });
+
+      if (targetId === 'welfareExploreSection' && window.welfare && typeof window.welfare.draw === 'function') {
+        window.welfare.draw();
+      }
+      if (targetId === 'welfarePracticeSection' && window.welfarePractice && typeof window.welfarePractice.draw === 'function') {
+        window.welfarePractice.draw();
+      }
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => activate(tab.dataset.target));
+    });
+
+    activate('welfareExploreSection');
+  })();
+</script>
+
+
+<script>
+  (() => {
+    const tabs = Array.from(document.querySelectorAll('.module-tab'));
+    const sections = Array.from(document.querySelectorAll('.module-section'));
+
+    function activateSection(targetId) {
+      tabs.forEach((tab) => {
+        tab.classList.toggle('active', tab.dataset.target === targetId);
+      });
+      sections.forEach((section) => {
+        section.classList.toggle('active', section.id === targetId);
+      });
+
+      if (targetId === 'determinantModule' && typeof drawGraph === 'function') {
+        drawGraph();
+      }
+      if (targetId === 'welfareModule' && window.welfare && typeof window.welfare.draw === 'function') {
+        window.welfare.draw();
+      }
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => activateSection(tab.dataset.target));
+    });
+
+    activateSection('welfareModule');
+  })();
+</script>
+
+</body>
+</html>
