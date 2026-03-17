@@ -1,0 +1,1539 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tax Incidence Elasticity Lab</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --panel: #f8fafc;
+      --panel-2: #eef5fb;
+      --border: #d9e2ec;
+      --text: #1f2933;
+      --muted: #52606d;
+      --demand: #c62828;
+      --supply: #1565c0;
+      --policy: #6a1b9a;
+      --price: #ef6c00;
+      --quantity: #5d4037;
+      --grid: #e8eef5;
+      --initial: #7b8794;
+      --consumer: rgba(66, 133, 244, 0.28);
+      --producer: rgba(229, 57, 53, 0.28);
+      --consumer-light: rgba(66, 133, 244, 0.12);
+      --producer-light: rgba(229, 57, 53, 0.12);
+      --revenue-outline: #2e7d32;
+      --dwl: rgba(90, 90, 90, 0.26);
+      --focus: #1976d2;
+      --shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+      --chip: #eef2f6;
+      --ok: #2e7d32;
+      --warn: #d84315;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 20px;
+      font-family: Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    h1 {
+      margin: 0 0 8px 0;
+      font-size: 31px;
+    }
+
+    .subtitle {
+      max-width: 1220px;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 14px;
+    }
+
+    .summary-strip {
+      max-width: 1220px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .summary-chip {
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--chip);
+      color: #334e68;
+      border: 1px solid var(--border);
+    }
+
+    .layout {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      max-width: 1440px;
+      flex-wrap: wrap;
+    }
+
+    .graph-column {
+      flex: 0 0 auto;
+      width: 930px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel-column {
+      width: 430px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid #cfd8dc;
+      border-radius: 10px;
+      background: white;
+      touch-action: none;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-line {
+      width: 30px;
+      height: 0;
+      border-top: 3px solid #000;
+    }
+
+    .legend-line.demand { border-color: var(--demand); }
+    .legend-line.supply { border-color: var(--supply); }
+    .legend-line.policy { border-color: var(--policy); border-top-style: dashed; }
+    .legend-line.initial { border-color: var(--initial); border-top-style: dashed; }
+
+    .legend-swatch {
+      width: 18px;
+      height: 12px;
+      border-radius: 3px;
+      border: 1px solid rgba(0,0,0,0.18);
+      background: rgba(0,0,0,0.1);
+    }
+
+    .legend-swatch.consumer { background: var(--consumer); }
+    .legend-swatch.producer { background: var(--producer); }
+    .legend-swatch.cs { background: var(--consumer-light); }
+    .legend-swatch.ps { background: var(--producer-light); }
+    .legend-swatch.dwl { background: var(--dwl); }
+
+    .graph-note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: #f1f5f9;
+      border-bottom: 1px solid var(--border);
+      padding: 12px 14px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .card-body {
+      padding: 14px;
+    }
+
+    .card-note {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.45;
+      margin-top: 8px;
+    }
+
+    .status-banner {
+      padding: 12px 14px;
+      background: #fffdf2;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .status-banner strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .control-group {
+      margin-bottom: 14px;
+    }
+
+    .control-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .control-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+      margin-bottom: 6px;
+      font-size: 13px;
+      gap: 10px;
+    }
+
+    .control-value {
+      color: #0d47a1;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    select,
+    input[type="range"] {
+      width: 100%;
+    }
+
+    select,
+    button,
+    input[type="checkbox"] {
+      font: inherit;
+    }
+
+    select {
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #c7d2da;
+      background: white;
+      color: var(--text);
+    }
+
+    input[type="range"] {
+      accent-color: #1976d2;
+    }
+
+    .slope-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .button-row,
+    .preset-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn,
+    .preset-button {
+      border: 1px solid #bcccdc;
+      background: white;
+      color: #243b53;
+      padding: 9px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      font-size: 13px;
+    }
+
+    .btn:hover,
+    .preset-button:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow);
+    }
+
+    .btn.primary {
+      background: #e3f2fd;
+      border-color: #90caf9;
+      color: #0d47a1;
+      font-weight: bold;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      margin-top: 4px;
+      color: #334e68;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stat-box {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-size: 20px;
+      font-weight: bold;
+      color: #102a43;
+    }
+
+    .stat-subvalue {
+      margin-top: 3px;
+      font-size: 12px;
+      color: #486581;
+    }
+
+    .share-bar {
+      margin-top: 10px;
+      height: 18px;
+      display: flex;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #dfe7ef;
+      border: 1px solid #c6d2dc;
+    }
+
+    .share-segment {
+      height: 100%;
+      transition: width 0.18s ease;
+    }
+
+    .share-segment.consumer {
+      background: rgba(66, 133, 244, 0.82);
+    }
+
+    .share-segment.producer {
+      background: rgba(229, 57, 53, 0.82);
+    }
+
+    .share-label-row {
+      margin-top: 8px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 12px;
+      color: #334e68;
+    }
+
+    .welfare-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .welfare-table th,
+    .welfare-table td {
+      border-bottom: 1px solid #e3ebf2;
+      padding: 9px 10px;
+      text-align: right;
+      font-size: 12px;
+    }
+
+    .welfare-table th:first-child,
+    .welfare-table td:first-child {
+      text-align: left;
+    }
+
+    .welfare-table th {
+      background: #f8fbff;
+      color: #334e68;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .welfare-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .positive { color: var(--ok); font-weight: bold; }
+    .negative { color: var(--warn); font-weight: bold; }
+    .neutral { color: #5f6c7b; font-weight: bold; }
+
+    .formula-box {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      line-height: 1.55;
+      color: #334e68;
+      font-size: 13px;
+    }
+
+    .formula-box code {
+      background: #eef4fb;
+      border-radius: 6px;
+      padding: 2px 6px;
+      font-family: Consolas, Menlo, monospace;
+      font-size: 12px;
+      color: #12355b;
+    }
+
+    @media (max-width: 1380px) {
+      .graph-column { width: 100%; }
+      .panel-column { width: 100%; max-width: 930px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Tax Incidence Elasticity Lab</h1>
+  <div class="subtitle">
+    Rotate the demand and supply curves around the same pre-tax equilibrium to isolate the role of elasticity in tax incidence.
+    A steeper curve is more inelastic, so that side of the market bears more of the tax. Push a steepness slider all the way to the top
+    to switch to the perfectly inelastic vertical-curve case, then compare how the burden split changes between buyers and sellers.
+  </div>
+
+  <div class="summary-strip">
+    <div class="summary-chip">Fixed no-tax benchmark equilibrium</div>
+    <div class="summary-chip">Buyer tax or seller tax</div>
+    <div class="summary-chip">Demand and supply steepness controls, including perfectly inelastic limits</div>
+    <div class="summary-chip">Tax burden split on the graph</div>
+    <div class="summary-chip">Government revenue and deadweight loss</div>
+    <div class="summary-chip">Optional after-tax CS and PS shading</div>
+  </div>
+
+  <div class="layout">
+    <div class="graph-column">
+      <canvas id="graph" width="900" height="600" aria-label="Interactive tax incidence graph"></canvas>
+
+      <div class="legend">
+        <div class="legend-item"><span class="legend-line demand"></span> Demand</div>
+        <div class="legend-item"><span class="legend-line supply"></span> Supply</div>
+        <div class="legend-item"><span class="legend-line policy"></span> Shifted tax curve</div>
+        <div class="legend-item"><span class="legend-line initial"></span> Initial equilibrium guides</div>
+        <div class="legend-item"><span class="legend-swatch consumer"></span> Consumer share of tax</div>
+        <div class="legend-item"><span class="legend-swatch producer"></span> Producer share of tax</div>
+        <div class="legend-item"><span class="legend-swatch dwl"></span> Deadweight loss</div>
+        <div class="legend-item"><span class="legend-swatch cs"></span> After-tax consumer surplus</div>
+        <div class="legend-item"><span class="legend-swatch ps"></span> After-tax producer surplus</div>
+      </div>
+
+      <div class="graph-note">
+        The tax rectangle is split at the original market price <strong>P*</strong>. The upper piece shows the part of the tax pushed onto buyers,
+        while the lower piece shows the part absorbed by sellers. Drag the red or blue handle vertically to rotate that curve. Steeper means
+        more inelastic, and the less elastic side bears more of the tax. Push a handle to the very top, or move the slider to its top setting,
+        to switch to the perfectly inelastic vertical-curve case.
+      </div>
+    </div>
+
+    <div class="panel-column">
+      <div class="card">
+        <div class="card-header">Controls</div>
+        <div class="status-banner">
+          <strong>How to use the graph</strong>
+          Change the tax side, the tax size, and the curve slopes. The pre-tax equilibrium stays fixed so the incidence shift comes only
+          from different elasticities. Drag the graph handles if you want a more visual way to rotate the curves. The top steepness setting
+          represents a perfectly inelastic vertical curve.
+        </div>
+        <div class="card-body">
+          <div class="control-group">
+            <div class="control-label">
+              <label for="taxSide">Tax is levied on</label>
+            </div>
+            <select id="taxSide">
+              <option value="seller">Sellers (shift supply up)</option>
+              <option value="buyer">Buyers (shift demand down)</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <div class="control-label">
+              <label for="taxSlider">Per-unit tax</label>
+              <span class="control-value" id="taxValue"></span>
+            </div>
+            <input id="taxSlider" type="range" min="0" max="18" step="0.5" value="12">
+          </div>
+
+          <div class="slope-row">
+            <div class="control-group">
+              <div class="control-label">
+                <label for="demandSlopeSlider">Demand steepness</label>
+                <span class="control-value" id="demandSlopeValue"></span>
+              </div>
+              <input id="demandSlopeSlider" type="range" min="0.25" max="5.00" step="0.01" value="0.55">
+              <div class="card-note">Higher value = steeper demand = less elastic buyers. The top setting makes demand perfectly inelastic.</div>
+            </div>
+
+            <div class="control-group">
+              <div class="control-label">
+                <label for="supplySlopeSlider">Supply steepness</label>
+                <span class="control-value" id="supplySlopeValue"></span>
+              </div>
+              <input id="supplySlopeSlider" type="range" min="0.25" max="5.00" step="0.01" value="0.55">
+              <div class="card-note">Higher value = steeper supply = less elastic sellers. The top setting makes supply perfectly inelastic.</div>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="toggle-row">
+              <input id="showSurplus" type="checkbox">
+              <label for="showSurplus">Show after-tax consumer surplus and producer surplus shading</label>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <div class="control-label">Preset cases</div>
+            <div class="preset-row">
+              <button class="preset-button" data-preset="balanced">Balanced</button>
+              <button class="preset-button" data-preset="inelastic-demand">Inelastic demand</button>
+              <button class="preset-button" data-preset="inelastic-supply">Inelastic supply</button>
+              <button class="preset-button" data-preset="both-elastic">Both elastic</button>
+              <button class="preset-button" data-preset="both-inelastic">Both inelastic</button>
+              <button class="preset-button" data-preset="perfect-demand">Perfectly inelastic demand</button>
+              <button class="preset-button" data-preset="perfect-supply">Perfectly inelastic supply</button>
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button class="btn primary" id="resetButton">Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Who bears the tax?</div>
+        <div class="card-body">
+          <div class="stat-grid">
+            <div class="stat-box">
+              <div class="stat-label">Consumers' burden per unit</div>
+              <div class="stat-value" id="consumerPerUnit"></div>
+              <div class="stat-subvalue" id="consumerTotalBurden"></div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Producers' burden per unit</div>
+              <div class="stat-value" id="producerPerUnit"></div>
+              <div class="stat-subvalue" id="producerTotalBurden"></div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Consumer share of the tax</div>
+              <div class="stat-value" id="consumerShare"></div>
+              <div class="stat-subvalue" id="consumerElasticityNote"></div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Producer share of the tax</div>
+              <div class="stat-value" id="producerShare"></div>
+              <div class="stat-subvalue" id="producerElasticityNote"></div>
+            </div>
+          </div>
+
+          <div class="share-bar" aria-label="Tax incidence split">
+            <div class="share-segment consumer" id="consumerShareBar"></div>
+            <div class="share-segment producer" id="producerShareBar"></div>
+          </div>
+          <div class="share-label-row">
+            <div id="consumerShareLabel"></div>
+            <div id="producerShareLabel"></div>
+          </div>
+
+          <div class="card-note" id="interpretationText"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Welfare effects</div>
+        <div class="card-body">
+          <table class="welfare-table">
+            <thead>
+              <tr>
+                <th>Measure</th>
+                <th>No tax</th>
+                <th>After tax</th>
+                <th>Change</th>
+              </tr>
+            </thead>
+            <tbody id="welfareBody"></tbody>
+          </table>
+          <div class="card-note">
+            Total surplus after tax equals consumer surplus + producer surplus + government revenue. The fall in total surplus is deadweight loss.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">Elasticity and incidence reminder</div>
+        <div class="card-body">
+          <div class="formula-box">
+            At the initial equilibrium, approximate elasticities are computed from the slope sliders:
+            <br><code>|E<sub>d</sub>| ≈ P* / (Q* × demand slope)</code>
+            <br><code>E<sub>s</sub> ≈ P* / (Q* × supply slope)</code>
+            <br><br>
+            The standard incidence rule then appears clearly:
+            <br><code>buyers' share = E<sub>s</sub> / (E<sub>s</sub> + |E<sub>d</sub>|)</code>
+            <br><code>sellers' share = |E<sub>d</sub>| / (E<sub>s</sub> + |E<sub>d</sub>|)</code>
+            <br><br>
+            Because the curves rotate around the same no-tax equilibrium, changes in incidence here come only from changing the slopes and elasticities.
+            At the top slider value, the curve switches to the perfectly inelastic vertical-limit case, so the graph focuses on incidence, revenue, quantity, and deadweight loss.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(() => {
+  const Q_STAR = 40;
+  const P_STAR = 46;
+  const Q_MAX = 80;
+  const P_MAX = 100;
+  const SLOPE_MIN = 0.25;
+  const FINITE_SLOPE_MAX = 4.99;
+  const PERFECT_SLOPE = 5.00;
+  const PERFECT_THRESHOLD = 4.995;
+
+  const state = {
+    taxSide: 'seller',
+    tax: 12,
+    demandSlope: 0.55,
+    supplySlope: 0.55,
+    showSurplus: false
+  };
+
+  const defaults = { ...state };
+
+  const canvas = document.getElementById('graph');
+  const ctx = canvas.getContext('2d');
+
+  const taxSideSelect = document.getElementById('taxSide');
+  const taxSlider = document.getElementById('taxSlider');
+  const demandSlopeSlider = document.getElementById('demandSlopeSlider');
+  const supplySlopeSlider = document.getElementById('supplySlopeSlider');
+  const showSurplusCheckbox = document.getElementById('showSurplus');
+
+  const taxValue = document.getElementById('taxValue');
+  const demandSlopeValue = document.getElementById('demandSlopeValue');
+  const supplySlopeValue = document.getElementById('supplySlopeValue');
+
+  const consumerPerUnit = document.getElementById('consumerPerUnit');
+  const producerPerUnit = document.getElementById('producerPerUnit');
+  const consumerTotalBurden = document.getElementById('consumerTotalBurden');
+  const producerTotalBurden = document.getElementById('producerTotalBurden');
+  const consumerShare = document.getElementById('consumerShare');
+  const producerShare = document.getElementById('producerShare');
+  const consumerElasticityNote = document.getElementById('consumerElasticityNote');
+  const producerElasticityNote = document.getElementById('producerElasticityNote');
+  const consumerShareBar = document.getElementById('consumerShareBar');
+  const producerShareBar = document.getElementById('producerShareBar');
+  const consumerShareLabel = document.getElementById('consumerShareLabel');
+  const producerShareLabel = document.getElementById('producerShareLabel');
+  const interpretationText = document.getElementById('interpretationText');
+  const welfareBody = document.getElementById('welfareBody');
+  const resetButton = document.getElementById('resetButton');
+
+  const presetButtons = Array.from(document.querySelectorAll('.preset-button'));
+
+  let activeHandle = null;
+  let geometry = null;
+
+  function fmt(num, digits = 2) {
+    return Number(num).toFixed(digits);
+  }
+
+  function fmtSigned(num, digits = 2) {
+    const value = Number(num);
+    if (Math.abs(value) < 1e-9) return '0.00';
+    return (value > 0 ? '+' : '') + value.toFixed(digits);
+  }
+
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  function isPerfectSlope(value) {
+    return value >= PERFECT_THRESHOLD;
+  }
+
+  function displaySlope(value) {
+    return isPerfectSlope(value) ? 'Perfectly inelastic' : fmt(value, 2);
+  }
+
+  function fmtMaybe(value, digits = 2) {
+    return Number.isFinite(value) ? fmt(value, digits) : '—';
+  }
+
+  function fmtSignedMaybe(value, digits = 2) {
+    return Number.isFinite(value) ? fmtSigned(value, digits) : '—';
+  }
+
+  function getModel() {
+    const demandPerfect = isPerfectSlope(state.demandSlope);
+    const supplyPerfect = isPerfectSlope(state.supplySlope);
+    const md = demandPerfect ? null : state.demandSlope;
+    const ms = supplyPerfect ? null : state.supplySlope;
+    const t = state.tax;
+
+    const demand = demandPerfect ? null : (q => P_STAR + md * (Q_STAR - q));
+    const supply = supplyPerfect ? null : (q => P_STAR + ms * (q - Q_STAR));
+    const shiftedDemand = demandPerfect ? null : (q => demand(q) - t);
+    const shiftedSupply = supplyPerfect ? null : (q => supply(q) + t);
+
+    let Qt = Q_STAR;
+    let Pc = P_STAR;
+    let Pp = P_STAR;
+    let consumerBurdenPerUnit = 0;
+    let producerBurdenPerUnit = 0;
+    let absEd = demandPerfect ? 0 : P_STAR / (Q_STAR * md);
+    let Es = supplyPerfect ? 0 : P_STAR / (Q_STAR * ms);
+
+    if (t > 0) {
+      if (demandPerfect && supplyPerfect) {
+        Qt = Q_STAR;
+        Pc = P_STAR + t / 2;
+        Pp = P_STAR - t / 2;
+        consumerBurdenPerUnit = t / 2;
+        producerBurdenPerUnit = t / 2;
+      } else if (demandPerfect) {
+        Qt = Q_STAR;
+        Pc = P_STAR + t;
+        Pp = P_STAR;
+        consumerBurdenPerUnit = t;
+        producerBurdenPerUnit = 0;
+      } else if (supplyPerfect) {
+        Qt = Q_STAR;
+        Pc = P_STAR;
+        Pp = P_STAR - t;
+        consumerBurdenPerUnit = 0;
+        producerBurdenPerUnit = t;
+      } else {
+        const quantityReduction = t / (md + ms);
+        Qt = clamp(Q_STAR - quantityReduction, 0, Q_MAX);
+        Pc = demand(Qt);
+        Pp = supply(Qt);
+        consumerBurdenPerUnit = Pc - P_STAR;
+        producerBurdenPerUnit = P_STAR - Pp;
+      }
+    }
+
+    const revenue = t * Qt;
+    const dwl = 0.5 * t * (Q_STAR - Qt);
+
+    const consumerShareValue = t === 0 ? 0.5 : consumerBurdenPerUnit / t;
+    const producerShareValue = t === 0 ? 0.5 : producerBurdenPerUnit / t;
+
+    const welfareFinite = !demandPerfect && !supplyPerfect;
+    let demandIntercept = null;
+    let supplyIntercept = null;
+    let cs0 = null;
+    let ps0 = null;
+    let cs1 = null;
+    let ps1 = null;
+    let total0 = null;
+    let total1 = null;
+    let dCS = null;
+    let dPS = null;
+    let dTS = null;
+
+    if (welfareFinite) {
+      demandIntercept = demand(0);
+      supplyIntercept = supply(0);
+
+      cs0 = 0.5 * (demandIntercept - P_STAR) * Q_STAR;
+      ps0 = 0.5 * (P_STAR - supplyIntercept) * Q_STAR;
+      cs1 = 0.5 * (demandIntercept - Pc) * Qt;
+      ps1 = 0.5 * (Pp - supplyIntercept) * Qt;
+
+      total0 = cs0 + ps0;
+      total1 = cs1 + ps1 + revenue;
+      dCS = cs1 - cs0;
+      dPS = ps1 - ps0;
+      dTS = total1 - total0;
+    }
+
+    return {
+      md,
+      ms,
+      t,
+      demandPerfect,
+      supplyPerfect,
+      welfareFinite,
+      demand,
+      supply,
+      shiftedDemand,
+      shiftedSupply,
+      Qt,
+      Pc,
+      Pp,
+      consumerBurdenPerUnit,
+      producerBurdenPerUnit,
+      consumerTotalBurden: consumerBurdenPerUnit * Qt,
+      producerTotalBurden: producerBurdenPerUnit * Qt,
+      revenue,
+      dwl,
+      consumerShareValue,
+      producerShareValue,
+      demandIntercept,
+      supplyIntercept,
+      cs0,
+      ps0,
+      cs1,
+      ps1,
+      total0,
+      total1,
+      dCS,
+      dPS,
+      dTS,
+      absEd,
+      Es
+    };
+  }
+
+  function setupGeometry() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    const displayWidth = Math.max(720, Math.round(rect.width));
+    const displayHeight = Math.round(displayWidth * (600 / 900));
+    canvas.width = Math.round(displayWidth * dpr);
+    canvas.height = Math.round(displayHeight * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const width = displayWidth;
+    const height = displayHeight;
+    const left = 68;
+    const right = width - 28;
+    const top = 24;
+    const bottom = height - 54;
+    const plotWidth = right - left;
+    const plotHeight = bottom - top;
+
+    geometry = {
+      width,
+      height,
+      left,
+      right,
+      top,
+      bottom,
+      plotWidth,
+      plotHeight,
+      mapQ(q) { return left + (q / Q_MAX) * plotWidth; },
+      mapP(p) { return bottom - (p / P_MAX) * plotHeight; },
+      unmapP(y) { return ((bottom - y) / plotHeight) * P_MAX; }
+    };
+  }
+
+  function drawGrid() {
+    const { left, right, top, bottom, mapQ, mapP } = geometry;
+    ctx.save();
+    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--grid').trim();
+    ctx.lineWidth = 1;
+
+    for (let q = 0; q <= Q_MAX; q += 10) {
+      const x = mapQ(q);
+      ctx.beginPath();
+      ctx.moveTo(x, top);
+      ctx.lineTo(x, bottom);
+      ctx.stroke();
+    }
+
+    for (let p = 0; p <= P_MAX; p += 10) {
+      const y = mapP(p);
+      ctx.beginPath();
+      ctx.moveTo(left, y);
+      ctx.lineTo(right, y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawAxes() {
+    const { left, right, top, bottom, mapQ, mapP } = geometry;
+    ctx.save();
+    ctx.strokeStyle = '#243b53';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(left, top);
+    ctx.lineTo(left, bottom);
+    ctx.lineTo(right, bottom);
+    ctx.stroke();
+
+    ctx.fillStyle = '#243b53';
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+
+    for (let q = 0; q <= Q_MAX; q += 10) {
+      const x = mapQ(q);
+      ctx.beginPath();
+      ctx.moveTo(x, bottom);
+      ctx.lineTo(x, bottom + 5);
+      ctx.stroke();
+      ctx.fillText(String(q), x, bottom + 8);
+    }
+
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (let p = 0; p <= P_MAX; p += 10) {
+      const y = mapP(p);
+      ctx.beginPath();
+      ctx.moveTo(left - 5, y);
+      ctx.lineTo(left, y);
+      ctx.stroke();
+      ctx.fillText(String(p), left - 8, y);
+    }
+
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.font = 'bold 13px Arial';
+    ctx.fillText('Quantity', (left + right) / 2, bottom + 38);
+    ctx.translate(18, (top + bottom) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Price', 0, 0);
+    ctx.restore();
+    ctx.restore();
+  }
+
+  function drawCurve(fn, color, options = {}) {
+    const { mapQ, mapP } = geometry;
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = options.lineWidth || 3;
+    if (options.dashed) ctx.setLineDash(options.dashed);
+    ctx.beginPath();
+    for (let q = 0; q <= Q_MAX; q += 0.4) {
+      const x = mapQ(q);
+      const y = mapP(fn(q));
+      if (q === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawVerticalCurve(quantity, color, options = {}) {
+    const { mapQ, top, bottom } = geometry;
+    const x = mapQ(quantity);
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = options.lineWidth || 3;
+    if (options.dashed) ctx.setLineDash(options.dashed);
+    ctx.beginPath();
+    ctx.moveTo(x, top);
+    ctx.lineTo(x, bottom);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function shadePolygon(points, fillStyle, strokeStyle = null, lineWidth = 1) {
+    if (!points || points.length < 3) return;
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(points[0][0], points[0][1]);
+    for (let i = 1; i < points.length; i += 1) {
+      ctx.lineTo(points[i][0], points[i][1]);
+    }
+    ctx.closePath();
+    ctx.fillStyle = fillStyle;
+    ctx.fill();
+    if (strokeStyle) {
+      ctx.strokeStyle = strokeStyle;
+      ctx.lineWidth = lineWidth;
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function sampleCurvePolygon(fn, qStart, qEnd, linePrice, mode) {
+    const points = [];
+    const { mapQ, mapP } = geometry;
+
+    if (mode === 'cs') {
+      points.push([mapQ(0), mapP(linePrice)]);
+      points.push([mapQ(0), mapP(fn(0))]);
+      for (let q = 0; q <= qEnd; q += 0.4) {
+        points.push([mapQ(q), mapP(fn(q))]);
+      }
+      points.push([mapQ(qEnd), mapP(linePrice)]);
+    } else if (mode === 'ps') {
+      points.push([mapQ(0), mapP(linePrice)]);
+      points.push([mapQ(0), mapP(fn(0))]);
+      for (let q = 0; q <= qEnd; q += 0.4) {
+        points.push([mapQ(q), mapP(fn(q))]);
+      }
+      points.push([mapQ(qEnd), mapP(linePrice)]);
+    }
+
+    return points;
+  }
+
+  function drawPriceLine(price, label, color, dashed = false, toQuantity = null) {
+    const { left, right, mapP, mapQ } = geometry;
+    const y = mapP(price);
+    const x2 = toQuantity == null ? right : mapQ(toQuantity);
+
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    if (dashed) ctx.setLineDash([6, 6]);
+    ctx.beginPath();
+    ctx.moveTo(left, y);
+    ctx.lineTo(x2, y);
+    ctx.stroke();
+
+    ctx.fillStyle = color;
+    ctx.font = 'bold 12px Arial';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, left - 12, y);
+    ctx.restore();
+  }
+
+  function drawQuantityLine(quantity, label, color, dashed = false, toPrice = null) {
+    const { bottom, top, mapP, mapQ } = geometry;
+    const x = mapQ(quantity);
+    const y1 = toPrice == null ? top : mapP(toPrice);
+
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    if (dashed) ctx.setLineDash([6, 6]);
+    ctx.beginPath();
+    ctx.moveTo(x, bottom);
+    ctx.lineTo(x, y1);
+    ctx.stroke();
+
+    ctx.fillStyle = color;
+    ctx.font = 'bold 12px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText(label, x, bottom + 12);
+    ctx.restore();
+  }
+
+  function drawPoint(q, p, fill, label = null, dx = 8, dy = -8) {
+    const { mapQ, mapP } = geometry;
+    const x = mapQ(q);
+    const y = mapP(p);
+    ctx.save();
+    ctx.fillStyle = fill;
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x, y, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    if (label) {
+      ctx.fillStyle = fill;
+      ctx.font = 'bold 12px Arial';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, x + dx, y + dy);
+    }
+    ctx.restore();
+  }
+
+  function drawWedge(model) {
+    if (model.t <= 0.001) return;
+    const { mapQ, mapP } = geometry;
+    const qForWedge = Math.min(model.Qt + 4, Q_MAX - 4);
+    const x = mapQ(qForWedge);
+    const yPc = mapP(model.Pc);
+    const yPp = mapP(model.Pp);
+
+    ctx.save();
+    ctx.strokeStyle = '#2e7d32';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x, yPc);
+    ctx.lineTo(x, yPp);
+    ctx.stroke();
+
+    const arm = 8;
+    ctx.beginPath();
+    ctx.moveTo(x - arm, yPc);
+    ctx.lineTo(x + arm, yPc);
+    ctx.moveTo(x - arm, yPp);
+    ctx.lineTo(x + arm, yPp);
+    ctx.stroke();
+
+    ctx.fillStyle = '#2e7d32';
+    ctx.font = 'bold 12px Arial';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('tax = ' + fmt(model.t), x + 12, (yPc + yPp) / 2);
+    ctx.restore();
+  }
+
+  function drawHandle(x, y, color, label) {
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(x, y, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = color;
+    ctx.font = 'bold 12px Arial';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText(label, x, y - 12);
+    ctx.restore();
+  }
+
+  function drawCurveLabel(text, q, p, color, align = 'left') {
+    const { mapQ, mapP } = geometry;
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.font = 'bold 13px Arial';
+    ctx.textAlign = align;
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, mapQ(q), mapP(p));
+    ctx.restore();
+  }
+
+  function drawGraph() {
+    setupGeometry();
+    ctx.clearRect(0, 0, geometry.width, geometry.height);
+
+    const css = getComputedStyle(document.documentElement);
+    const model = getModel();
+
+    drawGrid();
+    drawAxes();
+
+    if (state.showSurplus && model.t > 0 && model.welfareFinite) {
+      const csPoly = sampleCurvePolygon(model.demand, 0, model.Qt, model.Pc, 'cs');
+      const psPoly = sampleCurvePolygon(model.supply, 0, model.Qt, model.Pp, 'ps');
+      shadePolygon(csPoly, css.getPropertyValue('--consumer-light').trim());
+      shadePolygon(psPoly, css.getPropertyValue('--producer-light').trim());
+    }
+
+    if (model.t > 0) {
+      const x0 = geometry.mapQ(0);
+      const xQt = geometry.mapQ(model.Qt);
+      const yPc = geometry.mapP(model.Pc);
+      const yPp = geometry.mapP(model.Pp);
+      const yP0 = geometry.mapP(P_STAR);
+
+      shadePolygon([
+        [x0, yPc],
+        [xQt, yPc],
+        [xQt, yP0],
+        [x0, yP0]
+      ], css.getPropertyValue('--consumer').trim());
+
+      shadePolygon([
+        [x0, yP0],
+        [xQt, yP0],
+        [xQt, yPp],
+        [x0, yPp]
+      ], css.getPropertyValue('--producer').trim());
+
+      shadePolygon([
+        [xQt, yPc],
+        [geometry.mapQ(Q_STAR), geometry.mapP(P_STAR)],
+        [xQt, yPp]
+      ], css.getPropertyValue('--dwl').trim());
+
+      ctx.save();
+      ctx.strokeStyle = css.getPropertyValue('--revenue-outline').trim();
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x0, yPc, xQt - x0, yPp - yPc);
+      ctx.restore();
+    }
+
+    drawPriceLine(P_STAR, 'P*', css.getPropertyValue('--initial').trim(), true, Q_STAR);
+    drawQuantityLine(Q_STAR, 'Q*', css.getPropertyValue('--initial').trim(), true, P_STAR);
+
+    if (model.t > 0) {
+      drawPriceLine(model.Pc, 'Pᶜ', css.getPropertyValue('--price').trim(), false, model.Qt);
+      drawPriceLine(model.Pp, 'Pᵖ', '#6d4c41', false, model.Qt);
+      drawQuantityLine(model.Qt, 'Qᵗ', css.getPropertyValue('--quantity').trim(), false, model.Pp);
+    }
+
+    if (model.demandPerfect) drawVerticalCurve(Q_STAR, css.getPropertyValue('--demand').trim());
+    else drawCurve(model.demand, css.getPropertyValue('--demand').trim());
+
+    if (model.supplyPerfect) drawVerticalCurve(Q_STAR, css.getPropertyValue('--supply').trim());
+    else drawCurve(model.supply, css.getPropertyValue('--supply').trim());
+
+    if (model.t > 0.001) {
+      if (state.taxSide === 'seller') {
+        if (model.supplyPerfect) drawVerticalCurve(Q_STAR, css.getPropertyValue('--policy').trim(), { dashed: [10, 8] });
+        else drawCurve(model.shiftedSupply, css.getPropertyValue('--policy').trim(), { dashed: [10, 8] });
+      } else {
+        if (model.demandPerfect) drawVerticalCurve(Q_STAR, css.getPropertyValue('--policy').trim(), { dashed: [10, 8] });
+        else drawCurve(model.shiftedDemand, css.getPropertyValue('--policy').trim(), { dashed: [10, 8] });
+      }
+    }
+
+    drawPoint(Q_STAR, P_STAR, css.getPropertyValue('--initial').trim(), 'E₀', 8, -10);
+
+    if (model.t > 0) {
+      drawPoint(model.Qt, model.Pc, css.getPropertyValue('--price').trim(), 'buyers pay', 8, -10);
+      drawPoint(model.Qt, model.Pp, '#6d4c41', 'sellers receive', 8, 12);
+      drawWedge(model);
+    }
+
+    if (model.demandPerfect) {
+      drawCurveLabel('D', Q_STAR - 0.8, P_MAX - 10, css.getPropertyValue('--demand').trim(), 'right');
+    } else {
+      const demandLabelQ = model.md > 1.2 ? clamp(Q_STAR - 18 / model.md, 5, 32) : 7;
+      drawCurveLabel('D', demandLabelQ, model.demand(demandLabelQ), css.getPropertyValue('--demand').trim(), 'left');
+    }
+
+    if (model.supplyPerfect) {
+      drawCurveLabel('S', Q_STAR + 0.8, P_MAX - 10, css.getPropertyValue('--supply').trim(), 'left');
+    } else {
+      const supplyLabelQ = model.ms > 1.2 ? clamp(Q_STAR + 18 / model.ms, 48, 75) : 73;
+      drawCurveLabel('S', supplyLabelQ, model.supply(supplyLabelQ), css.getPropertyValue('--supply').trim(), 'right');
+    }
+
+    if (model.t > 0.001) {
+      if (state.taxSide === 'seller') {
+        if (model.supplyPerfect) drawCurveLabel('S + tax', Q_STAR + 2.2, P_MAX - 24, css.getPropertyValue('--policy').trim(), 'left');
+        else {
+          const q = model.ms > 1.2 ? clamp(Q_STAR + 18 / model.ms, 48, 75) : 72;
+          drawCurveLabel('S + tax', q, model.shiftedSupply(q) - 1.5, css.getPropertyValue('--policy').trim(), 'right');
+        }
+      } else {
+        if (model.demandPerfect) drawCurveLabel('D − tax', Q_STAR - 2.2, P_MAX - 24, css.getPropertyValue('--policy').trim(), 'right');
+        else {
+          const q = model.md > 1.2 ? clamp(Q_STAR - 18 / model.md, 5, 32) : 8;
+          drawCurveLabel('D − tax', q, model.shiftedDemand(q) + 1.5, css.getPropertyValue('--policy').trim(), 'left');
+        }
+      }
+    }
+
+    const demandHandleQ = clamp(Q_STAR - 18 / (model.demandPerfect ? FINITE_SLOPE_MAX : model.md), 3, Q_STAR - 0.8);
+    const supplyHandleQ = clamp(Q_STAR + 18 / (model.supplyPerfect ? FINITE_SLOPE_MAX : model.ms), Q_STAR + 0.8, Q_MAX - 3);
+
+    const demandHandle = {
+      x: geometry.mapQ(demandHandleQ),
+      y: model.demandPerfect ? geometry.top + 34 : geometry.mapP(model.demand(demandHandleQ))
+    };
+    const supplyHandle = {
+      x: geometry.mapQ(supplyHandleQ),
+      y: model.supplyPerfect ? geometry.top + 58 : geometry.mapP(model.supply(supplyHandleQ))
+    };
+
+    drawHandle(demandHandle.x, demandHandle.y, css.getPropertyValue('--demand').trim(), 'drag');
+    drawHandle(supplyHandle.x, supplyHandle.y, css.getPropertyValue('--supply').trim(), 'drag');
+
+    geometry.demandHandle = demandHandle;
+    geometry.supplyHandle = supplyHandle;
+    geometry.demandHandleQ = demandHandleQ;
+    geometry.supplyHandleQ = supplyHandleQ;
+  }
+
+  function updateReadouts() {
+    const model = getModel();
+
+    taxValue.textContent = fmt(model.t, 1);
+    demandSlopeValue.textContent = displaySlope(state.demandSlope);
+    supplySlopeValue.textContent = displaySlope(state.supplySlope);
+
+    consumerPerUnit.textContent = fmt(model.consumerBurdenPerUnit);
+    producerPerUnit.textContent = fmt(model.producerBurdenPerUnit);
+    consumerTotalBurden.textContent = 'Total = ' + fmt(model.consumerTotalBurden);
+    producerTotalBurden.textContent = 'Total = ' + fmt(model.producerTotalBurden);
+
+    consumerShare.textContent = (model.consumerShareValue * 100).toFixed(1) + '%';
+    producerShare.textContent = (model.producerShareValue * 100).toFixed(1) + '%';
+    consumerElasticityNote.textContent = model.demandPerfect ? '|Ed| = 0.00 (perfectly inelastic)' : '|Ed| ≈ ' + fmt(model.absEd, 2);
+    producerElasticityNote.textContent = model.supplyPerfect ? 'Es = 0.00 (perfectly inelastic)' : 'Es ≈ ' + fmt(model.Es, 2);
+
+    consumerShareBar.style.width = (model.consumerShareValue * 100) + '%';
+    producerShareBar.style.width = (model.producerShareValue * 100) + '%';
+    consumerShareLabel.textContent = 'Consumers: ' + (model.consumerShareValue * 100).toFixed(1) + '%';
+    producerShareLabel.textContent = 'Producers: ' + (model.producerShareValue * 100).toFixed(1) + '%';
+
+    let interpretation = '';
+    if (model.t < 0.001) {
+      interpretation = 'With no tax, buyers and sellers trade at the same price, so there is no incidence wedge to split.';
+    } else if (model.demandPerfect && model.supplyPerfect) {
+      interpretation = 'Both curves are perfectly inelastic here, so quantity stays fixed. The price split is not uniquely pinned down by elasticity alone, so this display uses an even split of the wedge as a visual convention.';
+    } else if (model.demandPerfect) {
+      interpretation = 'Demand is perfectly inelastic here, so buyers bear the full tax and quantity does not change.';
+    } else if (model.supplyPerfect) {
+      interpretation = 'Supply is perfectly inelastic here, so sellers bear the full tax and quantity does not change.';
+    } else if (model.consumerShareValue > 0.57) {
+      interpretation = 'Demand is steeper than supply here, so buyers are less responsive to price and bear most of the tax.';
+    } else if (model.producerShareValue > 0.57) {
+      interpretation = 'Supply is steeper than demand here, so sellers are less responsive to price and bear most of the tax.';
+    } else {
+      interpretation = 'Demand and supply have similar steepness here, so the tax burden is split fairly evenly.';
+    }
+
+    if (!(model.demandPerfect && model.supplyPerfect)) {
+      interpretation += ' The tax is currently levied on ' + (state.taxSide === 'seller' ? 'sellers' : 'buyers') + ', but the burden split would be the same if the law placed the tax on the other side.';
+    }
+
+    if (!model.welfareFinite) {
+      interpretation += ' Because a perfectly inelastic vertical curve makes the surplus area unbounded in this inverse-demand or inverse-supply setup, the table leaves CS, PS, and total surplus levels blank and focuses on incidence, revenue, quantity, and DWL.';
+    }
+
+    interpretationText.textContent = interpretation;
+
+    const rows = [
+      { label: "Buyers' price", before: P_STAR, after: model.Pc, change: model.Pc - P_STAR, trend: 'neutral' },
+      { label: "Sellers' price", before: P_STAR, after: model.Pp, change: model.Pp - P_STAR, trend: 'neutral' },
+      { label: 'Quantity traded', before: Q_STAR, after: model.Qt, change: model.Qt - Q_STAR, trend: 'quantity' },
+      { label: 'Consumer surplus', before: model.cs0, after: model.cs1, change: model.dCS, trend: 'welfare' },
+      { label: 'Producer surplus', before: model.ps0, after: model.ps1, change: model.dPS, trend: 'welfare' },
+      { label: 'Government revenue', before: 0, after: model.revenue, change: model.revenue, trend: 'neutral' },
+      { label: 'Total surplus', before: model.total0, after: model.total1, change: model.dTS, trend: 'welfare' },
+      { label: 'Deadweight loss', before: 0, after: model.dwl, change: model.dwl, trend: 'loss' }
+    ];
+
+    welfareBody.innerHTML = rows.map((row) => {
+      let cls = 'neutral';
+
+      if (Number.isFinite(row.change)) {
+        if (row.trend === 'welfare') {
+          if (row.change > 1e-9) cls = 'positive';
+          if (row.change < -1e-9) cls = 'negative';
+        } else if (row.trend === 'loss') {
+          if (row.change > 1e-9) cls = 'negative';
+          if (row.change < -1e-9) cls = 'positive';
+        } else if (row.trend === 'quantity') {
+          if (row.change > 1e-9) cls = 'positive';
+          if (row.change < -1e-9) cls = 'negative';
+        }
+      }
+
+      return `
+        <tr>
+          <td>${row.label}</td>
+          <td>${fmtMaybe(row.before)}</td>
+          <td>${fmtMaybe(row.after)}</td>
+          <td class="${cls}">${fmtSignedMaybe(row.change)}</td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  function render() {
+    drawGraph();
+    updateReadouts();
+  }
+
+  function syncControls() {
+    taxSideSelect.value = state.taxSide;
+    taxSlider.value = state.tax;
+    demandSlopeSlider.value = state.demandSlope;
+    supplySlopeSlider.value = state.supplySlope;
+    showSurplusCheckbox.checked = state.showSurplus;
+  }
+
+  function setPreset(name) {
+    switch (name) {
+      case 'balanced':
+        state.tax = 12;
+        state.demandSlope = 0.55;
+        state.supplySlope = 0.55;
+        break;
+      case 'inelastic-demand':
+        state.tax = 12;
+        state.demandSlope = 3.50;
+        state.supplySlope = 0.35;
+        break;
+      case 'inelastic-supply':
+        state.tax = 12;
+        state.demandSlope = 0.35;
+        state.supplySlope = 3.50;
+        break;
+      case 'both-elastic':
+        state.tax = 12;
+        state.demandSlope = 0.30;
+        state.supplySlope = 0.30;
+        break;
+      case 'both-inelastic':
+        state.tax = 12;
+        state.demandSlope = 2.50;
+        state.supplySlope = 2.50;
+        break;
+      case 'perfect-demand':
+        state.tax = 12;
+        state.demandSlope = PERFECT_SLOPE;
+        state.supplySlope = 0.35;
+        break;
+      case 'perfect-supply':
+        state.tax = 12;
+        state.demandSlope = 0.35;
+        state.supplySlope = PERFECT_SLOPE;
+        break;
+      default:
+        break;
+    }
+    syncControls();
+    render();
+  }
+
+  function getCanvasPoint(event) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    return {
+      x: (event.clientX - rect.left) * scaleX / (window.devicePixelRatio || 1),
+      y: (event.clientY - rect.top) * scaleY / (window.devicePixelRatio || 1)
+    };
+  }
+
+  function distance(a, b) {
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  }
+
+  function updateCursor(event) {
+    if (!geometry) return;
+    const point = getCanvasPoint(event);
+    const overDemand = distance(point, geometry.demandHandle) < 14;
+    const overSupply = distance(point, geometry.supplyHandle) < 14;
+    canvas.style.cursor = (overDemand || overSupply || activeHandle) ? 'ns-resize' : 'default';
+  }
+
+  function onPointerDown(event) {
+    if (!geometry) return;
+    const point = getCanvasPoint(event);
+
+    if (distance(point, geometry.demandHandle) < 14) {
+      activeHandle = 'demand';
+      canvas.setPointerCapture(event.pointerId);
+      event.preventDefault();
+      updateCursor(event);
+      return;
+    }
+
+    if (distance(point, geometry.supplyHandle) < 14) {
+      activeHandle = 'supply';
+      canvas.setPointerCapture(event.pointerId);
+      event.preventDefault();
+      updateCursor(event);
+    }
+  }
+
+  function onPointerMove(event) {
+    if (!geometry) return;
+
+    if (!activeHandle) {
+      updateCursor(event);
+      return;
+    }
+
+    const point = getCanvasPoint(event);
+    const price = clamp(geometry.unmapP(point.y), 0, P_MAX);
+
+    if (activeHandle === 'demand') {
+      if (point.y <= geometry.top + 10) {
+        state.demandSlope = PERFECT_SLOPE;
+      } else {
+        const denominator = Math.max(0.8, Q_STAR - geometry.demandHandleQ);
+        const slope = clamp((price - P_STAR) / denominator, SLOPE_MIN, FINITE_SLOPE_MAX);
+        state.demandSlope = slope;
+      }
+      demandSlopeSlider.value = state.demandSlope;
+    } else if (activeHandle === 'supply') {
+      if (point.y <= geometry.top + 10) {
+        state.supplySlope = PERFECT_SLOPE;
+      } else {
+        const denominator = Math.max(0.8, geometry.supplyHandleQ - Q_STAR);
+        const slope = clamp((price - P_STAR) / denominator, SLOPE_MIN, FINITE_SLOPE_MAX);
+        state.supplySlope = slope;
+      }
+      supplySlopeSlider.value = state.supplySlope;
+    }
+
+    render();
+    updateCursor(event);
+  }
+
+  function onPointerUp(event) {
+    if (activeHandle) {
+      activeHandle = null;
+      canvas.style.cursor = 'default';
+      if (event.pointerId != null) {
+        try { canvas.releasePointerCapture(event.pointerId); } catch (err) {}
+      }
+    }
+  }
+
+  taxSideSelect.addEventListener('change', () => {
+    state.taxSide = taxSideSelect.value;
+    render();
+  });
+
+  taxSlider.addEventListener('input', () => {
+    state.tax = Number(taxSlider.value);
+    render();
+  });
+
+  demandSlopeSlider.addEventListener('input', () => {
+    state.demandSlope = Number(demandSlopeSlider.value);
+    render();
+  });
+
+  supplySlopeSlider.addEventListener('input', () => {
+    state.supplySlope = Number(supplySlopeSlider.value);
+    render();
+  });
+
+  showSurplusCheckbox.addEventListener('change', () => {
+    state.showSurplus = showSurplusCheckbox.checked;
+    render();
+  });
+
+  presetButtons.forEach(button => {
+    button.addEventListener('click', () => setPreset(button.dataset.preset));
+  });
+
+  resetButton.addEventListener('click', () => {
+    Object.assign(state, defaults);
+    syncControls();
+    render();
+  });
+
+  canvas.addEventListener('pointerdown', onPointerDown);
+  canvas.addEventListener('pointermove', onPointerMove);
+  canvas.addEventListener('pointerup', onPointerUp);
+  canvas.addEventListener('pointercancel', onPointerUp);
+  canvas.addEventListener('pointerleave', () => {
+    if (!activeHandle) canvas.style.cursor = 'default';
+  });
+
+  window.addEventListener('resize', render);
+
+  syncControls();
+  render();
+})();
+</script>
+</body>
+</html>
