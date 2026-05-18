@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 计量 Agent · 构建蓝图</title>
+    <!-- 引入字体，提升阅读质感 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500&display=swap" rel="stylesheet">
+    <!-- Font Awesome 图标库 (v6 免费版) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+            padding: 2.5rem;
+        }
+
+        /* 标题区域 */
+        .header {
+            margin-bottom: 3rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-family: 'Source Serif 4', serif;
+            font-weight: 500;
+            font-size: 2.8rem;
+            letter-spacing: -0.02em;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: #e9eef4;
+            color: #334155;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* 介绍卡片：obsidian 链接区 */
+        .obsidian-card {
+            background: #f1f5f9;
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+            border-left: 6px solid #7c3aed;
+        }
+
+        .obsidian-card p {
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .obsidian-link {
+            background: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 40px;
+            text-decoration: none;
+            color: #1e293b;
+            font-weight: 500;
+            box-shadow: 0 4px 6px -2px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+            border: 1px solid #cbd5e1;
+        }
+
+        .obsidian-link i {
+            margin-right: 8px;
+            color: #7c3aed;
+        }
+
+        .obsidian-link:hover {
+            background: #7c3aed;
+            color: white;
+            border-color: #7c3aed;
+        }
+        .obsidian-link:hover i {
+            color: white;
+        }
+
+        /* 通用章节样式 */
+        section {
+            margin-bottom: 3.5rem;
+        }
+
+        h2 {
+            font-family: 'Source Serif 4', serif;
+            font-weight: 500;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        h2 i {
+            color: #3b82f6;
+            font-size: 1.8rem;
+            width: 1.8rem;
+        }
+
+        h3 {
+            font-weight: 600;
+            font-size: 1.3rem;
+            margin: 1.8rem 0 1rem 0;
+            color: #1e293b;
+        }
+
+        /* 路线图 / 时间线 */
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .phase {
+            background: #f8fafc;
+            border-radius: 24px;
+            padding: 1.5rem 2rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .phase-header {
+            display: flex;
+            align-items: baseline;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+        }
+
+        .phase-title {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: #0f172a;
+        }
+
+        .phase-date {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .phase-desc {
+            margin-bottom: 1rem;
+            color: #334155;
+        }
+
+        .action-list {
+            list-style: none;
+        }
+
+        .action-list li {
+            margin-bottom: 0.7rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .action-list i {
+            color: #10b981;
+            margin-top: 4px;
+            width: 18px;
+        }
+
+        /* 资源配置表格 */
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 2rem 0;
+        }
+
+        .resource-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 1.8rem 1.5rem;
+            box-shadow: 0 8px 15px -6px rgba(0,0,0,0.02);
+            transition: transform 0.1s ease;
+        }
+
+        .resource-card:hover {
+            border-color: #94a3b8;
+        }
+
+        .resource-card h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #0f172a;
+            border-left: 4px solid #3b82f6;
+            padding-left: 14px;
+        }
+
+        .resource-item {
+            margin-bottom: 1.2rem;
+        }
+
+        .resource-label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .resource-value {
+            font-weight: 500;
+        }
+
+        .cost-badge {
+            background: #ecfdf5;
+            color: #065f46;
+            padding: 0.2rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        /* 书/社区/教程混合列表 */
+        .link-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .link-card {
+            background: #f9f9fc;
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid #eef2f6;
+        }
+
+        .link-card h4 {
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.25rem;
+        }
+
+        .link-item {
+            margin-bottom: 1.2rem;
+            border-bottom: 1px dashed #cbd5e1;
+            padding-bottom: 1rem;
+        }
+        .link-item:last-child {
+            border-bottom: none;
+        }
+        .link-title {
+            font-weight: 600;
+            color: #0f172a;
+        }
+        .link-desc {
+            font-size: 0.9rem;
+            color: #475569;
+            margin-top: 4px;
+        }
+        .external-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-top: 6px;
+        }
+        .external-link i {
+            font-size: 0.8rem;
+            margin-left: 4px;
+        }
+
+        /* 脚注 */
+        .footer-note {
+            margin-top: 3rem;
+            font-size: 0.9rem;
+            color: #64748b;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 2rem;
+        }
+
+        /* 辅助布局 */
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .text-small {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        /* 响应式 */
+        @media (max-width: 640px) {
+            .container {
+                padding: 1.5rem;
+            }
+            h1 {
+                font-size: 2.2rem;
+            }
+            .phase {
+                padding: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    
+    <!-- 头部 -->
+    <div class="header">
+        <h1>🧠 AI 计量 Agent</h1>
+        <div class="subtitle">
+            <span>从专家经验到自主研究助手 · 两年落地蓝图</span>
+            <span class="badge"><i class="far fa-calendar-alt"></i> 2026-2028</span>
+        </div>
+    </div>
+
+    <!-- Obsidian 链接卡片（可行） -->
+    <div class="obsidian-card">
+        <p>
+            <i class="fas fa-link" style="color:#7c3aed; font-size:1.5rem;"></i> 
+            <strong>Obsidian 集成</strong> —— 点击右侧链接可将此页面添加至你的知识库
+        </p>
+        <a href="obsidian://open?path=C:\Users\Pu Chen\OneDrive - Curtin\Documents\ObsidianVault" class="obsidian-link" target="_blank">
+            <i class="fas fa-external-link-alt"></i> 在 Obsidian 中打开
+        </a>
+        <span class="text-small">（若 vault 名称不同，可手动修改链接）</span>
+    </div>
+
+    <!-- 1. 两年落地路线图（更新版 + 进阶路线整合） -->
+    <section>
+        <h2><i class="fas fa-map-signs"></i> 两年落地路线图 · 系统性进阶</h2>
+        <p style="margin-bottom: 24px; color: #334155;">基于你已有的 <code>switcher_AItutor</code> 代码基础，从“规则驱动”演进到“认知型 Agent”。</p>
+        
+        <div class="timeline">
+            <!-- 阶段一 -->
+            <div class="phase">
+                <div class="phase-header">
+                    <span class="phase-title">阶段一：框架重构 · 掌握认知 Agent 范式</span>
+                    <span class="phase-date">第1–2个月</span>
+                </div>
+                <p class="phase-desc">将原有硬编码状态机迁移到 LangGraph，让 Agent 自主规划与决策。</p>
+                <ul class="action-list">
+                    <li><i class="fas fa-check-circle"></i> <strong>核心任务：</strong>用 LangGraph 复刻 Socratic/Explainer 双路由，但路由决策交由 LLM 判断 (ReAct 模式)。</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>关键学习：</strong>LangGraph 状态图、条件边、Function Calling。</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>产出：</strong>一个能根据学生输入动态选择“引导提问”或“直接解释”的 Agent 原型。</li>
+                </ul>
+            </div>
+            <!-- 阶段二 -->
+            <div class="phase">
+                <div class="phase-header">
+                    <span class="phase-title">阶段二：记忆系统 · 让 Agent 从历史中学习</span>
+                    <span class="phase-date">第3–4个月</span>
+                </div>
+                <p class="phase-desc">突破单次对话限制，建立三级记忆 (感知/短期/长期)。</p>
+                <ul class="action-list">
+                    <li><i class="fas fa-check-circle"></i> <strong>短期记忆：</strong>使用 ConversationSummaryBufferMemory 管理会话上下文。</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>长期记忆：</strong>将以往成功的教学/计量分析案例存入向量库，检索相似场景策略。</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>计量场景映射：</strong>“之前处理 DID 平行趋势不满足时是如何引导的？”</li>
+                </ul>
+            </div>
+            <!-- 阶段三 -->
+            <div class="phase">
+                <div class="phase-header">
+                    <span class="phase-title">阶段三：自我反思与工具生态</span>
+                    <span class="phase-date">第5–8个月</span>
+                </div>
+                <p class="phase-desc">打造计量专属“技能包”，并引入反思机制提升可靠性。</p>
+                <ul class="action-list">
+                    <li><i class="fas fa-check-circle"></i> <strong>工具封装：</strong>将 <code>statsmodels</code> 诊断、Hausman 检验、DID 平行趋势检验封装为可调用函数。</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>反思循环 (Reflexion)：</strong>让 Agent 在执行分析后自评：“工具变量是否弱？是否需要报告稳健标准误？”</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>可观测性集成：</strong>接入 LangSmith 监控每一步推理与工具调用。</li>
+                </ul>
+            </div>
+            <!-- 阶段四 -->
+            <div class="phase">
+                <div class="phase-header">
+                    <span class="phase-title">阶段四：自主研究助手 · 从指令到目标</span>
+                    <span class="phase-date">第9–24个月</span>
+                </div>
+                <p class="phase-desc">实现“帮我分析最低工资对就业的影响”级别的端到端自主分析。</p>
+                <ul class="action-list">
+                    <li><i class="fas fa-check-circle"></i> 自动探查数据结构 → 推荐模型 (DID/SCM) → 执行诊断 → 产出稳健性报告。</li>
+                    <li><i class="fas fa-check-circle"></i> 持续注入你四十年的计量直觉（例如识别 Staggered DID 时自动建议 CSDID）。</li>
+                    <li><i class="fas fa-check-circle"></i> 最终形态：一位不知疲倦、严谨且具备学术品味的“AI 计量副驾驶”。</li>
+                </ul>
+            </div>
+        </div>
+        <p class="text-small" style="margin-top: 12px;"><i class="far fa-lightbulb"></i> 进阶提示：你当前的 <code>socratic_tester.py</code> 正是很好的评估起点；后续可将测试用例拓展到计量诊断场景。</p>
+    </section>
+
+    <!-- 2. 资源配置清单（精简表格版） -->
+    <section>
+        <h2><i class="fas fa-microchip"></i> 资源配置清单</h2>
+        <div class="resource-grid">
+            <!-- 硬件/算力 -->
+            <div class="resource-card">
+                <h4>🖥️ 硬件 · 算力</h4>
+                <div class="resource-item">
+                    <div class="resource-label">推荐方案 (个人开发者)</div>
+                    <div class="resource-value">云端 API (DeepSeek / OpenAI) <span class="cost-badge">按量付费</span></div>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-label">本地备选</div>
+                    <div class="resource-value">消费级 NUC AI+ (100 TOPS) 用于测试小模型</div>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-label">专业级 (未来)</div>
+                    <div class="resource-value">A100/H100 工作站 · 约 ¥20w+</div>
+                </div>
+            </div>
+            <!-- 软件框架 -->
+            <div class="resource-card">
+                <h4>🧩 软件 · 框架</h4>
+                <div class="resource-item">
+                    <div class="resource-label">Agent 框架</div>
+                    <div class="resource-value"><strong>LangGraph</strong> (精细控制) + <strong>AutoGen</strong> (多智能体协作) — 均开源免费</div>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-label">LLM 网关</div>
+                    <div class="resource-value">LiteLLM (统一 API，成本追踪)</div>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-label">可观测性</div>
+                    <div class="resource-value">LangSmith 开发者计划 — 免费 5k traces/月</div>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-label">计量工具包</div>
+                    <div class="resource-value">Python + statsmodels + 自建诊断函数库</div>
+                </div>
+            </div>
+            <!-- 算量/成本 -->
+            <div class="resource-card">
+                <h4>💰 算量 · 成本估算</h4>
+                <div class="resource-item">
+                    <div class="resource-label">单次复杂分析</div>
+                    <div class="resource-value">~$0.5–1.0 (GPT-4级) </div>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-label">开发测试 (月)</div>
+                    <div class="resource-value">≈ $0–10 (LangSmith 免费额度内)</div>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-label">稳定使用 (月)</div>
+                    <div class="resource-value">~$15–50 (取决于调用频次) </div>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-label">成本优化</div>
+                    <div class="resource-value">模型分级 · 缓存 · 结果复用</div>
+                </div>
+            </div>
+            <!-- 知识储备 -->
+            <div class="resource-card">
+                <h4>📚 知识储备</h4>
+                <div class="resource-item">
+                    <div class="resource-label">核心</div>
+                    <div class="resource-value">计量经济学理论 · Python 编程 · 提示词工程</div>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-label">框架思维</div>
+                    <div class="resource-value">ReAct · 规划 · 反思 · 多Agent协作</div>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-label">经验转化</div>
+                    <div class="resource-value">将四十年直觉固化为工具和判断规则</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. 书籍 / 论坛 / 教程（三合一区块） -->
+    <section>
+        <h2><i class="fas fa-book-open"></i> 学习资源矩阵</h2>
+        <div class="link-list">
+            <!-- 书籍列 -->
+            <div class="link-card">
+                <h4><i class="fas fa-book"></i> 三本必读 (eBook)</h4>
+                <div class="link-item">
+                    <div class="link-title">《AI Engineering》</div>
+                    <div class="link-desc">Chip Huyen · 构建可靠Agent系统的工程方法，含评估框架。</div>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">《Building LLM-Powered Applications》</div>
+                    <div class="link-desc">Valentina Alto · 从原型到生产的实战指南。</div>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">《LangChain 1.0智能体开发实战》</div>
+                    <div class="link-desc">匙亮旭 (2026) · 最新 LangGraph 工程闭环。</div>
+                </div>
+            </div>
+            <!-- 论坛 / 社区 -->
+            <div class="link-card">
+                <h4><i class="fas fa-comments"></i> 三大社区</h4>
+                <div class="link-item">
+                    <div class="link-title">LangChain Discord</div>
+                    <div class="link-desc">官方社区，架构讨论与排错。</div>
+                    <a href="#" class="external-link">discord.gg/langchain <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">r/LocalLLaMA</div>
+                    <div class="link-desc">Reddit 开源模型与本地部署前沿。</div>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">Moltbook</div>
+                    <div class="link-desc">Agent 专属社交平台，观察智能体互动。</div>
+                </div>
+            </div>
+            <!-- 教程 (由浅入深) -->
+            <div class="link-card">
+                <h4><i class="fas fa-graduation-cap"></i> 三个教程</h4>
+                <div class="link-item">
+                    <div class="link-title">入门：Microsoft Learn Agent Builder</div>
+                    <div class="link-desc">30分钟无代码体验 Agent 核心概念。</div>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">进阶：DeepLearning.AI · LangGraph 短课</div>
+                    <div class="link-desc">吴恩达团队 · 免费，掌握 ReAct 与工具调用。</div>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">精通：OpenClaw / Hermes 项目文档</div>
+                    <div class="link-desc">真实世界自主 Agent 架构剖析。</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. 跟踪最新发展的网页 + 额外有用信息 (MIT AI Index 等) -->
+    <section>
+        <h2><i class="fas fa-rss"></i> 跟踪前沿 & 附加资源</h2>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+            <div style="flex: 2; min-width: 260px;">
+                <div style="background: #f1f5f9; border-radius: 20px; padding: 1.8rem;">
+                    <h3 style="margin-top: 0; display: flex; gap: 10px;"><i class="fas fa-globe"></i> 持续更新的站点</h3>
+                    <ul style="list-style: none;">
+                        <li style="margin-bottom: 18px;">📡 <strong>MIT AI Agent Index</strong> — 年度权威报告，agent 能力基准。<br><span class="text-small">agentindex.mit.edu</span></li>
+                        <li style="margin-bottom: 18px;">📰 <strong>KDnuggets / Analytics Vidhya</strong> — 行业技术解读与教程。</li>
+                        <li style="margin-bottom: 18px;">✍️ <strong>Simon Willison’s Weblog</strong> — 独立技术洞察，LLM 工具推荐。</li>
+                        <li>📋 <strong>arXiv (cs.AI / cs.CL)</strong> — 订阅 “Agent” 关键词，跟踪最新论文。</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="flex: 1; min-width: 220px;">
+                <div style="background: #fef9c3; border-radius: 20px; padding: 1.8rem; height: 100%;">
+                    <h3 style="margin-top: 0;"><i class="fas fa-star"></i> 我的补充</h3>
+                    <p style="margin-bottom: 16px;">你已有的 <code>socratic_tester.py</code> 是极佳的测试文化雏形。建议后续开发中持续维护一个“计量场景测试集”，包括：</p>
+                    <ul style="padding-left: 20px;">
+                        <li>平行趋势检验失败案例</li>
+                        <li>弱工具变量诊断案例</li>
+                        <li>Staggered DID 误用案例</li>
+                    </ul>
+                    <p style="margin-top: 16px;">这些将成为 Agent 的“单元测试”，确保每次升级不退化。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚说明 -->
+    <div class="footer-note">
+        <i class="far fa-copy"></i> 构建于一次关于计量 Agent 的深度对话 · 可自由修改、适配 Obsidian<br>
+        建议将此页面保存为 <code>AI-Metrics-Agent-Blueprint.html</code> 并用浏览器打开，或复制源码至 Obsidian 笔记。
+    </div>
+</div>
+</body>
+</html>
