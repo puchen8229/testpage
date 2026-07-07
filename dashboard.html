@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Lecture Notes · Math & Stats</title>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f6f9fc 0%, #eef2f7 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .dashboard-wrapper {
+      max-width: 1300px;
+      width: 100%;
+    }
+
+    /* header */
+    .header {
+      margin-bottom: 2.5rem;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #0b2b4a, #1b4a6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: inline-block;
+      padding: 0 0.5rem;
+    }
+
+    .header .sub {
+      font-size: 1.1rem;
+      color: #2c3e50;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(4px);
+      padding: 0.4rem 1.8rem;
+      border-radius: 40px;
+      display: inline-block;
+      margin-top: 0.25rem;
+      font-weight: 450;
+      border: 1px solid rgba(255,255,255,0.3);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+
+    .header i {
+      margin-right: 8px;
+      color: #1f6e9e;
+      -webkit-text-fill-color: #1f6e9e; /* override for icon */
+    }
+
+    /* grid */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.8rem;
+      margin-top: 1rem;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(6px);
+      border-radius: 28px;
+      box-shadow: 0 12px 28px -8px rgba(0, 20, 40, 0.12), 0 4px 12px rgba(0,0,0,0.02);
+      transition: all 0.25s ease;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 36px -12px rgba(0, 40, 80, 0.20);
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(66, 133, 200, 0.25);
+    }
+
+    .card-link {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      text-decoration: none;
+      color: inherit;
+      padding: 1.6rem 1.6rem 1.8rem;
+    }
+
+    .card-icon {
+      font-size: 2.2rem;
+      color: #1f6390;
+      margin-bottom: 0.6rem;
+      opacity: 0.8;
+    }
+
+    .card-title {
+      font-weight: 650;
+      font-size: 1.35rem;
+      line-height: 1.3;
+      color: #0a283b;
+      letter-spacing: -0.01em;
+    }
+
+    .card-subtitle {
+      font-size: 0.9rem;
+      color: #4a5f72;
+      margin-top: 0.5rem;
+      font-weight: 400;
+      opacity: 0.85;
+      line-height: 1.4;
+      border-left: 3px solid #b6d0e3;
+      padding-left: 0.8rem;
+    }
+
+    .card-badge {
+      margin-top: 1.2rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: #2b6d94;
+      background: rgba(30, 100, 160, 0.08);
+      padding: 0.25rem 1rem;
+      border-radius: 30px;
+      align-self: flex-start;
+      border: 1px solid rgba(30, 100, 160, 0.1);
+      backdrop-filter: blur(2px);
+    }
+
+    .card-footer {
+      margin-top: auto;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      font-size: 0.9rem;
+      color: #3f6b8c;
+      padding-top: 1.2rem;
+      border-top: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .card-footer i {
+      font-size: 0.9rem;
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover .card-footer i {
+      transform: translateX(4px);
+    }
+
+    /* section labels */
+    .section-label {
+      display: inline-block;
+      background: #dce6ef;
+      border-radius: 60px;
+      padding: 0.15rem 1.2rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: #1d4660;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    /* footer */
+    .footer-note {
+      margin-top: 3.5rem;
+      text-align: center;
+      color: #4d667b;
+      font-weight: 400;
+      font-size: 0.9rem;
+      border-top: 1px solid rgba(60, 90, 120, 0.08);
+      padding-top: 2rem;
+      width: 100%;
+      max-width: 600px;
+      opacity: 0.7;
+    }
+
+    .footer-note i {
+      margin: 0 6px;
+    }
+
+    /* responsive tweaks */
+    @media (max-width: 600px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+      .card-grid {
+        gap: 1.2rem;
+      }
+      body {
+        padding: 1.2rem 0.8rem;
+      }
+    }
+
+    /* small pill for missing M6 */
+    .info-pill {
+      background: #ecf3f8;
+      border-radius: 40px;
+      padding: 0.2rem 0.9rem;
+      font-size: 0.7rem;
+      color: #3b5d77;
+      margin-left: 0.6rem;
+      font-weight: 450;
+    }
+  </style>
+</head>
+<body>
+<div class="dashboard-wrapper">
+  <div class="header">
+    <h1><i class="fas fa-chalkboard-teacher" style="margin-right: 10px;"></i> Interactive Lecture Notes</h1>
+    <div class="sub"><i class="fas fa-calculator"></i> Mathematics & Statistics · Calculus & Data Science</div>
+  </div>
+
+  <!-- grid of 10 cards (M1–M5, M7–M11) -->
+  <div class="card-grid">
+    <!-- M1 -->
+    <div class="card">
+      <a href="https://puchen8229.github.io/testpage/LectureM1.html" target="_blank" rel="noopener" class="card-link">
+        <div class="card-icon"><i class="fas fa-hashtag"></i></div>
+        <div class="card-title">1 · Numbers, Variables, Functions</div>
+        <div class="card-subtitle">Abstract thinking, relations, equations & R basics</div>
+        <span class="card-badge"><i class="far fa-clock"></i> Lecture M1</span>
+        <div class="card-footer"><span>Open <i class="fas fa-arrow-right"></i></span></div>
+      </a>
+    </div>
+
+    <!-- M2 -->
+    <div class="card">
+      <a href="https://puchen8229.github.io/testpage/LectureM2.html" target="_blank" rel="noopener" class="card-link">
+        <div class="card-icon"><i class="fas fa-chart-line"></i></div>
+        <div class="card-title">2 · Functions & Graphs</div>
+        <div class="card-subtitle">Uni- & multivariable plots, linear systems, matrices</div>
+        <span class="card-badge"><i class="far fa-clock"></i> Lecture M2</span>
+        <div class="card-footer"><span>Open <i class="fas fa-arrow-right"></i></span></div>
+      </a>
+    </div>
+
+    <!-- M3 -->
+    <div class="card">
+      <a href="https://puchen8229.github.io/testpage/LectureM3.html" target="_blank" rel="noopener" class="card-link">
+        <div class="card-icon"><i class="fas fa-tachometer-alt"></i></div>
+        <div class="card-title">3 · Derivatives (One Variable)</div>
+        <div class="card-subtitle">Limits, rates of change, differentiation rules, applications</div>
+        <span class="card-badge"><i class="far fa-clock"></i> Lecture M3</span>
+        <div class="card-footer"><span>Open <i class="fas fa-arrow-right"></i></span></div>
+      </a>
+    </div>
+
+    <!-- M4 -->
+    <div class="card">
+      <a href="https://puchen8229.github.io/testpage/LectureM4.html" target="_blank" rel="noopener" class="card-link">
+        <div class="card-icon"><i class="fas fa-cube"></i></div>
+        <div class="card-title">4 · Partial Derivatives</div>
+        <div class="card-subtitle">Higher-order, tangent planes, Hessian, multivariable optimisation</div>
+        <span class="card-badge"><i class="far fa-clock"></i> Lecture M4</span>
+        <div class="card-footer"><span>Open <i class="fas fa-arrow-right"></i></span></div>
+      </a>
+    </div>
+
+    <!-- M5 -->
+    <div class="card">
+      <a href="https://puchen8229.github.io/testpage/LectureM5.html" target="_blank" rel="noopener" class="card-link">
+        <div class="card-icon"><i class="fas fa-flag-checkered"></i></div>
+        <div class="card-title">5 · Optimisation</div>
+        <div class="card-subtitle">Unconstrained, Lagrange, KKT, business applications</div>
+        <span class="card-badge"><i class="far fa-clock"></i> Lecture M5</span>
+        <div class="card-footer"><span>Open <i class="fas fa-arrow-right"></i></span></div>
+      </a>
+    </div>
+
+    <!-- M7 (skip M6) -->
+    <div class="card">
+      <a href="https://puchen8229.github.io/testpage/LectureM7.html" target="_blank" rel="noopener" class="card-link">
+        <div class="card-icon"><i class="fas fa-database"></i></div>
+        <div class="card-title">7 · Intro to Statistics</div>
+        <div class="card-subtitle">Data types, descriptive stats, frequency, charts, 68‑95‑99.7</div>
+        <span class="card-badge"><i class="far fa-clock"></i> Lecture M7</span>
+        <div class="card-footer"><span>Open <i class="fas fa-arrow-right"></i></span></div>
+      </a>
+    </div>
+
+    <!-- M8 -->
+    <div class="card">
+      <a href="https://puchen8229.github.io/testpage/LectureM8.html" target="_blank" rel="noopener" class="card-link">
+        <div class="card-icon"><i class="fas fa-dice"></i></div>
+        <div class="card-title">8 · Sample, Probability, RV</div>
+        <div class="card-subtitle">Random variables, discrete/continuous, joint, conditional, normal</div>
+        <span class="card-badge"><i class="far fa-clock"></i> Lecture M8</span>
+        <div class="card-footer"><span>Open <i class="fas fa-arrow-right"></i></span></div>
+      </a>
+    </div>
+
+    <!-- M9 -->
+    <div class="card">
+      <a href="https://puchen8229.github.io/testpage/LectureM9.html" target="_blank" rel="noopener" class="card-link">
+        <div class="card-icon"><i class="fas fa-bullseye"></i></div>
+        <div class="card-title">9 · Sampling & Estimation</div>
+        <div class="card-subtitle">LLN, CLT, point/interval estimation, confidence intervals</div>
+        <span class="card-badge"><i class="far fa-clock"></i> Lecture M9</span>
+        <div class="card-footer"><span>Open <i class="fas fa-arrow-right"></i></span></div>
+      </a>
+    </div>
+
+    <!-- M10 -->
+    <div class="card">
+      <a href="https://puchen8229.github.io/testpage/LectureM10.html" target="_blank" rel="noopener" class="card-link">
+        <div class="card-icon"><i class="fas fa-vial"></i></div>
+        <div class="card-title">10 · Statistical Testing</div>
+        <div class="card-subtitle">Hypotheses, t‑test, χ², ANOVA, independence, normality</div>
+        <span class="card-badge"><i class="far fa-clock"></i> Lecture M10</span>
+        <div class="card-footer"><span>Open <i class="fas fa-arrow-right"></i></span></div>
+      </a>
+    </div>
+
+    <!-- M11 -->
+    <div class="card">
+      <a href="https://puchen8229.github.io/testpage/LectureM11.html" target="_blank" rel="noopener" class="card-link">
+        <div class="card-icon"><i class="fas fa-project-diagram"></i></div>
+        <div class="card-title">11 · Regression</div>
+        <div class="card-subtitle">Simple/multiple, least squares, Excel output, interpretation</div>
+        <span class="card-badge"><i class="far fa-clock"></i> Lecture M11</span>
+        <div class="card-footer"><span>Open <i class="fas fa-arrow-right"></i></span></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- additional note: M6 not included -->
+  <div style="margin-top: 1.8rem; text-align: right; font-size: 0.85rem; color: #4a6a82; opacity: 0.7; border-top: 1px dashed #cbdae6; padding-top: 1.2rem;">
+    <i class="fas fa-arrow-circle-right"></i> 10 lecture notes available (M1–M5, M7–M11) 
+    <span class="info-pill"><i class="far fa-folder-open"></i> interactive & R‑enhanced</span>
+  </div>
+
+  <div class="footer-note">
+    <i class="fas fa-graduation-cap"></i> Dashboard for calculus & statistics · all links open in new tab
+  </div>
+</div>
+</body>
+</html>
