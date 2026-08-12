@@ -11,7 +11,7 @@
 
 <meta name="author" content="Calculus Lecture Series" />
 
-<meta name="date" content="2026-02-28" />
+<meta name="date" content="2026-08-13" />
 
 <title>Section 4: Partial Derivatives of Multivariable Functions</title>
 
@@ -1671,7 +1671,7 @@ Multivariable Functions</h1>
 <h3 class="subtitle">Understanding Multivariable Calculus in Business
 Applications</h3>
 <h4 class="author">Calculus Lecture Series</h4>
-<h4 class="date">2026-02-28</h4>
+<h4 class="date">2026-08-13</h4>
 
 </div>
 
@@ -2086,11 +2086,11 @@ inconclusive</li>
 </div>
 <div id="example-4.3-profit-maximisation" class="section level3">
 <h3>Example 4.3 Profit maximisation</h3>
-<p>A firm’s profit from selling a product is modeled bY; <span class="math display">\[\pi(p) = -2p^2 +4p -100\]</span> where <span class="math inline">\(p\)</span> is the price per unit.</p>
+<p>A firm’s profit from selling a product is modeled bY; <span class="math display">\[\pi(p) = -2p^2 +40p -100\]</span> where <span class="math inline">\(p\)</span> is the price per unit.</p>
 <ul>
 <li>First derivative: <span class="math display">\[\pi&#39;(p) = -4p +
 40\hspace{1cm}\to\hspace{0.5cm}p=10\]</span></li>
-<li>Second derivative: <span class="math display">\[\pi&#39;&#39;(p)=-4&lt;0\]</span> So, <span class="math inline">\(p=10\)</span> gives a local minimum.</li>
+<li>Second derivative: <span class="math display">\[\pi&#39;&#39;(p)=-4&lt;0\]</span> So, <span class="math inline">\(p=10\)</span> gives a local maximum.</li>
 </ul>
 </div>
 <div id="connection-between-the-first-derivative-test-and-the-second-derivative-test" class="section level3">
@@ -2152,6 +2152,394 @@ inconclusive</td>
 <p>You can use the following interactive diagram to investigate the
 relation between a function and its first and second order derivatives.
 You can input you own functions for investigation.</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculus Zoom Explorer</title>
+  <style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+background: #f7f8fa;
+color: #1a1a1a;
+padding: 24px;
+line-height: 1.5;
+}
+.container {
+max-width: 900px;
+margin: 0 auto;
+background: #fff;
+border-radius: 12px;
+padding: 24px;
+box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+h1 {
+font-size: 20px;
+font-weight: 600;
+margin-bottom: 4px;
+}
+.subtitle {
+font-size: 14px;
+color: #666;
+margin-bottom: 20px;
+}
+.controls {
+display: flex;
+gap: 16px;
+flex-wrap: wrap;
+align-items: center;
+margin-bottom: 16px;
+}
+select, input[type="range"] {
+font: inherit;
+}
+select {
+padding: 6px 10px;
+border: 1px solid #d1d5db;
+border-radius: 8px;
+background: #fff;
+cursor: pointer;
+}
+label {
+display: flex;
+align-items: center;
+gap: 6px;
+font-size: 14px;
+color: #444;
+cursor: pointer;
+}
+input[type="checkbox"] {
+width: 16px;
+height: 16px;
+accent-color: #1a1a1a;
+}
+#graph {
+width: 100%;
+height: 360px;
+border: 1px solid #e5e7eb;
+border-radius: 10px;
+display: block;
+background: #fafafa;
+}
+.sliders {
+display: flex;
+gap: 20px;
+margin-top: 16px;
+flex-wrap: wrap;
+}
+.slider-group {
+flex: 1;
+min-width: 200px;
+}
+.slider-group label {
+display: block;
+font-size: 12px;
+color: #888;
+margin-bottom: 6px;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
+input[type="range"] {
+width: 100%;
+height: 4px;
+accent-color: #1a1a1a;
+}
+.legend {
+margin-top: 14px;
+display: flex;
+gap: 20px;
+flex-wrap: wrap;
+font-size: 13px;
+color: #555;
+}
+.legend-item {
+display: flex;
+align-items: center;
+gap: 6px;
+}
+.swatch {
+width: 16px;
+height: 3px;
+border-radius: 2px;
+display: inline-block;
+}
+.swatch-box {
+width: 14px;
+height: 14px;
+border-radius: 3px;
+display: inline-block;
+border: 1px solid rgba(0,0,0,0.1);
+}
+.info {
+margin-top: 12px;
+padding: 10px 14px;
+background: #f3f4f6;
+border-radius: 8px;
+font-size: 13px;
+color: #444;
+font-family: "SF Mono", Monaco, monospace;
+}
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Calculus Zoom Explorer</h1>
+    <p class="subtitle">Zoom in to see how a curve becomes locally linear. The background is colored by which side of the tangent the curve lies on.</p>
+
+    <div class="controls">
+      <select id="fn-select">
+        <option value="sin">sin(x)</option>
+        <option value="quad">x²</option>
+        <option value="cubic">x³</option>
+        <option value="exp">eˣ</option>
+        <option value="log">ln(x+1)</option>
+        <option value="sqrt">√x</option>
+      </select>
+      <label><input type="checkbox" id="show-tangent" checked> Tangent (1st order)</label>
+      <label><input type="checkbox" id="show-curve2" checked> Curvature (2nd order)</label>
+      <label><input type="checkbox" id="show-halves" checked> Tangent halves</label>
+    </div>
+
+    <canvas id="graph"></canvas>
+
+    <div class="sliders">
+      <div class="slider-group">
+        <label>Zoom level</label>
+        <input type="range" id="zoom" min="1" max="1000" value="1">
+      </div>
+      <div class="slider-group">
+        <label>Focus point x₀</label>
+        <input type="range" id="focus-x" min="0" max="1000" value="500">
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="swatch" style="background:#2563eb;"></span> f(x)</div>
+      <div class="legend-item"><span class="swatch" style="background:#dc2626;"></span> Tangent</div>
+      <div class="legend-item"><span class="swatch" style="background:#16a34a;"></span> 2nd-order</div>
+      <div class="legend-item"><span class="swatch-box" style="background:rgba(22,163,74,0.15);"></span> Curve side</div>
+      <div class="legend-item"><span class="swatch-box" style="background:rgba(220,38,38,0.08);"></span> Other side</div>
+      <div class="legend-item"><span class="swatch-box" style="background:rgba(0,0,0,0.04);"></span> f″=0 (same both sides)</div>
+    </div>
+
+    <div class="info" id="info">x₀ = 0.0000, f(x₀) = 0.0000, f′(x₀) = 1.0000, f″(x₀) = 0.0000</div>
+  </div>
+
+  <script>
+    (function() {
+      const canvas = document.getElementById('graph');
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      resize();
+      window.addEventListener('resize', () => { resize(); draw(); });
+
+      const fns = {
+        sin:   { f: x => Math.sin(x),       fp: x => Math.cos(x),    fpp: x => -Math.sin(x), domain: [-4, 4],   range: [-2, 2] },
+        quad:  { f: x => x * x,             fp: x => 2 * x,          fpp: x => 2,            domain: [-3, 3],   range: [-1, 9] },
+        cubic: { f: x => x * x * x,         fp: x => 3 * x * x,      fpp: x => 6 * x,        domain: [-2.5, 2.5], range: [-8, 8] },
+        exp:   { f: x => Math.exp(x),       fp: x => Math.exp(x),    fpp: x => Math.exp(x),  domain: [-3, 3],   range: [-1, 20] },
+        log:   { f: x => Math.log(x + 1),   fp: x => 1 / (x + 1),    fpp: x => -1 / ((x + 1) * (x + 1)), domain: [-0.9, 5], range: [-2, 3] },
+        sqrt:  { f: x => Math.sqrt(Math.max(0, x)), fp: x => x > 0 ? 0.5 / Math.sqrt(x) : 0, fpp: x => x > 0 ? -0.25 / (x * Math.sqrt(x)) : 0, domain: [-1, 5], range: [-1, 3] }
+      };
+
+      const sel = document.getElementById('fn-select');
+      const zoomIn = document.getElementById('zoom');
+      const focusX = document.getElementById('focus-x');
+      const showT = document.getElementById('show-tangent');
+      const showC = document.getElementById('show-curve2');
+      const showH = document.getElementById('show-halves');
+      const info = document.getElementById('info');
+
+      function niceStep(span) {
+        const raw = span / 5;
+        const exp = Math.pow(10, Math.floor(Math.log10(raw)));
+        const frac = raw / exp;
+        let step = frac < 1.5 ? 1 : frac < 3 ? 2 : frac < 7 ? 5 : 10;
+        return step * exp;
+      }
+
+      function draw() {
+        const W = canvas.getBoundingClientRect().width;
+        const H = canvas.getBoundingClientRect().height;
+        ctx.clearRect(0, 0, W, H);
+
+        const fn = fns[sel.value];
+        const z = parseFloat(zoomIn.value);
+        const fx0 = parseFloat(focusX.value) / 1000;
+
+        const x0 = fn.domain[0] + fx0 * (fn.domain[1] - fn.domain[0]);
+        const y0 = fn.f(x0);
+        const fp0 = fn.fp(x0);
+        const fpp0 = fn.fpp(x0);
+
+        const baseW = fn.domain[1] - fn.domain[0];
+        const baseH = fn.range[1] - fn.range[0];
+        const zoomFactor = Math.pow(baseW / 0.02, (z - 1) / 999);
+        const vw = baseW / zoomFactor;
+        const vh = baseH / zoomFactor;
+
+        const xmin = x0 - vw * fx0;
+        const xmax = xmin + vw;
+        const ymin = y0 - vh * (1 - (y0 - fn.range[0]) / (fn.range[1] - fn.range[0]));
+        const ymax = ymin + vh;
+
+        const tx = x => (x - xmin) / (xmax - xmin) * W;
+        const ty = y => H - (y - ymin) / (ymax - ymin) * H;
+
+        // --- Tangent half-plane fills ---
+        if (showH.checked) {
+          const yTanMin = y0 + fp0 * (xmin - x0);
+          const yTanMax = y0 + fp0 * (xmax - x0);
+          const pyTanMin = ty(yTanMin);
+          const pyTanMax = ty(yTanMax);
+
+          const EPS = 1e-12;
+          if (Math.abs(fpp0) < EPS) {
+            // Inflection point: both sides same neutral color
+            ctx.fillStyle = 'rgba(0,0,0,0.03)';
+            ctx.fillRect(0, 0, W, H);
+          } else {
+            const curveSide = 'rgba(22, 163, 74, 0.10)';  // green tint
+            const otherSide = 'rgba(220, 38, 38, 0.06)';  // red tint
+
+            if (fpp0 > 0) {
+              // Concave up: curve is above tangent → upper half is curve side
+              ctx.fillStyle = curveSide;
+              ctx.beginPath();
+              ctx.moveTo(0, 0);
+              ctx.lineTo(W, 0);
+              ctx.lineTo(W, pyTanMax);
+              ctx.lineTo(0, pyTanMin);
+              ctx.closePath();
+              ctx.fill();
+
+              ctx.fillStyle = otherSide;
+              ctx.beginPath();
+              ctx.moveTo(0, pyTanMin);
+              ctx.lineTo(W, pyTanMax);
+              ctx.lineTo(W, H);
+              ctx.lineTo(0, H);
+              ctx.closePath();
+              ctx.fill();
+            } else {
+              // Concave down: curve is below tangent → lower half is curve side
+              ctx.fillStyle = otherSide;
+              ctx.beginPath();
+              ctx.moveTo(0, 0);
+              ctx.lineTo(W, 0);
+              ctx.lineTo(W, pyTanMax);
+              ctx.lineTo(0, pyTanMin);
+              ctx.closePath();
+              ctx.fill();
+
+              ctx.fillStyle = curveSide;
+              ctx.beginPath();
+              ctx.moveTo(0, pyTanMin);
+              ctx.lineTo(W, pyTanMax);
+              ctx.lineTo(W, H);
+              ctx.lineTo(0, H);
+              ctx.closePath();
+              ctx.fill();
+            }
+          }
+        }
+
+        // --- Grid ---
+        ctx.strokeStyle = '#e5e7eb';
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        const gx = niceStep(vw);
+        for (let x = Math.ceil(xmin / gx) * gx; x <= xmax; x += gx) {
+          const px = tx(x);
+          ctx.moveTo(px, 0); ctx.lineTo(px, H);
+        }
+        const gy = niceStep(vh);
+        for (let y = Math.ceil(ymin / gy) * gy; y <= ymax; y += gy) {
+          const py = ty(y);
+          ctx.moveTo(0, py); ctx.lineTo(W, py);
+        }
+        ctx.stroke();
+
+        // --- Axes ---
+        ctx.strokeStyle = '#9ca3af';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        const ox = tx(0), oy = ty(0);
+        if (ox >= 0 && ox <= W) { ctx.moveTo(ox, 0); ctx.lineTo(ox, H); }
+        if (oy >= 0 && oy <= H) { ctx.moveTo(0, oy); ctx.lineTo(W, oy); }
+        ctx.stroke();
+
+        // --- f(x) ---
+        ctx.strokeStyle = '#2563eb';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        for (let px = 0; px <= W; px++) {
+          const x = xmin + (px / W) * (xmax - xmin);
+          const y = fn.f(x);
+          if (px === 0) ctx.moveTo(px, ty(y));
+          else ctx.lineTo(px, ty(y));
+        }
+        ctx.stroke();
+
+        // --- Tangent ---
+        if (showT.checked) {
+          ctx.strokeStyle = '#dc2626';
+          ctx.lineWidth = 2;
+          ctx.setLineDash([5, 4]);
+          ctx.beginPath();
+          ctx.moveTo(0, ty(y0 + fp0 * (xmin - x0)));
+          ctx.lineTo(W, ty(y0 + fp0 * (xmax - x0)));
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+
+        // --- 2nd-order approximation ---
+        if (showC.checked) {
+          ctx.strokeStyle = '#16a34a';
+          ctx.lineWidth = 2;
+          ctx.setLineDash([3, 3]);
+          ctx.beginPath();
+          for (let px = 0; px <= W; px++) {
+            const x = xmin + (px / W) * (xmax - xmin);
+            const dx = x - x0;
+            const y = y0 + fp0 * dx + 0.5 * fpp0 * dx * dx;
+            if (px === 0) ctx.moveTo(px, ty(y));
+            else ctx.lineTo(px, ty(y));
+          }
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+
+        // --- Focus point ---
+        const px0 = tx(x0), py0 = ty(y0);
+        ctx.fillStyle = '#1a1a1a';
+        ctx.beginPath();
+        ctx.arc(px0, py0, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // --- Info ---
+        const concavity = Math.abs(fpp0) < 1e-12 ? 'inflection' : fpp0 > 0 ? 'concave up' : 'concave down';
+        info.textContent = `x₀ = ${x0.toFixed(4)},  f(x₀) = ${y0.toFixed(4)},  f′(x₀) = ${fp0.toFixed(4)},  f″(x₀) = ${fpp0.toFixed(4)}  (${concavity})`;
+      }
+
+      [sel, zoomIn, focusX, showT, showC, showH].forEach(el => el.addEventListener('input', draw));
+      draw();
+    })();
+  </script>
+</body>
+</html>
 <!DOCTYPE html>
 <html lang="en">
 <head>
